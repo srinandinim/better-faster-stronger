@@ -18,6 +18,7 @@ class Graph:
         # load graph from given neighbor mappings
         else:
             # initializes number of nodes in the graph
+
             self.nodes = len(nbrs)
 
             # initializes the graph neighbors list
