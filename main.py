@@ -9,17 +9,13 @@ def get_overall_simulation_statistics(wins, losses, timeouts, success_rates, fou
     average_timeouts = round(sum(timeouts) / len(timeouts), 2)
     average_success = round(sum(success_rates) / len(success_rates), 2)
 
-    average_found_prey = round(
-        sum(found_prey) / len(found_prey), 2) if found_prey != None else None
-    average_found_pred = round(
-        sum(found_pred) / len(found_pred), 2) if found_pred != None else None
+    average_found_prey = round(sum(found_prey) / len(found_prey), 2) if found_prey != None else None
+    average_found_pred = round(sum(found_pred) / len(found_pred), 2) if found_pred != None else None
 
     statistics = {"avg-wins": average_wins, "avg-losses": average_losses,
                   "avg-timeouts": average_timeouts, "avg-found-prey": average_found_prey,
                   "avg-found-pred": average_found_pred, "avg-success-rates": average_success}
-
     return {"overall": statistics, "success-rates": success_rates}
-
 
 def save_simulation_statistics(setting, agent, agent_data):
     """
@@ -44,7 +40,6 @@ def save_simulation_statistics(setting, agent, agent_data):
     with open(filepath, "w") as fp:
         json.dump(data, fp)
 
-
 def labreport_simulation_statistics_agent1():
     """
     runs 100 simulations 30 times and returns the average 
@@ -55,16 +50,14 @@ def labreport_simulation_statistics_agent1():
     success_rates = []
 
     for _ in range(30):
-        simulation_wins, simulation_losses, simulation_timeouts, simulation_success = simulation_statistics.agent1(
-            100, 50)
+        simulation_wins, simulation_losses, simulation_timeouts, simulation_success = simulation_statistics.agent1(100, 50)
 
         wins.append(simulation_wins)
         losses.append(simulation_losses)
         timeouts.append(simulation_timeouts)
         success_rates.append(simulation_success)
 
-    agent_data = get_overall_simulation_statistics(
-        wins, losses, timeouts, success_rates)
+    agent_data = get_overall_simulation_statistics(wins, losses, timeouts, success_rates)
     save_simulation_statistics("complete", "agent1", agent_data)
 
     print(

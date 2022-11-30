@@ -20,8 +20,7 @@ def open_graph_state():
     file_parser = open("gamegraph.obj", "rb")
     return pickle.load(file_parser)
 
-
-save_graph_state()
+# save_graph_state()
 
 # VERIFY THAT THE SAVE FUNCTIONALITY WORKS
 """
