@@ -1,6 +1,6 @@
 import random
+
 class PredatorED:
-    
     def __init__(self, location):
         self.location = location
 
