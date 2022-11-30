@@ -2,7 +2,7 @@ import json
 import os
 from .graph import Graph
 
-def save_graph(graph=Graph(nodes=50), filename="sample.json"):
+def save_graph(graph=Graph(nodes=50), filename="GAME_GRAPH.json"):
     dirname = "graphs/"
     if not os.path.exists(os.path.dirname(dirname)):
         os.makedirs(os.path.dirname(dirname))
