@@ -1,3 +1,4 @@
+import utils 
 import random
 import networkx as nx
 import matplotlib.pyplot as plt
@@ -10,7 +11,7 @@ from .prey import Prey
 class Game:
     def __init__(self, nodes=50, timeout=1000):
         # initializes the graph on which agents/prey/predator play
-        self.graph = Graph(nodes=nodes)
+        self.graph = utils.open_graph_state()
 
         # initializes prey location to be random from nodes 1...50
         self.prey = Prey(random.randint(1, self.graph.get_nodes()))

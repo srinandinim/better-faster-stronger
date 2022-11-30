@@ -19,7 +19,7 @@ class Prey:
         self.location = new_location
 
     def move_debug(self, graph):
-        """
+        """better-faster-stronger/game/models/gamegraph.obj
         -- debug method -- 
         selects among its neighbors or its current cell, uniformly at random, to determine its next step
         """

@@ -10,23 +10,22 @@ def save_graph_state(game_graph = Graph(nodes=50)):
     optimal values with the bellman equation and then
     use a function approximation model on that. 
     """
-    file_reader = open("gamegraph.obj", "wb")
+    file_reader = open("models/gamegraph.obj", "wb")
     pickle.dump(game_graph, file_reader)
 
 def open_graph_state():
     """
     retrieves and returns the graph from pickled object
     """
-    file_parser = open("gamegraph.obj", "rb")
+    file_parser = open("models/gamegraph.obj", "rb")
     return pickle.load(file_parser)
 
 # save_graph_state()
 
 # VERIFY THAT THE SAVE FUNCTIONALITY WORKS
-"""
 g1 = Graph(50)
 print(g1.nbrs)
 save_graph_state(g1)
 g2 = open_graph_state()
 print(g2.nbrs)
-"""
+
