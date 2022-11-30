@@ -66,7 +66,7 @@ def labreport_simulation_statistics_agent1():
 
 
 if __name__ == "__main__":
-    # labreport_simulation_statistics_agent1()
+    labreport_simulation_statistics_agent1()
 
     game = Game(nodes=50)
     game_success = game.run_agent_1()

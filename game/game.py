@@ -41,6 +41,9 @@ class Game:
         # initializes the number of steps the agent took
         self.steps = 0
 
+        # checks that the graphs are initialized differently
+        #self.visualize_graph()
+
     def step_return_values(self, status, found_prey, found_pred):
         """
         returns status & found_prey/found_pred as a percentage of total moves
