@@ -17,6 +17,7 @@ class Agent1RL(Agent):
         best_utility = max([self.utility[(action, prey.location, predator.location)] for action in action_space])
         best_actions = [action for action in action_space if self.utility[(action, prey.location, predator.location)] == best_utility]
         self.location = random.choice(best_actions)
+        
         # for action in action_space: 
         #     action_value[action] = optimal_value_function[(action, prey.location, predator.location)]
         
