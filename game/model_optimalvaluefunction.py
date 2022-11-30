@@ -83,7 +83,7 @@ Step 2: Until convergence or a steady state, update non-terminal state values wi
 - Initialize Hyperparameters: beta=0.9, eps=0.25, ksweeps=0, converged=False
 - Initialize v_t and v_t+1 so that we can do synchronous updates with value iteration
 - IF s is a terminal state: u_t+1(s) = u_t(s) 
-- IF s is a non terminal state: u_t+1(s) = max of all actions in action space (-1 + beta * sum over all states(probability of moving to s' * previous u_t(s')))
+- IF s is a non terminal state: u_t+1(s) = max of all actions in action space (-1 + beta * sum over all states(p(s'|s) * previous u_t(s')))
 """
 BETA_DISCOUNTFACTOR, EPSILON, ksweeps, converged = 0.90, 0.25, 0, False 
 u0, u1 = init_state_values(), dict() 
@@ -108,36 +108,47 @@ def optimal_pred_moves(agent_loc, pred_loc):
 
         # compute -bfs(pred, agent) and cache that value for reuse
         if (pred_action, agent_loc) not in optimal_pred_moves_cached:
-            distances[pred_action] = -1 * bfs(GAME_GRAPH, pred_action, agent_loc)
+            distances[pred_action] = bfs(GAME_GRAPH, pred_action, agent_loc)
             optimal_pred_moves_cached[(pred_action, agent_loc)] = distances[pred_action]
 
         # retrieve cached value if it exists 
         else: distances[pred_action] = optimal_pred_moves_cached[(pred_action, agent_loc)]
     
     # finds the shortest distance for the predator 
+    shortest_distance = min(distances.values())
 
     # gets all neighbors that result in shortest path 
-    shortest_distance = min(distances.values())
     potential_moves = [] 
     for key, value in distances.items():
         if value == shortest_distance:
             potential_moves.apend(key)
     return potential_moves 
 
-
-
 def transition_dynamics(agent_loc, prey_loc, pred_loc):
     """
     Returns next possible states for an action and their probabilities
     """
+
+    # transition dynamics: {s' : p(s' | s)}
     new_states = dict() 
 
+    # retrieves all possible prey, pred_ed, pred_opt moves
     prey_next = GAME_GRAPH.nbrs[prey_loc] + [prey_loc]
     pred_next = GAME_GRAPH.nbrs[pred_loc] + [pred_loc]
+    pred_optimal_next = set(optimal_pred_moves(agent_loc, pred_loc))
 
+    # iterate through all state transitions given an agent action
+    for prey_next_state in prey_next: 
+        for pred_next_state in pred_next: 
+            next_state = (agent_loc, prey_next_state, pred_next_state)
+            if pred_next_state in pred_optimal_next:
+                new_states[next_state] = (1 / len(prey_next)) * (0.4 / len(pred_next) + 0.6 / len(pred_optimal_next))
+            else: 
+                new_states[next_state] = (1 / len(prey_next)) * (0.4 / len(pred_next))
+    return new_states 
 
 # RUNS THE VALUE ITERATION ALGORITHM UNTIL CONVERGENCE
-while not converged: 
+while converged == False: 
 
     # iterate through all possible states
     for agent_loc in range(1,51):
@@ -155,19 +166,42 @@ while not converged:
                 else: 
                     agent_actions = GAME_GRAPH.nbrs[agent_loc] + [agent_loc]
 
-                    action_value = 0 
+                    # worst case is -inf 
+                    max_action_value = -float("inf")
+
+                    # iterate through all agent actions 
                     for action in agent_actions:
-                        new_states = 
 
+                        # iterate through the transition
+                        new_states = transition_dynamics(agent_loc, prey_loc, pred_loc)
+                        future_reward = 0 
+                        for sprime in new_states.keys():
+                            if u0[sprime] == -float("inf"): 
+                                future_reward = -float("inf")
+                                break 
+                            future_reward += new_states[sprime] * u0[sprime]
+                        
+                        if future_reward != -float("inf"):
+                            action_value = -1 + BETA_DISCOUNTFACTOR * future_reward
+                            max_action_value = max(max_action_value, action_value)
+                        else: max_action_value = -float("inf")
+                    u1[state] = max_action_value
 
+    ksweeps += 1
+    if ksweeps == 30 : 
+        print(ksweeps)
+        converged=True 
 
+        with open('u0.pickle', 'wb') as handle:
+            pickle.dump(u0, handle)
+        
+        with open('u1.pickle', 'wb') as handle:
+            pickle.dump(u1, handle)
 
+    sanity_check_value_updates(300, u0.values())
+    sanity_check_value_updates(300, u1.values())
 
-                
+    value_k0 = deepcopy(value_k1)
+    value_k1 = dict()
 
-
-
-print(take(300, u0.values()))
-
-
-# Step 2: Until k sweeps of convergence, update the values
+print(value_k0)
