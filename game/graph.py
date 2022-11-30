@@ -1,18 +1,28 @@
 import random
 
+
 class Graph:
-    def __init__(self, nodes=50):
-        # initializes number of nodes in the graph
-        self.nodes = nodes
+    def __init__(self, nodes=50, nbrs=None):
+        # create a brand new graph
+        if nbrs is None:
+            # initializes number of nodes in the graph
+            self.nodes = nodes
 
-        # initializes the graph neighbors list
-        self.nbrs = {x: [] for x in range(1, nodes+1)}
+            # initializes the graph neighbors list
+            self.nbrs = {x: [] for x in range(1, nodes+1)}
 
-        # connects each of the nodes in a large circle
-        self.connect_circle()
+            # connects each of the nodes in a large circle
+            self.connect_circle()
 
-        # add edges at random to increase connectivity
-        self.increase_connectivity()
+            # add edges at random to increase connectivity
+            self.increase_connectivity()
+        # load graph from given neighbor mappings
+        else:
+            # initializes number of nodes in the graph
+            self.nodes = len(nbrs)
+
+            # initializes the graph neighbors list
+            self.nbrs = nbrs
 
     def add_edge(self, v, w):
         """adds v to w's neighbor list and vice versa"""

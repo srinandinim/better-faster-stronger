@@ -1,8 +1,8 @@
-import utils 
 import random
 import networkx as nx
 import matplotlib.pyplot as plt
 from game.agents.agent1 import Agent1
+import game.utils as utils
 from .graph import Graph
 from .predator import Predator
 from .prey import Prey
@@ -11,7 +11,8 @@ from .prey import Prey
 class Game:
     def __init__(self, nodes=50, timeout=1000):
         # initializes the graph on which agents/prey/predator play
-        self.graph = utils.open_graph_state()
+        nbrs = utils.retrieve_graph()
+        self.graph = Graph(nbrs=nbrs)
 
         # initializes prey location to be random from nodes 1...50
         self.prey = Prey(random.randint(1, self.graph.get_nodes()))

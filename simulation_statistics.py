@@ -7,7 +7,7 @@ def agent1(num_simulations, nodes=50):
     agent_success = []
     timeouts = 0
     for _ in range(num_simulations):
-        game = Game(nodes)
+        game = Game(nodes=nodes)
         game_success = game.run_agent_1()
 
         # agent caught the prey = 1, predator caught the agent/timeout = 0

@@ -1,31 +1,28 @@
-import pickle 
-from graph import Graph 
+import json
+import os
+from .graph import Graph
 
-def save_graph_state(game_graph = Graph(nodes=50)):
-    """
-    for the RL setting, we run the agent on one graph 
-    initialized with different starting states. 
 
-    verified by professor since we need to compute the 
-    optimal values with the bellman equation and then
-    use a function approximation model on that. 
-    """
-    file_reader = open("models/gamegraph.obj", "wb")
-    pickle.dump(game_graph, file_reader)
+def save_graph(graph=Graph(nodes=50), filename="sample.json"):
+    dirname = "graphs/"
+    if not os.path.exists(os.path.dirname(dirname)):
+        os.makedirs(os.path.dirname(dirname))
 
-def open_graph_state():
-    """
-    retrieves and returns the graph from pickled object
-    """
-    file_parser = open("models/gamegraph.obj", "rb")
-    return pickle.load(file_parser)
+    filepath = dirname + filename
+    with open(filepath, "w") as fp:
+        json.dump(graph.nbrs, fp)
 
-# save_graph_state()
 
-# VERIFY THAT THE SAVE FUNCTIONALITY WORKS
-g1 = Graph(50)
-print(g1.nbrs)
-save_graph_state(g1)
-g2 = open_graph_state()
-print(g2.nbrs)
+def retrieve_graph(filename="sample.json"):
+    def keysStrToInt(d):
+        if isinstance(d, dict):
+            return {int(k): v for k, v in d.items()}
+        return d
 
+    dirname = "graphs/"
+    filepath = dirname + filename
+    if os.path.exists(filepath):
+        with open(filepath, "r") as fp:
+            nbrs = json.load(fp, object_hook=keysStrToInt)
+
+    return nbrs
