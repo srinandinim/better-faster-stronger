@@ -1,4 +1,7 @@
+import pickle 
 from .agent import Agent
+
+optimal_value_function = pickle.load(open("game/agents/value_t.pickle", "rb"))
 
 class Agent1RL(Agent):
     def __init__(self, location):
@@ -9,13 +12,11 @@ class Agent1RL(Agent):
         """
         updates location based on assignment specifications given
         """
-        optimal_value_function = dict() 
-
         action_value = dict() 
         action_space = graph.get_node_neighbors(self.location) + [self.location]
         
         for action in action_space: 
-            action_value[action] = optimal_value_function[action]
+            action_value[action] = optimal_value_function[(action, prey.location, predator.location)]
         
         max_value = max(action_value.values())
         

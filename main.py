@@ -64,9 +64,31 @@ def labreport_simulation_statistics_agent1():
     print(
         f"Agent1: Overall Success Rate: {round(sum(success_rates) / len(success_rates),2)}%")
 
+def labreport_simulation_statistics_agent1_rl():
+    """
+    runs 100 simulations 30 times and returns the average 
+    """
+    wins = []
+    losses = []
+    timeouts = []
+    success_rates = []
+
+    for _ in range(30):
+        simulation_wins, simulation_losses, simulation_timeouts, simulation_success = simulation_statistics.agent1rl(100, 50)
+
+        wins.append(simulation_wins)
+        losses.append(simulation_losses)
+        timeouts.append(simulation_timeouts)
+        success_rates.append(simulation_success)
+
+    agent_data = get_overall_simulation_statistics(wins, losses, timeouts, success_rates)
+    save_simulation_statistics("complete", "agent1rl", agent_data)
+
+    print(f"Agent1RL: Overall Success Rate: {round(sum(success_rates) / len(success_rates),2)}%")
 
 if __name__ == "__main__":
-    labreport_simulation_statistics_agent1()
+    #labreport_simulation_statistics_agent1()
+    labreport_simulation_statistics_agent1_rl()
 
-    game = Game(nodes=50)
-    game_success = game.run_agent_1()
+    #game = Game(nodes=50)
+    #game_success = game.run_agent_1()

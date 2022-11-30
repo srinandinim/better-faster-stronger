@@ -2,6 +2,7 @@ import random
 import networkx as nx
 import matplotlib.pyplot as plt
 from game.agents.agent1 import Agent1
+from game.agents.agent1rl import Agent1RL
 import game.utils as utils
 from .graph import Graph
 from .predator import Predator
@@ -157,6 +158,46 @@ class Game:
             status = -2
 
         return status
+
+
+    def run_agent_1_rl(self):
+        self.predator = Predator(self.predator_location)
+        self.agent = Agent1RL(self.agent_starting_location)
+
+        status = 0
+        step_count = 0
+
+        while status == 0 and step_count < self.timeout:
+            status, _, _ = self.step()
+            step_count = step_count + 1
+
+        # agent timed out
+        if status == 0:
+            status = -2
+
+        return status
+
+    def run_agent_1_rl_debug(self):
+        self.predator = Predator(self.predator_location)
+        self.agent = Agent1RL(self.agent_starting_location)
+        self.visualize_graph()
+
+        status = 0
+        step_count = 0
+
+        while status == 0 and step_count < self.timeout:
+            status, _, _ = self.step_debug()
+            step_count = step_count + 1
+            self.visualize_graph()
+
+        self.visualize_graph_video()
+
+        # agent timed out
+        if status == 0:
+            status = -2
+
+        return status
+
 
     def visualize_graph_color_map(self):
         """
