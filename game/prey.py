@@ -38,4 +38,8 @@ class Prey:
 
         # move to to the new location
         self.location = new_location
+<<<<<<< HEAD
         print("Moved Location: " + str(self.location))
+=======
+        print("Moved Location: " + str(self.location))
+>>>>>>> 3407a22e3317f31e8389f4d6d1fece8acf2f1eb9

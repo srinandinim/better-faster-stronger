@@ -88,4 +88,3 @@ class Graph:
                 if w not in self.nbrs[v] and w != v:
                     self.add_edge(v, w)
                     self.edges_added += 1
-        #print(f"The number of edges added is {self.edges_added}")
