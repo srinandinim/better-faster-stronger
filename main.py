@@ -1,7 +1,6 @@
 import json
 import os
 import simulation_statistics as simulation_statistics
-from game.game import Game
 
 
 def get_overall_simulation_statistics(wins, losses, timeouts, success_rates, found_prey=None, found_pred=None):

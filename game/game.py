@@ -1,12 +1,13 @@
 import random
-import networkx as nx
 import matplotlib.pyplot as plt
-from game.agents.agent1 import Agent1
-from game.agents.agent1rl import Agent1RL
+import networkx as nx
 import game.utils as utils
+from .agents.agent1 import Agent1
+from .agents.agent1rl import Agent1RL
 from .graph import Graph
 from .predator import Predator
 from .prey import Prey
+
 
 class Game:
     def __init__(self, nodes=50, timeout=1000):
