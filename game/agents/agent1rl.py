@@ -32,8 +32,6 @@ class Agent1RL(Agent):
         # self.location = agent_action 
         return None, None 
 
-
     def move_debug(self, graph, prey, predator):
-
         return None, None
 
