@@ -1,7 +1,7 @@
 import pickle 
 from .agent import Agent
 
-optimal_value_function = pickle.load(open("game/agents/value_t.pickle", "rb"))
+optimal_value_function = pickle.load(open("game/agents/u0.pickle", "rb"))
 
 class Agent1RL(Agent):
     def __init__(self, location):
@@ -17,6 +17,8 @@ class Agent1RL(Agent):
         
         for action in action_space: 
             action_value[action] = optimal_value_function[(action, prey.location, predator.location)]
+        
+        #print(action_value)
         
         max_value = max(action_value.values())
         

@@ -25,7 +25,7 @@ GAME_GRAPH = Graph(nbrs=retrieve_json())
 Step 1: Initialize Starting Distribution of State Values
 
 Terminal States: 
-     agent_loc == pred_loc --> V(s) = -infty 
+     agent_loc == pred_loc --> V(s) = -9999 
      agent_loc == prey_loc --> V(s) = 0 
 Non-Terminal States: 
     Heuristic Starting Distribution V(s) = bfs(agent_loc, prey_loc) * -1
@@ -85,7 +85,7 @@ Step 2: Until convergence or a steady state, update non-terminal state values wi
 - IF s is a terminal state: u_t+1(s) = u_t(s) 
 - IF s is a non terminal state: u_t+1(s) = max of all actions in action space (-1 + beta * sum over all states(p(s'|s) * previous u_t(s')))
 """
-BETA_DISCOUNTFACTOR, EPSILON, ksweeps, converged = 0.90, 0.25, 0, False 
+BETA_DISCOUNTFACTOR, EPSILON, ksweeps, converged = 0.90, 0.10, 0, False 
 u0, u1 = init_state_values(), dict() 
 
 # store the optimal pred locations cached
@@ -169,7 +169,7 @@ while converged == False:
                     agent_actions = GAME_GRAPH.nbrs[agent_loc] + [agent_loc]
 
                     # worst case is -inf 
-                    max_action_value = -float("inf")
+                    max_action_value = -9999
 
                     # iterate through all agent actions 
                     for action in agent_actions:
@@ -178,27 +178,31 @@ while converged == False:
                         new_states = transition_dynamics(agent_loc, prey_loc, pred_loc)
                         future_reward = 0 
                         for sprime in new_states.keys():
-                            if u0[sprime] == -float("inf"): 
-                                future_reward = -float("inf")
-                                break 
+                            if u0[sprime] == -float("inf"):
+                                future_reward == -float("inf")
+                                break
                             future_reward += new_states[sprime] * u0[sprime]
-                        
-                        if future_reward != -float("inf"):
-                            action_value = -1 + BETA_DISCOUNTFACTOR * future_reward
-                            max_action_value = max(max_action_value, action_value)
-                        else: max_action_value = max(max_action_value, -float("inf"))
+    
+                        action_value = -1 + 1 * future_reward
+                        max_action_value = max(max_action_value, action_value)
+
                     u1[state] = max_action_value
 
     ksweeps += 1
-    if ksweeps == 15 : 
-        print(ksweeps)
-        converged=True 
 
-        with open('u0.pickle', 'wb') as handle:
-            pickle.dump(u0, handle)
-        
-        with open('u1.pickle', 'wb') as handle:
-            pickle.dump(u1, handle)
+    converged = True 
+    for state in u0.keys():
+        if abs(u1[state] - u0[state]) > EPSILON:
+            converged = False 
+            print("THE ERROR IS")
+            print(abs(u1[state] - u0[state]))
+            break  
+
+    with open('u0.pickle', 'wb') as handle:
+        pickle.dump(u0, handle)
+    
+    with open('u1.pickle', 'wb') as handle:
+        pickle.dump(u1, handle)
 
     print(sanity_check_value_updates(300, u0.values()))
     print(sanity_check_value_updates(300, u1.values()))
@@ -207,3 +211,4 @@ while converged == False:
     u1 = dict()
 
 print(u0)
+print(ksweeps)
