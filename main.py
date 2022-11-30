@@ -87,8 +87,8 @@ def labreport_simulation_statistics_agent1_rl():
     print(f"Agent1RL: Overall Success Rate: {round(sum(success_rates) / len(success_rates),2)}%")
 
 if __name__ == "__main__":
-    #labreport_simulation_statistics_agent1()
-    labreport_simulation_statistics_agent1_rl()
+    labreport_simulation_statistics_agent1()
+    #labreport_simulation_statistics_agent1_rl()
 
     #game = Game(nodes=50)
     #game_success = game.run_agent_1()

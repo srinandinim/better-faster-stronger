@@ -5,21 +5,19 @@ from copy import deepcopy
 """
 Step 0: Retrieves the graph on which to run value iteration. 
 This functionality is copied from utils.py due to import dependencies/errors. 
+Note: do not remove GAME_GRAPH.json unless you can figure out how to retrieve it from graphs directory. 
 """
-def retrieve_graph(filename="sample.json"):
+def retrieve_json(filename="GAME_GRAPH.json"):
     def keysStrToInt(d):
         if isinstance(d, dict):
             return {int(k): v for k, v in d.items()}
         return d
-    dirname = "graphs/"
-    filepath = dirname + filename
-    if os.path.exists(filepath):
-        with open(filepath, "r") as fp:
+    if os.path.exists(filename):
+        with open(filename, "r") as fp:
             nbrs = json.load(fp, object_hook=keysStrToInt)
     return nbrs
 
-GAME_GRAPH = Graph(nbrs=retrieve_graph())
-print(GAME_GRAPH.nbrs)
+GAME_GRAPH = Graph(nbrs=retrieve_json())
 
 """
 Step 1: Initialize Starting Distribution of State Values
@@ -27,7 +25,7 @@ Step 1: Initialize Starting Distribution of State Values
 Terminal States: 
      agent_loc == pred_loc --> V(s) = -infty 
      agent_loc == prey_loc --> V(s) = 0 
-     
+
 Non-Terminal States: 
     Heuristic Starting Distribution V(s) = bfs(agent_loc, prey_loc) * -1
     This initial seed heuristic enables value iteration to converge quickly
@@ -77,8 +75,15 @@ def init_state_values():
                     u0[state] = -float("inf")
                 else: 
                     u0[state] =  u0_heuristic[(agent_loc, prey_loc)] * -1 
+    return u0 
+
+"""
+Step 2: Until convergence or a steady state, update non-terminal state values with Bellman Equations using Value Iteration. 
+
+"""
 
 
+u0 = init_state_values() 
 
 
 # Step 2: Until k sweeps of convergence, update the values
