@@ -123,7 +123,7 @@ def initialize_state_space():
 
                 value = 0 
                 if agent_idx == prey_idx: value = 0  
-                elif agent_idx == pred_idx: value = -99999
+                elif agent_idx == pred_idx: value = -9999
                 else: value = -1
 
                 # add the state to the dictionary
