@@ -121,7 +121,7 @@ def optimal_pred_moves(agent_loc, pred_loc):
     potential_moves = [] 
     for key, value in distances.items():
         if value == shortest_distance:
-            potential_moves.apend(key)
+            potential_moves.append(key)
     return potential_moves 
 
 def transition_dynamics(agent_loc, prey_loc, pred_loc):
@@ -149,9 +149,11 @@ def transition_dynamics(agent_loc, prey_loc, pred_loc):
 
 # RUNS THE VALUE ITERATION ALGORITHM UNTIL CONVERGENCE
 while converged == False: 
+    print(f"{ksweeps}th iteration")
 
     # iterate through all possible states
     for agent_loc in range(1,51):
+        print(f"{agent_loc} set completed.")
         for prey_loc in range(1,51):
             for pred_loc in range(1,51):
 
@@ -184,11 +186,11 @@ while converged == False:
                         if future_reward != -float("inf"):
                             action_value = -1 + BETA_DISCOUNTFACTOR * future_reward
                             max_action_value = max(max_action_value, action_value)
-                        else: max_action_value = -float("inf")
+                        else: max_action_value = max(max_action_value, -float("inf"))
                     u1[state] = max_action_value
 
     ksweeps += 1
-    if ksweeps == 30 : 
+    if ksweeps == 15 : 
         print(ksweeps)
         converged=True 
 
@@ -198,10 +200,10 @@ while converged == False:
         with open('u1.pickle', 'wb') as handle:
             pickle.dump(u1, handle)
 
-    sanity_check_value_updates(300, u0.values())
-    sanity_check_value_updates(300, u1.values())
+    print(sanity_check_value_updates(300, u0.values()))
+    print(sanity_check_value_updates(300, u1.values()))
 
-    value_k0 = deepcopy(value_k1)
-    value_k1 = dict()
+    u0 = deepcopy(u1)
+    u1 = dict()
 
-print(value_k0)
+print(u0)
