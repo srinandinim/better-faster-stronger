@@ -11,7 +11,7 @@ def save_graph(graph=Graph(nodes=50), filename="sample.json"):
     with open(filepath, "w") as fp:
         json.dump(graph.nbrs, fp)
 
-def retrieve_graph(filename="sample.json"):
+def retrieve_graph(filename="GAME_GRAPH.json"):
     def keysStrToInt(d):
         if isinstance(d, dict):
             return {int(k): v for k, v in d.items()}
