@@ -17,7 +17,6 @@ def retrieve_graph(filename="sample.json"):
             return {int(k): v for k, v in d.items()}
         return d
 
-    nbrs = None 
     dirname = "graphs/"
     filepath = dirname + filename
     if os.path.exists(filepath):
