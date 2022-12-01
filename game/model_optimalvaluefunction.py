@@ -180,17 +180,17 @@ def init_state_values(graph, shortest_distances):
     return u0
 
 
-def transition_dynamics(graph, agent_loc, prey_loc, pred_loc, shortest_distances):
+def get_future_reward(graph, agent_loc, prey_loc, pred_loc, shortest_distances, u0):
     """
-    Function to return 'sister states' of the current state and their probabilities of occuring, 
-    each one with a variation in the prey's and the predator's location. 
+    Function to return the future reward of the current state by considering all of the 'sister states',
+    or variations in the prey's and predator's location
     @param:graph - the graph this function operates on
     @param:agent_loc - the location of the agent
     @param:prey_loc - the location of the prey
     @param:pred_loc - the location of the predator
     @param:shortest_distances - a dictionary containing the shortest distances between every pair of nodes
-    @return a dictionary of sister states, where each key is a tuple structured as (agent location, prey location,
-    predator location) and where each value is the probability of the state happening. 
+    @param:u0 - a vector containing the utilities of each state from the previous sweep
+    @return the future reward from being in this state
     """
 
     new_states = dict()
@@ -199,37 +199,19 @@ def transition_dynamics(graph, agent_loc, prey_loc, pred_loc, shortest_distances
     pred_optimal_next = set(optimal_pred_moves(
         graph, agent_loc, pred_loc, shortest_distances))
 
+    future_reward = 0
     for prey_next_state in prey_next:
         for pred_next_state in pred_next:
+            
             next_state = (agent_loc, prey_next_state, pred_next_state)
-            if pred_next_state in pred_optimal_next:
-                new_states[next_state] = (
-                    1 / len(prey_next)) * (0.4 / len(pred_next) + 0.6 / len(pred_optimal_next))
-            else:
-                new_states[next_state] = (
-                    1 / len(prey_next)) * (0.4 / len(pred_next))
+            
+            if u0[next_state] == -float("inf"):
+                return -float("inf")
 
-    return new_states
+            gamma = 0.6 / len(pred_optimal_next) if pred_next_state in pred_optimal_next else 0
+            future_reward += u0[next_state] * ( (1 / len(prey_next)) * (0.4 / len(pred_next) + gamma) )
 
-
-def calculate_next_iteration(new_states, u0, u1_cur_state):
-    '''
-    Function to calculate the utility of taking a specific action
-    @param:new_states - the sister states of the current state this function is evaluating in
-    @param:u0 - a dictionary containing the old utility values
-    @param:u1_cur_state - a number representing the utility of the curent state, before taking this action
-    @return - the maximum of the utility of the current state and the utility of taking a specific action
-    '''
-
-    future_reward = 0
-    for sprime in new_states.keys():
-        if u0[sprime] == -float("inf"):
-            future_reward == -float("inf")
-            break
-        future_reward += new_states[sprime] * u0[sprime]
-
-    action_value = -1 + future_reward
-    return max(u1_cur_state, action_value)
+    return future_reward
 
 
 # MAIN BELLMAN COMPUTATION
@@ -274,10 +256,8 @@ def calculate_optimal_values(graph, shortest_distances, convergence_factor):
                     for action in agent_actions:
 
                         # iterate through the transition
-                        new_states = transition_dynamics(
-                            graph, action, prey_loc, pred_loc, shortest_distances)
-                        u1[state] = calculate_next_iteration(
-                            new_states, u0, u1[state])
+                        u1[state] = max(
+                            u1[state], -1 + get_future_reward(graph, action, prey_loc, pred_loc, shortest_distances, u0))
 
                     if converged and abs(u1[state] - u0[state]) > convergence_factor:
                         converged = False
@@ -449,3 +429,22 @@ Step 2: Until convergence or a steady state, update non-terminal state values wi
 #                 return dist[nbr]
 #             queue.append(nbr)
 # return -1
+
+# def calculate_next_iteration(new_states, u0, u1_cur_state):
+#     '''
+#     Function to calculate the utility of taking a specific action
+#     @param:new_states - the sister states of the current state this function is evaluating in
+#     @param:u0 - a dictionary containing the old utility values
+#     @param:u1_cur_state - a number representing the utility of the curent state, before taking this action
+#     @return - the maximum of the utility of the current state and the utility of taking a specific action
+#     '''
+
+#     future_reward = 0
+#     for sprime in new_states.keys():
+#         if u0[sprime] == -float("inf"):
+#             future_reward == -float("inf")
+#             break
+#         future_reward += new_states[sprime] * u0[sprime]
+
+#     action_value = -1 + future_reward
+#     return max(u1_cur_state, action_value)
