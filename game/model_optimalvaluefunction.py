@@ -208,6 +208,7 @@ def transition_dynamics(graph, agent_loc, prey_loc, pred_loc, shortest_distances
             else:
                 new_states[next_state] = (
                     1 / len(prey_next)) * (0.4 / len(pred_next))
+
     return new_states
 
 
