@@ -6,7 +6,7 @@ class Agent1RL(Agent):
     def __init__(self, location):
         # initialize agent location
         super().__init__(location)
-        self.utility = pickle.load(open("game/agents/u0.pickle", "rb"))
+        self.utility = pickle.load(open("game/pickles/u0.pickle", "rb"))
 
     def move(self, graph, prey, predator):
         """
