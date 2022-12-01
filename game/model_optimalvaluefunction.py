@@ -274,7 +274,7 @@ def calculate_optimal_values(graph, shortest_distances, convergence_factor):
                     for action in agent_actions:
 
                         # iterate through the transition
-                        new_states = transition_dynamics(graph, agent_loc, prey_loc, pred_loc, shortest_distances)
+                        new_states = transition_dynamics(graph, action, prey_loc, pred_loc, shortest_distances)
                         u1[state] = calculate_next_iteration(new_states, u0, u1[state])
                     
                     if converged and abs(u1[state] - u0[state]) > convergence_factor:
