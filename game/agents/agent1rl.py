@@ -1,4 +1,4 @@
-gimport pickle 
+import pickle 
 from .agent import Agent
 import random
 

@@ -21,7 +21,7 @@ def retrieve_json(filename="GAME_GRAPH.json"):
             return {int(k): v for k, v in d.items()}
         return d
 
-    dirname = "graphs/"
+    dirname = "../graphs/"
     filepath = dirname + filename
     if os.path.exists(filepath):
         with open(filepath, "r") as fp:
@@ -268,13 +268,13 @@ def calculate_optimal_values(graph, shortest_distances, convergence_factor):
                     agent_actions = graph.nbrs[agent_loc] + [agent_loc]
 
                     # worst case is -inf 
-                    u1[state] = -9999
+                    u1[state] = u0[state]
 
                     # iterate through all agent actions 
                     for action in agent_actions:
 
                         # iterate through the transition
-                        new_states = transition_dynamics(graph, agent_loc, prey_loc, pred_loc, shortest_distances)
+                        new_states = transition_dynamics(graph, action, prey_loc, pred_loc, shortest_distances)
                         u1[state] = calculate_next_iteration(new_states, u0, u1[state])
                     
                     if converged and abs(u1[state] - u0[state]) > convergence_factor:
@@ -293,7 +293,7 @@ def calculate_optimal_values(graph, shortest_distances, convergence_factor):
 
 GAME_GRAPH = Graph(nbrs=retrieve_json()) 
 shortest_distances = heuristic_dists_agent_to_pred(GAME_GRAPH)
-ksweeps, u0 = calculate_optimal_values(GAME_GRAPH, shortest_distances, 0.1)
+ksweeps, u0 = calculate_optimal_values(GAME_GRAPH, shortest_distances, 0.001)
 
 print(u0)
 print(ksweeps)
