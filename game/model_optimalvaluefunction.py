@@ -21,8 +21,10 @@ def retrieve_json(filename="GAME_GRAPH.json"):
             return {int(k): v for k, v in d.items()}
         return d
 
-    if os.path.exists(filename):
-        with open(filename, "r") as fp:
+    dirname = "graphs/"
+    filepath = dirname + filename
+    if os.path.exists(filepath):
+        with open(filepath, "r") as fp:
             nbrs = json.load(fp, object_hook=keysStrToInt)
     return nbrs
 
