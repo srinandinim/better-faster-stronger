@@ -152,10 +152,11 @@ def init_state_values(graph, shortest_distances):
         for prey_loc in range(1, graph_size):
             for pred_loc in range(1, graph_size):
                 state = (agent_loc, prey_loc, pred_loc)
-                if agent_loc == prey_loc:
-                    u0[state] = 0
-                elif agent_loc == pred_loc:
+                
+                if agent_loc == pred_loc or shortest_distances[(agent_loc, pred_loc)] <= 2:
                     u0[state] = -float("inf")
+                elif agent_loc == prey_loc:
+                    u0[state] = 0
                 else:
                     u0[state] = -1
     return u0
@@ -217,13 +218,13 @@ def calculate_optimal_values(graph, shortest_distances, convergence_factor):
                     state = (agent_loc, prey_loc, pred_loc)
 
                     # retrieve old values for terminal states
-                    if agent_loc == prey_loc or agent_loc == pred_loc:
+                    if agent_loc == prey_loc or agent_loc == pred_loc or shortest_distances[(agent_loc, pred_loc)] <= 1:
                         u1[state] = u0[state]
                         continue
 
                     else: 
                         # compute new values for non-terminal states
-                        agent_actions = graph.nbrs[agent_loc] + [agent_loc]
+                        agent_actions = graph.nbrs[agent_loc]
 
                         # worst case is -inf
                         u1[state] = -float("inf")
@@ -249,7 +250,8 @@ def calculate_optimal_values(graph, shortest_distances, convergence_factor):
 
 GAME_GRAPH = Graph(nbrs=retrieve_json())
 shortest_distances = heuristic_dists_agent_to_pred(GAME_GRAPH)
-ksweeps, u0 = calculate_optimal_values(GAME_GRAPH, shortest_distances, 0.0001)
+print(shortest_distances)
+ksweeps, u0 = calculate_optimal_values(GAME_GRAPH, shortest_distances, 0.001)
 
 print(u0)
 print(ksweeps)
