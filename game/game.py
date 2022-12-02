@@ -25,7 +25,8 @@ class Game:
         # agent initializes randomly to any spot that is not occupied by predator/prey
         occupied_s = min(self.prey.location, self.predator_location)
         occupied_l = max(self.prey.location, self.predator_location)
-        agent_location_options = list(range(1, occupied_s)) + list(range(occupied_s+1, occupied_l)) + list(range(occupied_l+1, self.graph.get_nodes() + 1))
+        agent_location_options = list(range(1, occupied_s)) + list(range(
+            occupied_s+1, occupied_l)) + list(range(occupied_l+1, self.graph.get_nodes() + 1))
         self.agent_starting_location = random.choice(agent_location_options)
 
         # initializes an agent which allows us to call the relevant agent.
@@ -41,9 +42,6 @@ class Game:
 
         # initializes the number of steps the agent took
         self.steps = 0
-
-        # checks that the graphs are initialized differently
-        #self.visualize_graph()
 
     def step_return_values(self, status, found_prey, found_pred):
         """
@@ -160,7 +158,6 @@ class Game:
 
         return status
 
-
     def run_agent_1_rl(self):
         self.predator = Predator(self.predator_location)
         self.agent = Agent1RL(self.agent_starting_location)
@@ -199,7 +196,6 @@ class Game:
 
         return status
 
-
     def visualize_graph_color_map(self):
         """
         grey: unoccupied node
@@ -233,13 +229,19 @@ class Game:
 
         plt.show()
 
-    def visualize_graph_video(self, fn='videos/environment.mp4'):
+    def visualize_graph_video(self, fn='sample.mp4'):
         """visualizes nodes and their edges with labels in non-circular layout as a video"""
         import os
         plt.rcParams['figure.figsize'] = [16, 10]
 
-        if os.path.exists(fn):
-            os.remove(fn)
+        dirname = "videos/"
+
+        if not os.path.exists(os.path.dirname(dirname)):
+            os.makedirs(os.path.dirname(dirname))
+
+        filepath = dirname + fn
+        if os.path.exists(filepath):
+            os.remove(filepath)
 
         G = nx.from_dict_of_lists(self.graph.get_neighbors())
         my_pos = nx.spring_layout(G, seed=100)
@@ -267,9 +269,9 @@ class Game:
             plt.savefig('figure' + str(i) + '.png')  # save this figure to disk
 
         # now combine all of the figures into a video
-        os.system('ffmpeg -r 3 -i figure%d.png -vcodec mpeg4 -y '+fn)
+        os.system('ffmpeg -r 3 -i figure%d.png -vcodec mpeg4 -y '+filepath)
         print("A video showing the agent's traversal is ready to view. Opening...")
-        os.system('open '+fn)
+        os.system('open '+filepath)
 
         # clean up the environment a bit
         for i in range(len(self.agent_trajectories)):

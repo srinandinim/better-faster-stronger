@@ -13,27 +13,32 @@ class Agent1RL(Agent):
         """
         updates location based on assignment specifications given
         """
-        action_space = graph.get_node_neighbors(self.location) + [self.location]
-        best_utility = max([self.utility[(action, prey.location, predator.location)] for action in action_space])
-        best_actions = [action for action in action_space if self.utility[(action, prey.location, predator.location)] == best_utility]
+        action_space = graph.get_node_neighbors(
+            self.location) + [self.location]
+        best_utility = max(
+            [self.utility[(action, prey.location, predator.location)] for action in action_space])
+        best_actions = [action for action in action_space if self.utility[(
+            action, prey.location, predator.location)] == best_utility]
         self.location = random.choice(best_actions)
 
-        return None, None 
+        return None, None
 
     def move_debug(self, graph, prey, predator):
         """
         updates location based on assignment specifications given
         """
-        action_space = graph.get_node_neighbors(self.location) + [self.location]
+        action_space = graph.get_node_neighbors(
+            self.location) + [self.location]
         for action in action_space:
-            print(action, self.utility[(action, prey.location, predator.location)] )
+            print(action, self.utility[(
+                action, prey.location, predator.location)])
 
-        best_utility = max([self.utility[(action, prey.location, predator.location)] for action in action_space])
-        best_actions = [action for action in action_space if self.utility[(action, prey.location, predator.location)] == best_utility]
+        best_utility = max(
+            [self.utility[(action, prey.location, predator.location)] for action in action_space])
+        best_actions = [action for action in action_space if self.utility[(
+            action, prey.location, predator.location)] == best_utility]
         self.location = random.choice(best_actions)
 
         print(f"The action was to do {self.location}")
 
-
         return None, None
-

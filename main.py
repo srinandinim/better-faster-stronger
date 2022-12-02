@@ -1,6 +1,7 @@
 import json
 import os
 import simulation_statistics as simulation_statistics
+from game.game import Game
 
 
 def get_overall_simulation_statistics(wins, losses, timeouts, success_rates, found_prey=None, found_pred=None):
@@ -87,4 +88,8 @@ def labreport_simulation_statistics_agent1_rl():
 
 if __name__ == "__main__":
     # labreport_simulation_statistics_agent1()
-    labreport_simulation_statistics_agent1_rl()
+    # labreport_simulation_statistics_agent1_rl()
+
+
+    game = Game(nodes=50)
+    game_success = game.run_agent_1_rl_debug()
