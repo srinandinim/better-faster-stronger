@@ -24,7 +24,7 @@ def retrieve_json(filename="GAME_GRAPH.json"):
     if os.path.exists(filepath):
         with open(filepath, "r") as fp:
             nbrs = json.load(fp, object_hook=keysStrToInt)
-    return nbrs
+        return nbrs
 
 def clean_up(u0, u1, sanity_check):
     '''
