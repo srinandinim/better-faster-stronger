@@ -43,3 +43,6 @@ def agent1rl(num_simulations, nodes=50):
     success = wins/(len(agent_success))
     print(f"Agent1RL: Wins: {wins}\tLosses: {losses}\tTimeouts: {timeouts}\tSuccess Rate: {round(success*100,2)}%")
     return wins, losses, timeouts, round(success*100, 2)
+
+game = Game(nodes=50)
+game_success = game.run_agent_1_rl_debug()
