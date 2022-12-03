@@ -58,7 +58,7 @@ def create_training_dataset_csv(utilities):
     """
     dataset = create_supervised_training_data(utilities=utilities)
     csv = np.asarray(dataset)
-    np.savetxt("models/supervised_dataset_vcomplete.csv", csv, delimiter=",", fmt='%.6f')
+    np.savetxt("models/data/supervised_dataset_vcomplete.csv", csv, delimiter=",", fmt='%.6f')
 
 if __name__== "__main__":
     OPTIMAL_COMPLETE_UTILITIES = pickle.load(open("game/pickles/u0.pickle", "rb"))
