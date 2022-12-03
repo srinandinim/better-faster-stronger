@@ -5,10 +5,7 @@ from itertools import islice
 from graph import Graph
 from copy import deepcopy
 
-
 # HELPER, MISCELLANEOUS FUNCTIONS
-
-
 def retrieve_json(filename="GAME_GRAPH.json"):
     ''' 
     Function to retrieve a json from a given file, intended to use on
@@ -27,8 +24,7 @@ def retrieve_json(filename="GAME_GRAPH.json"):
     if os.path.exists(filepath):
         with open(filepath, "r") as fp:
             nbrs = json.load(fp, object_hook=keysStrToInt)
-    return nbrs
-
+        return nbrs
 
 def clean_up(u0, u1, sanity_check):
     '''
@@ -38,12 +34,10 @@ def clean_up(u0, u1, sanity_check):
     @param u1 - a dictionary, keyed by a tuple and valued by a number
     @return void
     '''
-
     pickle_vector(u0, 'u0.pickle')
     pickle_vector(u1, 'u1.pickle')
     print(sanity_check_value_updates(sanity_check, u0.values()))
     print(sanity_check_value_updates(sanity_check, u1.values()))
-
 
 def pickle_vector(vector, filename):
     '''
@@ -59,7 +53,6 @@ def pickle_vector(vector, filename):
     with open(filepath, 'wb') as handle:
         pickle.dump(vector, handle)
 
-
 def sanity_check_value_updates(n, iterable):
     '''
     Function to return the first n items of an iterable as a list
@@ -69,10 +62,7 @@ def sanity_check_value_updates(n, iterable):
 
     return list(islice(iterable, n))
 
-
 # HELPER, GRAPH FUNCTIONS
-
-
 def calculate_shortest_distances(graph, source, goals):
     '''
     Function to calculate all of the shortest distances from the source to a list of goals
@@ -112,7 +102,6 @@ def calculate_shortest_distances(graph, source, goals):
         visited.add(cur)
     return shortest_distances
 
-
 def heuristic_dists_agent_to_pred(graph):
     '''
     Function to calculate all of the shortest distances between every pair of nodes in the graph
@@ -126,9 +115,7 @@ def heuristic_dists_agent_to_pred(graph):
     for i in range(1, graph.get_nodes() + 1):
         agent_to_pred_dists.update(calculate_shortest_distances(
             graph, i, list(graph.get_neighbors().keys())))
-
     return agent_to_pred_dists
-
 
 def optimal_pred_moves(graph, agent_loc, pred_loc, shortest_distances):
     """
@@ -141,16 +128,11 @@ def optimal_pred_moves(graph, agent_loc, pred_loc, shortest_distances):
     the graph
     @return a list containing the predator's neighbors with the shortest distances to the agent
     """
-
-    pred_nbrs_to_agent = {nbr: shortest_distances[(
-        nbr, agent_loc)] for nbr in graph.get_node_neighbors(pred_loc)}
+    pred_nbrs_to_agent = {nbr: shortest_distances[(nbr, agent_loc)] for nbr in graph.get_node_neighbors(pred_loc)}
     smallest = min(pred_nbrs_to_agent.values())
     return [nbr for nbr in pred_nbrs_to_agent.keys() if pred_nbrs_to_agent[nbr] == smallest]
 
-
 # HELPER, BELLMAN EQUATION COMPUTATION
-
-
 def init_state_values(graph, shortest_distances):
     '''
     Function to initizalize the values of the U0 vector, used in computing
@@ -163,7 +145,6 @@ def init_state_values(graph, shortest_distances):
     or nodes
     @return the U0 vector initialized in the function 
     '''
-
     graph_size = graph.get_nodes() + 1
     u0 = dict()
 
@@ -171,14 +152,14 @@ def init_state_values(graph, shortest_distances):
         for prey_loc in range(1, graph_size):
             for pred_loc in range(1, graph_size):
                 state = (agent_loc, prey_loc, pred_loc)
-                if agent_loc == prey_loc:
-                    u0[state] = 0
-                elif agent_loc == pred_loc:
+                
+                if agent_loc == pred_loc or shortest_distances[(agent_loc, pred_loc)] <= 2:
                     u0[state] = -float("inf")
+                elif agent_loc == prey_loc:
+                    u0[state] = 0
                 else:
-                    u0[state] = shortest_distances[(agent_loc, prey_loc)] * -1
+                    u0[state] = -1
     return u0
-
 
 def get_future_reward(graph, agent_loc, prey_loc, pred_loc, shortest_distances, u0):
     """
@@ -196,15 +177,12 @@ def get_future_reward(graph, agent_loc, prey_loc, pred_loc, shortest_distances, 
     new_states = dict()
     prey_next = graph.nbrs[prey_loc] + [prey_loc]
     pred_next = graph.nbrs[pred_loc]
-    pred_optimal_next = set(optimal_pred_moves(
-        graph, agent_loc, pred_loc, shortest_distances))
+    pred_optimal_next = set(optimal_pred_moves(graph, agent_loc, pred_loc, shortest_distances))
 
     future_reward = 0
     for prey_next_state in prey_next:
         for pred_next_state in pred_next:
-            
             next_state = (agent_loc, prey_next_state, pred_next_state)
-            
             if u0[next_state] == -float("inf"):
                 return -float("inf")
 
@@ -213,10 +191,7 @@ def get_future_reward(graph, agent_loc, prey_loc, pred_loc, shortest_distances, 
 
     return future_reward
 
-
 # MAIN BELLMAN COMPUTATION
-
-
 def calculate_optimal_values(graph, shortest_distances, convergence_factor):
     '''
     Function to use value iteration to compute the Bellman Equation
@@ -234,6 +209,7 @@ def calculate_optimal_values(graph, shortest_distances, convergence_factor):
 
         print(f"{ksweeps}th iteration")
         converged = True
+
         for agent_loc in range(1, graph_size):
             for prey_loc in range(1, graph_size):
                 for pred_loc in range(1, graph_size):
@@ -242,12 +218,13 @@ def calculate_optimal_values(graph, shortest_distances, convergence_factor):
                     state = (agent_loc, prey_loc, pred_loc)
 
                     # retrieve old values for terminal states
-                    if agent_loc == prey_loc or agent_loc == pred_loc:
+                    if agent_loc == prey_loc or agent_loc == pred_loc or shortest_distances[(agent_loc, pred_loc)] <= 1:
                         u1[state] = u0[state]
                         continue
 
-                    # compute new values for non-terminal states
-                    agent_actions = graph.nbrs[agent_loc] + [agent_loc]
+                    else: 
+                        # compute new values for non-terminal states
+                        agent_actions = graph.nbrs[agent_loc]
 
                     # worst case is -inf
                     u1[state] = -float("inf")
@@ -256,8 +233,7 @@ def calculate_optimal_values(graph, shortest_distances, convergence_factor):
                     for action in agent_actions:
 
                         # iterate through the transition
-                        u1[state] = max(
-                            u1[state], -1 + get_future_reward(graph, action, prey_loc, pred_loc, shortest_distances, u0))
+                        u1[state] = max(u1[state], -1 + get_future_reward(graph, action, prey_loc, pred_loc, shortest_distances, u0))
 
                     if converged and abs(u1[state] - u0[state]) > convergence_factor:
                         converged = False
@@ -274,11 +250,11 @@ def calculate_optimal_values(graph, shortest_distances, convergence_factor):
 
 GAME_GRAPH = Graph(nbrs=retrieve_json())
 shortest_distances = heuristic_dists_agent_to_pred(GAME_GRAPH)
+print(shortest_distances)
 ksweeps, u0 = calculate_optimal_values(GAME_GRAPH, shortest_distances, 0.001)
 
 print(u0)
 print(ksweeps)
-
 
 """
 Step 0: Retrieves the graph on which to run value iteration. 
