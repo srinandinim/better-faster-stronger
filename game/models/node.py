@@ -1,13 +1,20 @@
 import math
 
+"""
+Built with some reference to Andrej Karpathy's Micrograd YouTube Video.
+Built with some reference to PyTorch Neural Network documentation. 
+"""
+
 class Node:
     def __init__(self, data, _children=(), _op=''):
         self.data = data 
         self._prev = set(_children)
         self._backward = lambda : None 
         self._op = _op
+        self.grad = 0 
     
     def __add__(self, other):
+        if not isinstance(other, Node): other=Node(other)
         out = Node(data=self.data+other.data, _children=(self,other), _op='+')
         def _backward():
             self.grad += 1.0 * out.grad
@@ -16,13 +23,23 @@ class Node:
         return out 
     
     def __mul__(self, other):
+        if not isinstance(other, Node): other=Node(other)
         out = Node(data=self.data*other.data, _children=(self, other), _op='*')
-
         def _backward():
             self.grad += other.data * out.data 
             other.grad += self.data * out.grad 
         out._backward = _backward
         return out 
+
+    def __pow__(self, other):
+        assert isinstance(other, (int, float))
+        out = Node(self.data**other, (self,), _op="pow")
+
+        def _backward():
+            self.grad += (other * self.data**(other-1)) * out.grad
+        out._backward = _backward
+
+        return out
     
     def sigmoid(self):
         x = self.data
@@ -52,6 +69,12 @@ class Node:
         # backpropogation 
         for node in reversed(ts):
             node._backward() 
+
+    def __neg__(self):
+        return self * -1 
+    
+    def __sub__(self, other):
+        return self + (-other)
 
     def __repr__(self):
         return f"Node(data={self.data})"
