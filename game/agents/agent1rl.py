@@ -8,11 +8,6 @@ class Agent1RL(Agent):
         # initialize agent location
         super().__init__(location)
         self.utility = pickle.load(open("game/pickles/u0.pickle", "rb"))
-        count = 0
-        for i in self.utility.values():
-            if i == -float("inf"):
-                count = count + 1
-        # print("Number of - infinity: " + str(count))
 
     def current_reward(self, new_location, predator):
         return -1 if abs(new_location - predator.location) % 50 > 1 else -float("inf")
