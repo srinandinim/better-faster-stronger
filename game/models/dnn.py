@@ -6,11 +6,13 @@ class Neuron():
         self.w = [Node(random.uniform(-1,1)) for _ in range(n_inputs)]
         self.b = Node(random.uniform(-1,1))
 
-    def __call__(self, x):
+    def __call__(self, x, activated=True):
         unactivated = self.b
         for wi, xi in zip(self.w, x):
             unactivated += wi * xi
-        return unactivated.tanh()
+        if activated == False: 
+            return unactivated.__add__(0)
+        else: return unactivated.tanh()
         
     def parameters(self):
         return self.w + [self.b]
@@ -19,8 +21,8 @@ class Layer():
     def __init__(self, n_inputs, n_output):
         self.neurons = [Neuron(n_inputs) for _ in range(n_output)]
     
-    def __call__(self, x):
-        outputs = [n(x) for n in self.neurons]
+    def __call__(self, x, activated=True):
+        outputs = [n(x, activated) for n in self.neurons]
         return outputs[0] if len(outputs)==1 else outputs
     
     def parameters(self):
@@ -37,7 +39,10 @@ class DNN():
     
     def __call__(self, x):
         for i, layer in enumerate(self.layers): 
-            x = layer(x)
+            if i == (len(self.layers)-1):
+                # Makes last layer linear for regression 
+                x = layer(x, activated=False)
+            else: x = layer(x, activated=True)
         return x 
     
     def parameters(self):
