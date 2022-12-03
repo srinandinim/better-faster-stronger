@@ -13,14 +13,14 @@ neural_net = DNN(3, [4, 4,1])
 ypreds = [neural_net(x) for x in xs]
 print(ypreds)
 
-for i in range(10):
+for i in range(40):
     ypreds = [neural_net(x) for x in xs]
     #print(ypreds)
     loss = compute_total_loss(compute_mse_loss_list(ypreds, ys))
     print(loss.data)
     loss.backward() 
     for p in neural_net.parameters():
-        p.data += -0.1 * p.grad
+        p.data += -0.001 * p.grad
 
 ypreds = [neural_net(x) for x in xs]
 print(ypreds)
