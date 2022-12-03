@@ -89,10 +89,9 @@ class Node:
     def __repr__(self):
         return f"Node(data={self.data}, grad={self.grad}, label={self.label})"
     
-
 if __name__ == "__main__":
 
-    
+    """
     x1 = Node(2.0, label='x1')
     x2 = Node(0.0, label='x2')
     w1 = Node(-3.0, label='w1')
@@ -104,6 +103,7 @@ if __name__ == "__main__":
     n = x1w1x2w2+b; n.label = 'n'
     o = n.tanh(); o.label = 'o'
     o.backward()
+    """
 
     print(o)
     print(n)
