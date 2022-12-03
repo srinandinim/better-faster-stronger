@@ -10,7 +10,7 @@ class Neuron():
         unactivated = self.b
         for wi, xi in zip(self.w, x):
             unactivated += wi * xi
-        return unactivated.sigmoid()
+        return unactivated.tanh()
         
     def parameters(self):
         return self.w + [self.b]
