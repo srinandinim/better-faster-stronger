@@ -2,8 +2,6 @@ import pickle
 import random 
 import numpy as np
 
-# updates
-
 # represents s as input x to our model 
 def vectorize_coordinate(coordinate, length=50):
     """
