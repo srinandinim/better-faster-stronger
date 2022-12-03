@@ -178,7 +178,7 @@ def get_future_reward(graph, agent_loc, prey_loc, pred_loc, shortest_distances, 
     prey_next = graph.nbrs[prey_loc] + [prey_loc]
     pred_next = graph.nbrs[pred_loc]
     pred_optimal_next = set(optimal_pred_moves(graph, agent_loc, pred_loc, shortest_distances))
-
+ 
     future_reward = 0
     for prey_next_state in prey_next:
         for pred_next_state in pred_next:
@@ -190,6 +190,19 @@ def get_future_reward(graph, agent_loc, prey_loc, pred_loc, shortest_distances, 
             future_reward += u0[next_state] * ( (1 / len(prey_next)) * (0.4 / len(pred_next) + gamma) )
 
     return future_reward
+
+def get_current_reward(graph, agent_loc, prey_loc, pred_loc, shortest_distances):
+    """
+    Function to return the current reward of ending in the given state
+    @param:graph - the graph this function operates on
+    @param:agent_loc - the location of the agent
+    @param:prey_loc - the location of the prey
+    @param:pred_loc - the location of the predator
+    @param:shortest_distances - a dictionary containing the shortest distances between every pair of nodes
+    @param:u0 - a vector containing the utilities of each state from the previous sweep
+    @return the current reward for ending in the current state
+    """
+    return -1 if shortest_distances[(agent_loc, pred_loc)] > 1 else -float("inf")
 
 # MAIN BELLMAN COMPUTATION
 def calculate_optimal_values(graph, shortest_distances, convergence_factor):
@@ -233,7 +246,7 @@ def calculate_optimal_values(graph, shortest_distances, convergence_factor):
                     for action in agent_actions:
 
                         # iterate through the transition
-                        u1[state] = max(u1[state], -1 + get_future_reward(graph, action, prey_loc, pred_loc, shortest_distances, u0))
+                        u1[state] = max(u1[state], get_current_reward(graph, action, prey_loc, pred_loc, shortest_distances) + get_future_reward(graph, action, prey_loc, pred_loc, shortest_distances, u0))
 
                     if converged and abs(u1[state] - u0[state]) > convergence_factor:
                         converged = False

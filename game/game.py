@@ -100,6 +100,9 @@ class Game:
         * -1 if agent looses 
         """
         print(f"THE NEIGHBORS ARE{self.graph.nbrs}")
+        print(f"prey is at {self.prey.location}")
+        print(f"predator is at {self.predator.location}")
+        print(f"agent is at {self.agent.location}")
         found_prey, found_pred = self.agent.move_debug(
             self.graph, self.prey, self.predator)
         self.agent_trajectories.append(self.agent.location)
