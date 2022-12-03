@@ -250,7 +250,7 @@ def calculate_optimal_values(graph, shortest_distances, convergence_factor):
                     agent_actions = graph.nbrs[agent_loc] + [agent_loc]
 
                     # worst case is -inf
-                    u1[state] = -9999
+                    u1[state] = -float("inf")
 
                     # iterate through all agent actions
                     for action in agent_actions:
