@@ -88,7 +88,7 @@ class Network:
             result.append(output)
         return result
 
-    def train(self, x_train, y_train, epochs, learning_rate):
+    def train(self, x_train, y_train, x_val, y_val, epochs, learning_rate):
         leninput = len(x_train)
 
         for i in range(epochs):
@@ -109,6 +109,21 @@ class Network:
             # calculate average error on all samples
             err /= leninput
             print('epoch %d/%d   error=%f' % (i+1, epochs, err))
+            self.validation_data(x_val, y_val)
+
+    def validation_data(self, x_val, y_val):
+        leninput = len(x_val)
+        err = 0 
+        for i in range(leninput):
+            err = 0 
+            output = x_val[i]
+            for layer in self.layers:
+                output = layer.forward(output)
+
+            # compute loss (for display purpose only)
+            err += self.loss(y_val[i], output)
+        print(f'the validation error is {err}')
+
 
 
 
