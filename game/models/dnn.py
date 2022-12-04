@@ -1,7 +1,15 @@
 import random 
 from node import Node 
 
-class Neuron():
+class Module:
+    def zero_grad(self):
+        for p in self.parameters():
+            p.grad = 0
+
+    def parameters(self):
+        return []
+
+class Neuron(Module):
     def __init__(self, n_inputs):
         self.w = [Node(random.uniform(-1,1)) for _ in range(n_inputs)]
         self.b = Node(random.uniform(-1,1))
@@ -11,13 +19,21 @@ class Neuron():
         for wi, xi in zip(self.w, x):
             unactivated += wi * xi
         if activated == False: 
-            return unactivated.__add__(0)
-        else: return unactivated.tanh()
+            return unactivated
+        else: 
+
+            # this prevents overflow errors
+            if unactivated.data > 2:
+                unactivated.data = 2 
+            elif unactivated.data < -2:
+                unactivated.data = -2
+            
+            return unactivated.tanh()
         
     def parameters(self):
         return self.w + [self.b]
 
-class Layer():
+class Layer(Module):
     def __init__(self, n_inputs, n_output):
         self.neurons = [Neuron(n_inputs) for _ in range(n_output)]
     
@@ -32,7 +48,7 @@ class Layer():
             p.extend(ps)
         return p
 
-class DNN():
+class DNN(Module):
     def __init__(self, n_inputs, n_outputs):
         size = [n_inputs] + n_outputs
         self.layers = [Layer(size[i], size[i+1]) for i in range(len(n_outputs))]
@@ -40,7 +56,6 @@ class DNN():
     def __call__(self, x):
         for i, layer in enumerate(self.layers): 
             if i == (len(self.layers)-1):
-                # Makes last layer linear for regression 
                 x = layer(x, activated=False)
             else: x = layer(x, activated=True)
         return x 

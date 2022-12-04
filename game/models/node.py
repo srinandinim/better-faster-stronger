@@ -9,7 +9,11 @@ class Node:
     def __init__(self, data, _children=(), _op='', label=''):
         self.data = data 
         self._prev = set(_children)
-        self._backward = lambda : None 
+
+        def _backward():
+            return None 
+        self._backward = lambda : _backward() 
+        
         self._op = _op
         self.grad = 0 
         self.label = label
@@ -103,7 +107,6 @@ if __name__ == "__main__":
     n = x1w1x2w2+b; n.label = 'n'
     o = n.tanh(); o.label = 'o'
     o.backward()
-    """
 
     print(o)
     print(n)
@@ -115,3 +118,6 @@ if __name__ == "__main__":
     print(w1)
     print(x2)
     print(x1)
+    """
+
+
