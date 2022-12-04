@@ -1,4 +1,23 @@
+import time 
 import numpy as np
+
+def tanh(x):
+    return np.tanh(x)
+
+def tanh_prime(x):
+    return 1-np.tanh(x)**2
+
+def identity(x):
+    return x
+
+def identity_prime(x):
+    return 1
+
+def mse(y_true, y_pred):
+    return np.mean(np.power(y_true-y_pred, 2))
+
+def mse_prime(y_true, y_pred):
+    return 2*(y_pred-y_true)/y_true.size
 
 class Layer:
     def __init__(self):
@@ -32,7 +51,6 @@ class DenseLinear(Layer):
         self.b -= lr * output_error
         return input_error
 
-# inherit from base class Layer
 class NonLinearity(Layer):
     def __init__(self, activation, activation_derivative):
         self.activation = activation
@@ -45,27 +63,6 @@ class NonLinearity(Layer):
 
     def backward(self, output_error, lr = None):
         return self.activation_derivative(self.input) * output_error
-
-# activation function and its derivative
-def tanh(x):
-    return np.tanh(x)
-
-def tanh_prime(x):
-    return 1-np.tanh(x)**2
-
-# activation function and its derivative
-def identity(x):
-    return x
-
-def identity_prime(x):
-    return 1
-
-# loss function and its derivative
-def mse(y_true, y_pred):
-    return np.mean(np.power(y_true-y_pred, 2))
-
-def mse_prime(y_true, y_pred):
-    return 2*(y_pred-y_true)/y_true.size
 
 class Network:
     def __init__(self):
@@ -113,21 +110,44 @@ class Network:
             print('epoch %d/%d   error=%f' % (i+1, epochs, err))
 
 # training data
-x_train = np.array([[[0,0]], [[0,1]], [[1,0]], [[1,1]]])
-y_train = np.array([[[-10]], [[10]], [[10]], [[-10]]])
+x_train = np.array(
+    [
+        [ [0,0] ], 
+        [ [0,1] ], 
+        [ [1,0] ], 
+        [ [1,1] ]
+    ]
+)
+
+y_train = np.array(
+    [
+        [[-9]], [[9]], [[8]], [[-27]]
+    ]
+)
+
+print(x_train)
+print(x_train.shape)
+print(y_train)
+print(y_train.shape)
+
 
 # network
-net = Network()
-net.add(DenseLinear(2, 10))
-net.add(NonLinearity(tanh, tanh_prime))
-net.add(DenseLinear(10, 1))
+dnn_v_complete = Network()
+dnn_v_complete.add(DenseLinear(2, 1000))
+dnn_v_complete.add(NonLinearity(tanh, tanh_prime))
+dnn_v_complete.add(DenseLinear(1000, 1000))
+dnn_v_complete.add(NonLinearity(tanh, tanh_prime))
+dnn_v_complete.add(DenseLinear(1000, 1))
+
 
 # train
-net.choose_error(mse, mse_prime)
-net.train(x_train, y_train, epochs=1000, learning_rate=0.001)
+dnn_v_complete.choose_error(mse, mse_prime)
+start = time.time()
+dnn_v_complete.train(x_train, y_train, epochs=1000, learning_rate=0.001)
+print(f"training took {time.time()-start} seconds")
 
 # test
-out = net.predict(x_train)
+out = dnn_v_complete.predict(x_train)
 print(out)
 
 
