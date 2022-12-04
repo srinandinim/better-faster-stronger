@@ -8,6 +8,14 @@ def get_training_data(data=np.loadtxt("data/supervised_dataset_1hotvector_vcompl
     Y[Y == -np.inf] = -50
     return Y, X
 
+def get_evaluation_data(data=np.loadtxt("data/supervised_dataset_1hotvector_vcomplete.csv", delimiter=",")):
+    """
+    reads through dataset and returns the Y, and X values of the data 
+    """
+    Y, X = data[500:1000,0], data[500:1000,1:]
+    Y[Y == -np.inf] = -50
+    return Y, X
+
 if __name__ == "__main__":
 
     
