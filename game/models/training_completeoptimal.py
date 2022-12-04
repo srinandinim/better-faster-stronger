@@ -6,28 +6,27 @@ from fastneuralnet import *
 
 # load X, Y targets into memory
 Y,X = get_training_data()
-print(X.shape, Y.shape)
-#print(Y[0], X[0])
+
 X = np.array(X, dtype=np.float32)
 X = X.reshape((X.shape[0], 1, 150))
-print(X)
 
 Y = np.array(Y, dtype=np.float32)
 Y = Y.reshape((Y.shape[0], 1))
-print(Y)
-#print(Y[0], X[0])
-print(X.shape, Y.shape)
 
+print(X[0]) 
+print(Y[0])
 
 print("Y, X are loaded into memory")
 
 # build out the neural network
 dnn_v_complete = Network()
-dnn_v_complete.add(DenseLinear(150, 1000))
+dnn_v_complete.add(DenseLinear(150, 256))
 dnn_v_complete.add(NonLinearity(tanh, tanh_prime))
-dnn_v_complete.add(DenseLinear(1000, 1000))
+dnn_v_complete.add(DenseLinear(256, 256))
 dnn_v_complete.add(NonLinearity(tanh, tanh_prime))
-dnn_v_complete.add(DenseLinear(1000, 1))
+dnn_v_complete.add(DenseLinear(256, 256))
+dnn_v_complete.add(NonLinearity(tanh, tanh_prime))
+dnn_v_complete.add(DenseLinear(256, 1))
 
 # choose the loss function
 dnn_v_complete.choose_error(mse, mse_prime)
@@ -47,3 +46,4 @@ with open("dnn_v_complete.pkl", "wb") as file:
 with open("dnn_v_complete.pkl", "rb") as file:
     pickle.load(file)
     print("model successfully deserialized")
+
