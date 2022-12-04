@@ -1,11 +1,11 @@
 import numpy as np 
 
-def get_training_data(data=np.loadtxt("data/supervised_dataset_vcomplete.csv", delimiter=",")):
+def get_training_data(data=np.loadtxt("data/supervised_dataset_normalstates_vcomplete.csv", delimiter=",")):
     """
     reads through dataset and returns the Y, and X values of the data 
     """
     Y, X = data[:,0], data[:,1:]
-    return Y, X 
+    return Y, X
 
 if __name__ == "__main__":
     #Y, X = get_training_data()
