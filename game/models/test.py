@@ -1,22 +1,9 @@
-import pickle 
-from node import Node  
-from dnn import * 
+import numpy as np
 
-## SERIALIZE THE TRAINED NEURAL NET WITH PICKLE 
-def serialize(obj, file_name, verbose=True):
-    if verbose:
-        print("Serializing to:", file_name)
-    with open(file_name, "wb") as f:
-        pickle.dump(obj, f)
+A = np.array([1.25488586, -2.74511414, -3.74511414, 1.25488586])
 
+# Use the reshape() method to convert A to a 2-dimensional array with 1 column and 4 rows
+B = A.reshape(4, 1)
 
-## DESERIALIZE THE TRAINED NEURAL NET WITH PICKLE 
-def deserialize(file_name, verbose=True):
-    if verbose:
-        print("Deserializing from:", file_name)
-    with open(file_name, "rb") as f:
-        return pickle.load(f)
-        
-#serialize(neural_net, "trained-dnn-model.pkl")
-neural_net = deserialize("trained-dnn-model.pkl")
-print(neural_net([2.0, 3.0, -1.0]))
+# Print the resulting array
+print(B)
