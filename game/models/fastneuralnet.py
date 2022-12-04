@@ -44,6 +44,7 @@ class DenseLinear(Layer):
 
     # computes dE/dW, dE/dB for a given output_error=dE/dY. Returns input_error=dE/dX.
     def backward(self, output_error, lr):
+        #print(output_error, self.w.T)
         input_error = np.dot(output_error, self.w.T)
         weights_error = np.dot(self.input.T, output_error)
 
@@ -109,8 +110,10 @@ class Network:
             err /= leninput
             print('epoch %d/%d   error=%f' % (i+1, epochs, err))
 
-"""
 
+
+
+"""
 
 # training data
 x_train = np.array(
@@ -153,4 +156,8 @@ print(f"training took {time.time()-start} seconds")
 out = dnn_v_complete.predict(x_train)
 print(out)
 
+
 """
+
+
+
