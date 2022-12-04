@@ -109,6 +109,9 @@ class Network:
             err /= leninput
             print('epoch %d/%d   error=%f' % (i+1, epochs, err))
 
+"""
+
+
 # training data
 x_train = np.array(
     [
@@ -150,5 +153,4 @@ print(f"training took {time.time()-start} seconds")
 out = dnn_v_complete.predict(x_train)
 print(out)
 
-
-
+"""
