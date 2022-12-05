@@ -1,7 +1,11 @@
 import json
 import os
+
+import game.models.optimalvaluefunction as optimalvaluefunction
+import game.utils as utils
 import simulation_statistics as simulation_statistics
 from game.game import Game
+from game.graph import Graph
 
 
 def get_overall_simulation_statistics(wins, losses, timeouts, success_rates, found_prey=None, found_pred=None):
@@ -123,10 +127,24 @@ def labreport_simulation_statistics_agent3_rl():
         f"Agent3RL: Overall Success Rate: {round(sum(success_rates) / len(success_rates),2)}%")
 
 
+def calculate_utility_values(filename="GAME_GRAPH.json"):
+    game_graph = Graph(nbrs=utils.retrieve_graph(filename))
+    shortest_distances = optimalvaluefunction.agent_to_pred_distances(game_graph)
+    print(shortest_distances)
+    ksweeps, u0 = optimalvaluefunction.calculate_optimal_values(game_graph, shortest_distances, 0.001)
+
+    print(u0)
+    print(ksweeps)
+
+
 if __name__ == "__main__":
+    calculate_utility_values()
+    
     # labreport_simulation_statistics_agent1()
     # labreport_simulation_statistics_agent1_rl()
-    labreport_simulation_statistics_agent3_rl()
+    # labreport_simulation_statistics_agent3_rl()
 
     # game = Game(nodes=50)
     # game_success = game.run_agent_1_rl_debug()
+
+    

@@ -3,32 +3,8 @@ import os
 import pickle
 from copy import deepcopy
 from itertools import islice
-from graph import Graph
 
 # HELPER, MISCELLANEOUS FUNCTIONS
-
-
-def retrieve_json(filename="GAME_GRAPH.json"):
-    ''' 
-    Function to retrieve a json from a given file, intended to use on
-    stored graphs. 
-    @param:filename - name of the json file being loaded.  
-    @return the dictionary loaded, intended to be a graph adjacency list
-    '''
-
-    def keysStrToInt(d):
-        if isinstance(d, dict):
-            return {int(k): v for k, v in d.items()}
-        return d
-
-    dirname = "../graphs/"
-    filepath = dirname + filename
-    if os.path.exists(filepath):
-        with open(filepath, "r") as fp:
-            nbrs = json.load(fp, object_hook=keysStrToInt)
-        return nbrs
-
-
 def clean_up(u0, u1, sanity_check):
     '''
     Function to pickle the u0 and u1 vectors as well as do a 
@@ -68,8 +44,6 @@ def sanity_check_value_updates(n, iterable):
     return list(islice(iterable, n))
 
 # HELPER, GRAPH FUNCTIONS
-
-
 def calculate_shortest_distances(graph, source, goals):
     '''
     Function to calculate all of the shortest distances from the source to a list of goals
@@ -142,9 +116,8 @@ def optimal_pred_moves(graph, agent_loc, pred_loc, shortest_distances):
     smallest = min(pred_nbrs_to_agent.values())
     return [nbr for nbr in pred_nbrs_to_agent.keys() if pred_nbrs_to_agent[nbr] == smallest]
 
+
 # HELPER, BELLMAN EQUATION COMPUTATION
-
-
 def init_state_values(graph):
     '''
     Function to initizalize the values of the U0 vector, used in computing
@@ -218,9 +191,8 @@ def get_current_reward(graph, agent_loc, prey_loc, pred_loc, shortest_distances)
     """
     return -1 if shortest_distances[(agent_loc, pred_loc)] > 1 else -float("inf")
 
+
 # MAIN BELLMAN COMPUTATION
-
-
 def calculate_optimal_values(graph, shortest_distances, convergence_factor):
     '''
     Function to use value iteration to compute the Bellman Equation
@@ -273,12 +245,3 @@ def calculate_optimal_values(graph, shortest_distances, convergence_factor):
 
     clean_up(u0, u1, 300)
     return ksweeps, u0
-
-
-GAME_GRAPH = Graph(nbrs=retrieve_json())
-shortest_distances = agent_to_pred_distances(GAME_GRAPH)
-print(shortest_distances)
-ksweeps, u0 = calculate_optimal_values(GAME_GRAPH, shortest_distances, 0.001)
-
-print(u0)
-print(ksweeps)
