@@ -1,4 +1,3 @@
-import json
 import os
 import pickle
 from copy import deepcopy
@@ -13,8 +12,8 @@ def clean_up(u0, u1, sanity_check):
     @param u1 - a dictionary, keyed by a tuple and valued by a number
     @return void
     '''
-    pickle_vector(u0, 'u0.pickle')
-    pickle_vector(u1, 'u1.pickle')
+    pickle_vector(u0, 'u0_small.pickle')
+    pickle_vector(u1, 'u1_small.pickle')
     print(sanity_check_value_updates(sanity_check, u0.values()))
     print(sanity_check_value_updates(sanity_check, u1.values()))
 
