@@ -99,7 +99,11 @@ class Game:
         * 0 if game in progress
         * -1 if agent looses 
         """
-        print(f"THE NEIGHBORS ARE{self.graph.nbrs}")
+        # print(f"THE NEIGHBORS ARE{self.graph.nbrs}")
+        print("\nNEW RUN")
+        print(f"prey is at {self.prey.location}")
+        print(f"predator is at {self.predator.location}")
+        print(f"agent is at {self.agent.location}")
         found_prey, found_pred = self.agent.move_debug(
             self.graph, self.prey, self.predator)
         self.agent_trajectories.append(self.agent.location)
@@ -146,9 +150,9 @@ class Game:
         step_count = 0
 
         while status == 0 and step_count < self.timeout:
+            self.visualize_graph()
             status, _, _ = self.step_debug()
             step_count = step_count + 1
-            self.visualize_graph()
 
         self.visualize_graph_video()
 
