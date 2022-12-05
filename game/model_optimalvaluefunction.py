@@ -204,6 +204,7 @@ def get_future_reward(graph, agent_loc, prey_loc, pred_loc, shortest_distances, 
 
     return future_reward
 
+
 def get_current_reward(graph, agent_loc, prey_loc, pred_loc, shortest_distances):
     """
     Function to return the current reward of ending in the given state
@@ -258,7 +259,6 @@ def calculate_optimal_values(graph, shortest_distances, convergence_factor):
 
                     # iterate through all agent actions
                     for action in agent_actions:
-
                         # iterate through the transition
                         u1[state] = max(u1[state], get_current_reward(graph, action, prey_loc, pred_loc, shortest_distances) +
                                         get_future_reward(graph, action, prey_loc, pred_loc, shortest_distances, u0))
