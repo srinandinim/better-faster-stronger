@@ -3,33 +3,8 @@ import os
 import pickle
 from copy import deepcopy
 from itertools import islice
-from graph import Graph
 
 # HELPER, MISCELLANEOUS FUNCTIONS
-def retrieve_json(filename="GAME_GRAPH.json"):
-    ''' 
-    Function to retrieve a json from a given file, intended to use on
-    stored graphs. 
-    @param:filename - name of the json file being loaded.  
-    @return the dictionary loaded, intended to be a graph adjacency list
-    '''
-
-    def keysStrToInt(d):
-        if isinstance(d, dict):
-            return {int(k): v for k, v in d.items()}
-        return d
-
-    dirname = "/graphs/"
-    filepath = dirname + filename
-    parent_directory = os.path.split(os.path.dirname(__file__))[0]
-    filepath = parent_directory + dirname + filename
-    if os.path.exists(filepath):
-        print("in here")
-        with open(filepath, "r") as fp:
-            nbrs = json.load(fp, object_hook=keysStrToInt)
-        return nbrs
-
-
 def clean_up(u0, u1, sanity_check):
     '''
     Function to pickle the u0 and u1 vectors as well as do a 
@@ -270,12 +245,3 @@ def calculate_optimal_values(graph, shortest_distances, convergence_factor):
 
     clean_up(u0, u1, 300)
     return ksweeps, u0
-
-
-GAME_GRAPH = Graph(nbrs=retrieve_json())
-shortest_distances = agent_to_pred_distances(GAME_GRAPH)
-print(shortest_distances)
-ksweeps, u0 = calculate_optimal_values(GAME_GRAPH, shortest_distances, 0.001)
-
-print(u0)
-print(ksweeps)
