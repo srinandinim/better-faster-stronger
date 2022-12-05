@@ -139,7 +139,7 @@ def calculate_utility_values(filename="GAME_GRAPH.json"):
 
 if __name__ == "__main__":
     # utils.save_graph(graph=Graph(nodes=6), filename="SMALL_GRAPH.json")
-    calculate_utility_values(filename="SMALL_GRAPH.json")
+    # calculate_utility_values(filename="SMALL_GRAPH.json")
     
     # labreport_simulation_statistics_agent1()
     # labreport_simulation_statistics_agent1_rl()
