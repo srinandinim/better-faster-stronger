@@ -23,7 +23,8 @@ class Agent1RL(Agent):
         """
         action_space = graph.get_node_neighbors(
             self.location)
-        best_utility = max([self.current_reward(action, predator) + self.utility[(action, prey.location, predator.location)] for action in action_space])
+        best_utility = max([self.current_reward(action, predator) + self.utility[(
+            action, prey.location, predator.location)] for action in action_space])
         best_actions = [action for action in action_space if self.current_reward(action, predator) + self.utility[(
             action, prey.location, predator.location)] == best_utility]
         self.location = random.choice(best_actions)
@@ -40,7 +41,8 @@ class Agent1RL(Agent):
             print(action, self.current_reward(action, predator) + self.utility[(
                 action, prey.location, predator.location)])
 
-        best_utility = max([self.current_reward(action, predator) + self.utility[(action, prey.location, predator.location)] for action in action_space])
+        best_utility = max([self.current_reward(action, predator) + self.utility[(
+            action, prey.location, predator.location)] for action in action_space])
         best_actions = [action for action in action_space if self.current_reward(action, predator) + self.utility[(
             action, prey.location, predator.location)] == best_utility]
         self.location = random.choice(best_actions)

@@ -1,5 +1,6 @@
 import random
 
+
 class Graph:
     def __init__(self, nodes=50, nbrs=None):
         # create a brand new graph

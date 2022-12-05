@@ -153,9 +153,8 @@ class Game:
             self.visualize_graph()
             status, _, _ = self.step_debug()
             step_count = step_count + 1
-            
 
-        # self.visualize_graph_video()
+        self.visualize_graph_video()
 
         # agent timed out
         if status == 0:
@@ -192,8 +191,8 @@ class Game:
             status, _, _ = self.step_debug()
             step_count = step_count + 1
             self.visualize_graph()
-            
-        # self.visualize_graph_video()
+
+        self.visualize_graph_video()
 
         # agent timed out
         if status == 0:
