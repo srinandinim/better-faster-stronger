@@ -1,5 +1,6 @@
 import pickle
 import numpy as np
+import os
 
 # FUNCTIONS TO RETREIVE TRAINING AND TEST DATA
 
@@ -33,25 +34,6 @@ def vectorize_state(state):
     """
     x, y, z = state
     return vectorize_coordinate(x) + vectorize_coordinate(y) + vectorize_coordinate(z)
-
-
-def get_training_data(data=np.loadtxt("trainingdata/OPTIMAL_U*_DATASET.csv", delimiter=","), start_idx=0, end_idx=125000):
-    """
-    retrieves the start:end datapoints for the targets Y and input features X
-    """
-    # loads the CSV file from numpy into memory
-    Y, X = data[start_idx:end_idx, 0], data[start_idx:end_idx, 1:]
-    print(Y.shape, X.shape)
-
-    # make all negative infinity values predict to -50
-    Y[Y == -np.inf] = -50
-
-    # reshape the data so that we can input the work onto neural net
-    X, Y = np.array(X, dtype=np.float32), np.array(Y, dtype=np.float32)
-    X, Y = X.reshape((X.shape[0], 1, X.shape[1])), Y.reshape((Y.shape[0], 1))
-
-    # returns the
-    return Y, X
 
 # FUNCTIONS AND DERIVATIVES FOR ACTIVATION/LOSS
 
@@ -167,8 +149,13 @@ def save_model(model, error, filename=f"trainedmodels/vcomplete_model"):
         print("model successfully serialized")
 
 
-def load_model(filename="trainedmodels/vcomplete_model.pkl"):
-    with open(filename, "rb") as file:
+def load_model(filename="OPTIMAL_VCOMPLETE_MODEL.pkl"):
+    dirname = "/trainedmodels/"
+    filepath = os.path.dirname(__file__) + dirname + filename
+    # parent_directory = os.path.split(os.path.dirname(__file__))[0]
+    # print(parent_directory)
+    # filepath = parent_directory + dirname + filename
+    with open(filepath, "rb") as file:
         model = pickle.load(file)
         print("model successfully deserialized")
     return model

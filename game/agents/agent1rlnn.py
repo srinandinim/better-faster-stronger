@@ -2,6 +2,7 @@ import pickle
 from game.models.optimalvaluefunction import (agent_to_pred_distances,
                                               get_future_reward)
 from .agent import Agent
+import game.neuralnetworks.nn as nn
 
 
 class Agent1RLNN(Agent):
@@ -10,6 +11,7 @@ class Agent1RLNN(Agent):
         super().__init__(location)
         self.utility = pickle.load(open("game/pickles/u0.pickle", "rb"))
         self.shortest_distances = agent_to_pred_distances(graph)
+        self.vcomplete_model = nn.load_model(filename="OPTIMAL_VCOMPLETE_MODEL.pkl")
 
     def move(self, graph, prey, predator):
         """

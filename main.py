@@ -98,6 +98,7 @@ def labreport_simulation_statistics_agent1_rl():
     print(
         f"Agent1RL: Overall Success Rate: {round(sum(success_rates) / len(success_rates),2)}%")
 
+
 def labreport_simulation_statistics_agent1_rl_nn():
     """
     runs 100 simulations 30 times and returns the average 
@@ -123,6 +124,7 @@ def labreport_simulation_statistics_agent1_rl_nn():
     print(
         f"Agent1RL: Overall Success Rate: {round(sum(success_rates) / len(success_rates),2)}%")
 
+
 def labreport_simulation_statistics_agent3_rl():
     """
     runs 100 simulations 30 times and returns the average 
@@ -132,9 +134,9 @@ def labreport_simulation_statistics_agent3_rl():
     timeouts = []
     success_rates = []
 
-    for _ in range(30):
+    for _ in range(1):
         simulation_wins, simulation_losses, simulation_timeouts, simulation_success = simulation_statistics.agent3rl(
-            100, 50)
+            1, 50)
 
         wins.append(simulation_wins)
         losses.append(simulation_losses)
@@ -151,9 +153,11 @@ def labreport_simulation_statistics_agent3_rl():
 
 def calculate_utility_values(filename="GAME_GRAPH.json"):
     game_graph = Graph(nbrs=utils.retrieve_graph(filename))
-    shortest_distances = optimalvaluefunction.agent_to_pred_distances(game_graph)
+    shortest_distances = optimalvaluefunction.agent_to_pred_distances(
+        game_graph)
     print(shortest_distances)
-    ksweeps, u0 = optimalvaluefunction.calculate_optimal_values(game_graph, shortest_distances, 0.001)
+    ksweeps, u0 = optimalvaluefunction.calculate_optimal_values(
+        game_graph, shortest_distances, 0.001)
 
     print(u0)
     print(ksweeps)
@@ -161,11 +165,9 @@ def calculate_utility_values(filename="GAME_GRAPH.json"):
 
 if __name__ == "__main__":
     # calculate_utility_values()
-    
-    labreport_simulation_statistics_agent1()
-    labreport_simulation_statistics_agent1_rl()
-    # labreport_simulation_statistics_agent1_rl_nn()
+
+    # labreport_simulation_statistics_agent1()
+    # labreport_simulation_statistics_agent1_rl()
+    labreport_simulation_statistics_agent1_rl_nn()
 
     # labreport_simulation_statistics_agent3_rl()
-
-    

@@ -201,10 +201,10 @@ class Game:
             status = -2
 
         return status
-    
+
     def run_agent_1_rl_nn(self):
         self.predator = Predator(self.predator_location)
-        self.agent = Agent1RLNN(self.agent_starting_location)
+        self.agent = Agent1RLNN(self.graph, self.agent_starting_location)
 
         status = 0
         step_count = 0
@@ -221,7 +221,7 @@ class Game:
 
     def run_agent_1_rl_nn_debug(self):
         self.predator = Predator(self.predator_location)
-        self.agent = Agent1RLNN(self.agent_starting_location)
+        self.agent = Agent1RLNN(self.graph, self.agent_starting_location)
         self.visualize_graph()
 
         status = 0
