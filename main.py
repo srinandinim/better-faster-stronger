@@ -165,7 +165,7 @@ if __name__ == "__main__":
     #calculate_utility_values()
     labreport_simulation_statistics_agent1()
     labreport_simulation_statistics_agent1_rl()
-    labreport_simulation_statistics_agent1_rl_nn()
+    #labreport_simulation_statistics_agent1_rl_nn()
     # labreport_simulation_statistics_agent3_rl()
 
     # game = Game(nodes=50)
