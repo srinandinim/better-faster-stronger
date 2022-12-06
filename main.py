@@ -142,10 +142,10 @@ if __name__ == "__main__":
     # calculate_utility_values(filename="SMALL_GRAPH.json")
     
     # labreport_simulation_statistics_agent1()
-    # labreport_simulation_statistics_agent1_rl()
+    labreport_simulation_statistics_agent1_rl()
     # labreport_simulation_statistics_agent3_rl()
 
-    # game = Game(nodes=50)
+    # game = Game()
     # game_success = game.run_agent_1_rl_debug()
 
     

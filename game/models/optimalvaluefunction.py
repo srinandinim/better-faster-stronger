@@ -12,8 +12,8 @@ def clean_up(u0, u1, sanity_check):
     @param u1 - a dictionary, keyed by a tuple and valued by a number
     @return void
     '''
-    pickle_vector(u0, 'u0.pickle')
-    pickle_vector(u1, 'u1.pickle')
+    pickle_vector(u0, 'u0_small.pickle')
+    pickle_vector(u1, 'u1_small.pickle')
     print(sanity_check_value_updates(sanity_check, u0.values()))
     print(sanity_check_value_updates(sanity_check, u1.values()))
 
@@ -177,20 +177,6 @@ def get_future_reward(graph, agent_loc, prey_loc, pred_loc, shortest_distances, 
     return future_reward
 
 
-def get_current_reward(graph, agent_loc, prey_loc, pred_loc, shortest_distances):
-    """
-    Function to return the current reward of ending in the given state
-    @param:graph - the graph this function operates on
-    @param:agent_loc - the location of the agent
-    @param:prey_loc - the location of the prey
-    @param:pred_loc - the location of the predator
-    @param:shortest_distances - a dictionary containing the shortest distances between every pair of nodes
-    @param:u0 - a vector containing the utilities of each state from the previous sweep
-    @return the current reward for ending in the current state
-    """
-    return -1 if shortest_distances[(agent_loc, pred_loc)] > 1 else -float("inf")
-
-
 # MAIN BELLMAN COMPUTATION
 def calculate_optimal_values(graph, shortest_distances, convergence_factor):
     '''
@@ -204,6 +190,10 @@ def calculate_optimal_values(graph, shortest_distances, convergence_factor):
 
     graph_size, ksweeps, converged = graph.get_nodes() + 1, 0, False
     u0, u1 = init_state_values(graph), dict()
+
+    # print("INITIAL")
+    # print(u0)
+    # print("\n")
 
     while converged == False:
 
@@ -223,15 +213,24 @@ def calculate_optimal_values(graph, shortest_distances, convergence_factor):
                         continue
 
                     # compute new values for non-terminal states
-                    agent_actions = graph.nbrs[agent_loc]
+                    agent_actions = graph.nbrs[agent_loc] + [agent_loc]
 
                     # worst case is -inf
                     u1[state] = -float("inf")
 
+                    if state == (3, 2, 1) or state == (5, 2, 1):
+                        print(u0[state])
+
                     # iterate through all agent actions
                     for action in agent_actions:
+
+                        # retrieve old values for terminal states
+                        if action == prey_loc or action == pred_loc:
+                            u1[state] = max(u1[state], -1 + u0[(action, prey_loc, pred_loc)])
+                            continue
+
                         # iterate through the transition
-                        u1[state] = max(u1[state], get_current_reward(graph, action, prey_loc, pred_loc, shortest_distances) +
+                        u1[state] = max(u1[state], -1 +
                                         get_future_reward(graph, action, prey_loc, pred_loc, shortest_distances, u0))
 
                     if converged and abs(u1[state] - u0[state]) > convergence_factor:
@@ -239,6 +238,9 @@ def calculate_optimal_values(graph, shortest_distances, convergence_factor):
                         print(f'ERROR: {abs(u1[state] - u0[state])}')
 
         ksweeps += 1
+        # print("ITERATION")
+        # print(u1)
+        # print("\n")
         u0 = deepcopy(u1)
         u1 = dict()
 

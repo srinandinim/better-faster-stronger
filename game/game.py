@@ -13,7 +13,7 @@ from .prey import Prey
 class Game:
     def __init__(self, nodes=50, timeout=1000):
         # initializes the graph on which agents/prey/predator play
-        nbrs = utils.retrieve_graph()
+        nbrs = utils.retrieve_graph(filename="SMALL_GRAPH.json")
         self.graph = Graph(nbrs=nbrs)
 
         # initializes prey location to be random from nodes 1...50
@@ -193,7 +193,7 @@ class Game:
             step_count = step_count + 1
             self.visualize_graph()
 
-        self.visualize_graph_video()
+        # self.visualize_graph_video()
 
         # agent timed out
         if status == 0:
