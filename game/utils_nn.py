@@ -87,6 +87,6 @@ def create_training_dataset_normal_csv(utilities):
 if __name__== "__main__":
     OPTIMAL_COMPLETE_UTILITIES = pickle.load(open("game/pickles/u0.pickle", "rb"))
     create_training_dataset_csv(OPTIMAL_COMPLETE_UTILITIES)
-    create_training_dataset_normal_csv(OPTIMAL_COMPLETE_UTILITIES)
+    # create_training_dataset_normal_csv(OPTIMAL_COMPLETE_UTILITIES)
 
 

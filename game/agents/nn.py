@@ -4,7 +4,34 @@ import numpy as np
 
 # FUNCTIONS TO RETREIVE TRAINING AND TEST DATA 
 
-def get_training_data(data=np.loadtxt("trainingdata/vcomplete_trainingdata.csv", delimiter=","), start_idx=0, end_idx=125000):
+def vectorize_coordinate(coordinate, length=50):
+    """
+    Takes a coordinate point and converts it to one hot vector. 
+    Example:
+    input: coordinate=3
+    output: [0, 0, 1, 0, 0, 0, ..., 0, 0]
+    """
+
+    vector = []
+    for i in range(length):
+        if i == (coordinate-1): vector.append(1)
+        else: vector.append(0)
+    return vector 
+
+def vectorize_state(state):
+    """
+    Takes a state and converts it to one hot vector matrix. 
+    Example:
+    input: state=(1,2,3)
+    output: 
+           [1, 0, 0, 0, 0, 0, ..., 0, 0]
+           [0, 1, 0, 0, 0, 0, ..., 0, 0]
+           [0, 0, 1, 0, 0, 0, ..., 0, 0]
+    """
+    x,y,z = state 
+    return vectorize_coordinate(x) + vectorize_coordinate(y) + vectorize_coordinate(z)
+
+def get_training_data(data=np.loadtxt("neuralnetworks/trainingdata/vcomplete_trainingdata.csv", delimiter=","), start_idx=0, end_idx=125000):
     """
     retrieves the start:end datapoints for the targets Y and input features X
     """
@@ -116,12 +143,12 @@ class NeuralNetwork():
 
 # TRAIN THE NEURAL NET, DESERIALIZE IT, AND SERIALIZE IT
   
-def save_model(model, error, filename=f"trainedmodels/vcomplete_model"):
+def save_model(model, error, filename=f"neuralnetworks/trainedmodels/vcomplete_model"):
     with open(filename + str(error) + ".pkl", "wb") as file:
         pickle.dump(model, file)
         print("model successfully serialized")
 
-def load_model(filename="trainedmodels/vcomplete_model.pkl"):
+def load_model(filename="neuralnetworks/trainedmodels/vcomplete_model.pkl"):
     with open(filename, "rb") as file:
         model = pickle.load(file)
         print("model successfully deserialized")
