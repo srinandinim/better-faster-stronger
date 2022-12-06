@@ -3,10 +3,12 @@ import utils
 from train_vcomplete import get_training_data
 
 # LOAD THE MODEL INTO MEMORY
+print("loading")
 model_vcomplete = utils.load_model_for_testing(
     filename="OPTIMAL_VCOMPLETE_MODEL.pkl")
 
 # LOAD DATA INTO MEMORY
+print("get training data!")
 y, x = get_training_data(start_idx=0, end_idx=10000)
 
 # DO INFERENCE ON THE MODEL WITH GIVEN DATA

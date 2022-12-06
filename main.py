@@ -81,9 +81,9 @@ def labreport_simulation_statistics_agent1_rl_nn():
     timeouts = []
     success_rates = []
 
-    for _ in range(100):
+    for _ in range(30):
         simulation_wins, simulation_losses, simulation_timeouts, simulation_success = simulation_statistics.agent1rlnn(
-            30, 50)
+            100, 50)
 
         wins.append(simulation_wins)
         losses.append(simulation_losses)
