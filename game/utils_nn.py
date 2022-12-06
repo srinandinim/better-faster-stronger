@@ -2,6 +2,36 @@ import pickle
 import random
 import numpy as np
 
+def vectorize_coordinate(coordinate, length=50):
+    """
+    takes a coordinate point and converts it to one hot vector. 
+
+    Example:
+    input: coordinate=3
+    output: [0, 0, 1, 0, 0, 0, ..., 0, 0]
+    """
+
+    vector = []
+    for i in range(length):
+        if i == (coordinate-1):
+            vector.append(1)
+        else:
+            vector.append(0)
+    return vector
+
+def vectorize_state(state):
+    """
+    takes a state and converts it to one hot vector matrix. 
+
+    Example:
+    input: state=(1,2,3)
+    output: 
+           [1, 0, 0, 0, 0, 0, ..., 0, 0]
+           [0, 1, 0, 0, 0, 0, ..., 0, 0]
+           [0, 0, 1, 0, 0, 0, ..., 0, 0]
+    """
+    x, y, z = state
+    return vectorize_coordinate(x) + vectorize_coordinate(y) + vectorize_coordinate(z)
 
 # takes pickled binary and generates training data CSV
 def create_supervised_training_data(utilities, graph_size=50):
@@ -21,19 +51,16 @@ def create_supervised_training_data(utilities, graph_size=50):
     random.shuffle(yx)
     return yx
 
-
 def create_training_dataset_csv(utilities):
     """
     Dump the information from the input and output targets into a CSV file.
     """
     dataset = create_supervised_training_data(utilities=utilities)
     csv = np.asarray(dataset)
-    np.savetxt("models/data/supervised_dataset_1hotvector_vcomplete.csv",
+    np.savetxt("OPTIMAL_DATASET.csv",
                csv, delimiter=",", fmt='%.6f')
 
 # takes pickled binary and generates training data CSV
-
-
 def create_supervised_training_data_normalstates(utilities, graph_size=50):
     """
     Given the utilities and the state, we create a supervised learning training dataset. 
@@ -51,7 +78,6 @@ def create_supervised_training_data_normalstates(utilities, graph_size=50):
     random.shuffle(yx)
     return yx
 
-
 def create_training_dataset_normal_csv(utilities):
     """
     Dump the information from the input and output targets into a CSV file.
@@ -61,9 +87,7 @@ def create_training_dataset_normal_csv(utilities):
     np.savetxt("models/data/supervised_dataset_normalstates_vcomplete.csv",
                csv, delimiter=",", fmt='%.6f')
 
-
 if __name__ == "__main__":
-    OPTIMAL_COMPLETE_UTILITIES = pickle.load(
-        open("game/pickles/OPTIMAL_U*.pickle", "rb"))
+    OPTIMAL_COMPLETE_UTILITIES = pickle.load(open("game/pickles/OPTIMAL_U*.pickle", "rb"))
     create_training_dataset_csv(OPTIMAL_COMPLETE_UTILITIES)
     # create_training_dataset_normal_csv(OPTIMAL_COMPLETE_UTILITIES)

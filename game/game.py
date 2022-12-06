@@ -33,6 +33,11 @@ class Game:
         # initializes an agent which allows us to call the relevant agent.
         self.agent = None
 
+        # analysis question finite possible state
+        self.agent_starting_location = 5
+        self.predator_location = 24 
+        self.prey.location = 24
+
         # stores the trajectories of the agent/predator/prey
         self.agent_trajectories = [self.agent_starting_location]
         self.prey_trajectories = [self.prey.location]
@@ -43,6 +48,8 @@ class Game:
 
         # initializes the number of steps the agent took
         self.steps = 0
+
+
 
     def step_return_values(self, status, found_prey, found_pred):
         """
@@ -267,8 +274,8 @@ class Game:
             self.agent.location, self.prey.location, self.predator.location)
         plt.figtext(0.5, 0.05, figure_text, ha="center", fontsize=10)
 
-        trajectories = f"Agent: {self.agent_trajectories}\nPrey: {self.prey_trajectories}\nPredator: {self.predator_trajectories}"
-        plt.figtext(0.1, 0.1, trajectories, ha="left", fontsize=8)
+        #trajectories = f"Agent: {self.agent_trajectories}\nPrey: {self.prey_trajectories}\nPredator: {self.predator_trajectories}"
+        #plt.figtext(0.1, 0.1, trajectories, ha="left", fontsize=8)
 
         plt.show()
 
@@ -305,8 +312,7 @@ class Game:
 
             nx.draw(G, pos=my_pos, node_color=color_map, with_labels=True)
 
-            figure_text = "Agent: {}, Prey: {}, Predator: {}".format(
-                agent_location, prey_location, predator_location)
+            figure_text = "Agent: {}, Prey: {}, Predator: {}".format(agent_location, prey_location, predator_location)
             plt.figtext(0.5, 0.05, figure_text, ha="center", fontsize=10)
 
             plt.savefig('figure' + str(i) + '.png')  # save this figure to disk
