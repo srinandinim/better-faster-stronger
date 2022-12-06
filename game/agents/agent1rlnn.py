@@ -1,7 +1,7 @@
 from game.models.optimalvaluefunction import (agent_to_pred_distances,
                                               get_future_reward)
 from .agent import Agent
-import game.neuralnetworks.nn as nn
+import game.neuralnetworks.utils as nnutils
 import numpy as np
 import pickle
 
@@ -10,7 +10,7 @@ class Agent1RLNN(Agent):
         # initialize agent location
         super().__init__(location)
         self.utility = pickle.load(open("game/pickles/u0.pickle", "rb"))
-        self.vcomplete_model = nn.load_model_for_agent(filename="OPTIMAL_VCOMPLETE_MODEL.pkl")
+        self.vcomplete_model = nnutils.load_model_for_agent(filename="OPTIMAL_VCOMPLETE_MODEL.pkl")
         self.shortest_distances = agent_to_pred_distances(graph)
 
 
@@ -32,7 +32,7 @@ class Agent1RLNN(Agent):
                 current_state = (action, prey.location, predator.location)
                 # x = nn.vectorize_state(current_state)
                 # represent state s as input to network as x_i
-                x = np.asarray(nn.vectorize_state(current_state), dtype="float32")
+                x = np.asarray(nnutils.vectorize_state(current_state), dtype="float32")
                 x = x.reshape(1, x.shape[0])
                 y_hat = self.vcomplete_model.predict(x)
                 # print(y_hat)

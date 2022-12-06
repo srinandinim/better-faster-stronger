@@ -1,37 +1,5 @@
-import pickle
 import numpy as np
-import os
-
-# FUNCTIONS TO RETREIVE TRAINING AND TEST DATA
-def vectorize_coordinate(coordinate, length=50):
-    """
-    Takes a coordinate point and converts it to one hot vector. 
-    Example:
-    input: coordinate=3
-    output: [0, 0, 1, 0, 0, 0, ..., 0, 0]
-    """
-
-    vector = []
-    for i in range(length):
-        if i == (coordinate-1):
-            vector.append(1)
-        else:
-            vector.append(0)
-    return vector
-
-
-def vectorize_state(state):
-    """
-    Takes a state and converts it to one hot vector matrix. 
-    Example:
-    input: state=(1,2,3)
-    output: 
-           [1, 0, 0, 0, 0, 0, ..., 0, 0]
-           [0, 1, 0, 0, 0, 0, ..., 0, 0]
-           [0, 0, 1, 0, 0, 0, ..., 0, 0]
-    """
-    x, y, z = state
-    return vectorize_coordinate(x) + vectorize_coordinate(y) + vectorize_coordinate(z)
+from utils import *
 
 # FUNCTIONS AND DERIVATIVES FOR ACTIVATION/LOSS
 
@@ -139,49 +107,6 @@ class NeuralNetwork():
         return result
 
 
-class RenameUnpickler(pickle.Unpickler):
-    def find_class(self, module, name):
-        renamed_module = module
-        if module == "nn":
-            renamed_module = "game.neuralnetworks.nn"
-
-        return super(RenameUnpickler, self).find_class(renamed_module, name)
-
-def renamed_load(file_obj):
-    return RenameUnpickler(file_obj).load()
-
-def renamed_loads(pickled_bytes):
-    file_obj = io.BytesIO(pickled_bytes)
-    return renamed_load(file_obj)
-
-# TRAIN THE NEURAL NET, DESERIALIZE IT, AND SERIALIZE IT
-def save_model(model, error, filename=f"vcomplete_model"):
-    dirname = "/trainedmodels/"
-    filepath = os.path.dirname(__file__) + dirname + filename
-    with open(filepath + str(error) + ".pkl", "wb") as file:
-        pickle.dump(model, file)
-        print("model successfully serialized")
-
-
-def load_model_for_agent(filename="OPTIMAL_VCOMPLETE_MODEL.pkl"):
-    dirname = "/trainedmodels/"
-    filepath = os.path.dirname(__file__) + dirname + filename
-    with open(filepath, "rb") as file:
-        print("opening the file")
-        model = renamed_load(file)
-        print("model successfully deserialized")
-    return model
-
-def load_model_for_testing(filename="OPTIMAL_VCOMPLETE_MODEL.pkl"):
-    dirname = "/trainedmodels/"
-    filepath = os.path.dirname(__file__) + dirname + filename
-    with open(filepath, "rb") as file:
-        print("opening the file")
-        model = pickle.load(file)
-        print("model successfully deserialized")
-    return model
-
-
 def train(model, x_train, y_train, epochs, learning_rate):
     leninput = len(x_train)
     for i in range(epochs):
@@ -195,7 +120,7 @@ def train(model, x_train, y_train, epochs, learning_rate):
             for layer in reversed(model.layers):
                 error = layer.backward(error, learning_rate)
         err /= leninput
-        print('epoch %d/%d   error=%f' % (i+1, epochs, err))
+        # print('epoch %d/%d   error=%f' % (i+1, epochs, err))
 
         # save the model if it is a good model < 5 MSE
         if err <= 5:

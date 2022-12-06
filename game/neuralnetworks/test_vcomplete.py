@@ -1,9 +1,10 @@
-import nn
 import numpy as np
+import utils
 from train_vcomplete import get_training_data
 
 # LOAD THE MODEL INTO MEMORY
-model_vcomplete = nn.load_model_for_testing(filename="OPTIMAL_VCOMPLETE_MODEL.pkl")
+model_vcomplete = utils.load_model_for_testing(
+    filename="OPTIMAL_VCOMPLETE_MODEL.pkl")
 
 # LOAD DATA INTO MEMORY
 y, x = get_training_data(start_idx=0, end_idx=10000)
@@ -17,8 +18,8 @@ print("TESTING DATA PREDICTIONS")
 print(model_vcomplete.predict(x[8000:8010]))
 print(y[8000:8010])
 
-action=(1,2,3)
-x = nn.vectorize_state(action)
+action = (1, 2, 3)
+x = utils.vectorize_state(action)
 print(x)
 
 x = np.asarray(x, dtype="float32")
