@@ -88,7 +88,7 @@ class Network:
             result.append(output)
         return result
 
-    def train(self, x_train, y_train, x_val, y_val, epochs, learning_rate):
+    def train(self, x_train, y_train, x_val, y_val, epochs, learning_rate,):
         leninput = len(x_train)
 
         for i in range(epochs):
