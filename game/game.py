@@ -2,7 +2,6 @@ import random
 import matplotlib.pyplot as plt
 import networkx as nx
 import game.utils as utils
-from .agents.agent1 import Agent1
 from .agents.agent1rl import Agent1RL
 from .agents.agent1rlnn import Agent1RLNN
 from .agents.agent3rl import Agent3RL
