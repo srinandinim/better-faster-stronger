@@ -85,7 +85,7 @@ def create_training_dataset_normal_csv(utilities):
     np.savetxt("models/data/supervised_dataset_normalstates_vcomplete.csv", csv, delimiter=",", fmt='%.6f')
 
 if __name__== "__main__":
-    OPTIMAL_COMPLETE_UTILITIES = pickle.load(open("game/pickles/u0.pickle", "rb"))
+    OPTIMAL_COMPLETE_UTILITIES = pickle.load(open("game/pickles/OPTIMAL_U*.pickle", "rb"))
     create_training_dataset_csv(OPTIMAL_COMPLETE_UTILITIES)
     # create_training_dataset_normal_csv(OPTIMAL_COMPLETE_UTILITIES)
 

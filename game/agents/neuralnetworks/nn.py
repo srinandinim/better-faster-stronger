@@ -31,7 +31,7 @@ def vectorize_state(state):
     x,y,z = state 
     return vectorize_coordinate(x) + vectorize_coordinate(y) + vectorize_coordinate(z)
 
-def get_training_data(data=np.loadtxt("trainingdata/vcomplete_trainingdata.csv", delimiter=","), start_idx=0, end_idx=125000):
+def get_training_data(data=np.loadtxt("trainingdata/OPTIMAL_U*_DATASET.csv", delimiter=","), start_idx=0, end_idx=125000):
     """
     retrieves the start:end datapoints for the targets Y and input features X
     """
