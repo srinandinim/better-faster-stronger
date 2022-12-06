@@ -40,7 +40,7 @@ def renamed_load(file_obj):
         def find_class(self, module, name):
             renamed_module = module
             if module == "nn":
-                renamed_module = "game.neuralnetworks.nn"
+                renamed_module = "neuralnetworks.nn"
 
             return super(RenameUnpickler, self).find_class(renamed_module, name)
     return RenameUnpickler(file_obj).load()

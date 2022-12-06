@@ -1,9 +1,8 @@
 import numpy as np
-from utils import *
+import os
+import pickle
 
 # FUNCTIONS AND DERIVATIVES FOR ACTIVATION/LOSS
-
-
 def tanh(x):
     return np.tanh(x)
 
@@ -39,9 +38,8 @@ def mse(y_true, y_pred):
 def mse_prime(y_true, y_pred):
     return 2*(y_pred-y_true)/y_true.size
 
+
 # NEURAL NETWORK CLASS STRUCTURE
-
-
 class Layer():
     def __init__(self):
         self.input, self.output = None, None
@@ -105,6 +103,13 @@ class NeuralNetwork():
                 output = layer.forward(output)
             result.append(output)
         return result
+
+
+def save_model(model, error, filename=f"vcomplete_model"):
+    dirname = "/trainedmodels/"
+    filepath = os.path.dirname(__file__) + dirname + filename
+    with open(filepath + str(error) + ".pkl", "wb") as file:
+        pickle.dump(model, file)
 
 
 def train(model, x_train, y_train, epochs, learning_rate):
