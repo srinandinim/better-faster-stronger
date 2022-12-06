@@ -3,7 +3,7 @@ import numpy as np
 from train_vcomplete import get_training_data
 
 # LOAD THE MODEL INTO MEMORY
-model_vcomplete = nn.load_model(filename="test_model_pickle.pkl")
+model_vcomplete = nn.load_model_for_testing(filename="OPTIMAL_VCOMPLETE_MODEL.pkl")
 
 # LOAD DATA INTO MEMORY
 y, x = get_training_data(start_idx=0, end_idx=10000)

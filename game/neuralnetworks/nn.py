@@ -3,8 +3,6 @@ import numpy as np
 import os
 
 # FUNCTIONS TO RETREIVE TRAINING AND TEST DATA
-
-
 def vectorize_coordinate(coordinate, length=50):
     """
     Takes a coordinate point and converts it to one hot vector. 
@@ -140,6 +138,22 @@ class NeuralNetwork():
             result.append(output)
         return result
 
+
+class RenameUnpickler(pickle.Unpickler):
+    def find_class(self, module, name):
+        renamed_module = module
+        if module == "nn":
+            renamed_module = "game.neuralnetworks.nn"
+
+        return super(RenameUnpickler, self).find_class(renamed_module, name)
+
+def renamed_load(file_obj):
+    return RenameUnpickler(file_obj).load()
+
+def renamed_loads(pickled_bytes):
+    file_obj = io.BytesIO(pickled_bytes)
+    return renamed_load(file_obj)
+
 # TRAIN THE NEURAL NET, DESERIALIZE IT, AND SERIALIZE IT
 def save_model(model, error, filename=f"vcomplete_model"):
     dirname = "/trainedmodels/"
@@ -149,7 +163,16 @@ def save_model(model, error, filename=f"vcomplete_model"):
         print("model successfully serialized")
 
 
-def load_model(filename="OPTIMAL_VCOMPLETE_MODEL.pkl"):
+def load_model_for_agent(filename="OPTIMAL_VCOMPLETE_MODEL.pkl"):
+    dirname = "/trainedmodels/"
+    filepath = os.path.dirname(__file__) + dirname + filename
+    with open(filepath, "rb") as file:
+        print("opening the file")
+        model = renamed_load(file)
+        print("model successfully deserialized")
+    return model
+
+def load_model_for_testing(filename="OPTIMAL_VCOMPLETE_MODEL.pkl"):
     dirname = "/trainedmodels/"
     filepath = os.path.dirname(__file__) + dirname + filename
     with open(filepath, "rb") as file:
