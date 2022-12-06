@@ -26,8 +26,7 @@ def get_overall_simulation_statistics(wins, losses, timeouts, success_rates, fou
 def save_simulation_statistics(setting, agent, agent_data):
     """
     stores overall statistics to a json file depending on agent setting
-    settings:   "complete", "partial-prey", "partial-pred", "combined-partial", 
-                "combined-partial-defective", "combined-partial-defective-updated"
+    settings:   "complete", "partial-prey"
     """
     dirname = "data/"
     if not os.path.exists(os.path.dirname(dirname)):
@@ -45,32 +44,6 @@ def save_simulation_statistics(setting, agent, agent_data):
 
     with open(filepath, "w") as fp:
         json.dump(data, fp)
-
-
-def labreport_simulation_statistics_agent1():
-    """
-    runs 100 simulations 30 times and returns the average 
-    """
-    wins = []
-    losses = []
-    timeouts = []
-    success_rates = []
-
-    for _ in range(30):
-        simulation_wins, simulation_losses, simulation_timeouts, simulation_success = simulation_statistics.agent1(
-            100, 50)
-
-        wins.append(simulation_wins)
-        losses.append(simulation_losses)
-        timeouts.append(simulation_timeouts)
-        success_rates.append(simulation_success)
-
-    agent_data = get_overall_simulation_statistics(
-        wins, losses, timeouts, success_rates)
-    save_simulation_statistics("complete", "agent1", agent_data)
-
-    print(
-        f"Agent1: Overall Success Rate: {round(sum(success_rates) / len(success_rates),2)}%")
 
 
 def labreport_simulation_statistics_agent1_rl():
@@ -98,6 +71,7 @@ def labreport_simulation_statistics_agent1_rl():
     print(
         f"Agent1RL: Overall Success Rate: {round(sum(success_rates) / len(success_rates),2)}%")
 
+
 def labreport_simulation_statistics_agent1_rl_nn():
     """
     runs 100 simulations 30 times and returns the average 
@@ -123,6 +97,7 @@ def labreport_simulation_statistics_agent1_rl_nn():
     print(
         f"Agent1RL: Overall Success Rate: {round(sum(success_rates) / len(success_rates),2)}%")
 
+
 def labreport_simulation_statistics_agent3_rl():
     """
     runs 100 simulations 30 times and returns the average 
@@ -132,9 +107,9 @@ def labreport_simulation_statistics_agent3_rl():
     timeouts = []
     success_rates = []
 
-    for _ in range(30):
+    for _ in range(1):
         simulation_wins, simulation_losses, simulation_timeouts, simulation_success = simulation_statistics.agent3rl(
-            100, 50)
+            1, 50)
 
         wins.append(simulation_wins)
         losses.append(simulation_losses)
@@ -151,9 +126,11 @@ def labreport_simulation_statistics_agent3_rl():
 
 def calculate_utility_values(filename="GAME_GRAPH.json"):
     game_graph = Graph(nbrs=utils.retrieve_graph(filename))
-    shortest_distances = optimalvaluefunction.agent_to_pred_distances(game_graph)
+    shortest_distances = optimalvaluefunction.agent_to_pred_distances(
+        game_graph)
     print(shortest_distances)
-    ksweeps, u0 = optimalvaluefunction.calculate_optimal_values(game_graph, shortest_distances, 0.001)
+    ksweeps, u0 = optimalvaluefunction.calculate_optimal_values(
+        game_graph, shortest_distances, 0.001)
 
     print(u0)
     print(ksweeps)
@@ -161,11 +138,8 @@ def calculate_utility_values(filename="GAME_GRAPH.json"):
 
 if __name__ == "__main__":
     # calculate_utility_values()
-    
-    labreport_simulation_statistics_agent1()
-    labreport_simulation_statistics_agent1_rl()
-    # labreport_simulation_statistics_agent1_rl_nn()
+
+    # labreport_simulation_statistics_agent1_rl()
+    labreport_simulation_statistics_agent1_rl_nn()
 
     # labreport_simulation_statistics_agent3_rl()
-
-    
