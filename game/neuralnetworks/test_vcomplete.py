@@ -1,11 +1,12 @@
-import numpy as np 
-import nn 
+import nn
+import numpy as np
+from train_vcomplete import get_training_data
 
 # LOAD THE MODEL INTO MEMORY
-model_vcomplete = nn.load_model(filename="trainedmodels/vcomplete_model0.520227572692611.pkl")
+model_vcomplete = nn.load_model(filename="OPTIMAL_VCOMPLETE_MODEL.pkl")
 
 # LOAD DATA INTO MEMORY
-y, x = nn.get_training_data(start_idx=0, end_idx=10000)
+y, x = get_training_data(start_idx=0, end_idx=10000)
 
 # DO INFERENCE ON THE MODEL WITH GIVEN DATA
 print("TRAINING DATA PREDICTIONS")

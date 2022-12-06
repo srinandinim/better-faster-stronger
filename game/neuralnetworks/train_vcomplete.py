@@ -1,10 +1,14 @@
 from nn import *
 
 
-def get_training_data(data=np.loadtxt("trainingdata/OPTIMAL_U*_DATASET.csv", delimiter=","), start_idx=0, end_idx=125000):
+def get_training_data(filename="OPTIMAL_U*_DATASET.csv", start_idx=0, end_idx=125000):
     """
     retrieves the start:end datapoints for the targets Y and input features X
     """
+    dirname = "/trainingdata/"
+    filepath = os.path.dirname(__file__) + dirname + filename
+    data = np.loadtxt(filepath, delimiter=",")
+
     # loads the CSV file from numpy into memory
     Y, X = data[start_idx:end_idx, 0], data[start_idx:end_idx, 1:]
     print(Y.shape, X.shape)
