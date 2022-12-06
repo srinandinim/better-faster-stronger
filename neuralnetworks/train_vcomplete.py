@@ -1,6 +1,7 @@
 import os
 import numpy as np
 from nn import *
+from utils import load_model_for_testing
 
 
 def get_training_data(filename="OPTIMAL_U*_DATASET.csv", start_idx=0, end_idx=125000):
@@ -28,16 +29,19 @@ def get_training_data(filename="OPTIMAL_U*_DATASET.csv", start_idx=0, end_idx=12
 
 if __name__ == "__main__":
     # LOAD THE DATA INTO MEMORY
-    y, x = get_training_data(filename="OPTIMAL_U*_DATASET.csv", start_idx=0, end_idx=200)
+    y, x = get_training_data(filename="OPTIMAL_DATASET.csv", start_idx=0, end_idx=125000)
 
     # BUILD OUT THE NEURAL NETWORK & LOSS FUNCTION
-    dnn_v_complete = NeuralNetwork()
-    dnn_v_complete.add(DenseLinear(150, 150))
-    dnn_v_complete.add(NonLinearity(tanh, tanh_prime))
-    dnn_v_complete.add(DenseLinear(150, 150))
-    dnn_v_complete.add(NonLinearity(tanh, tanh_prime))
-    dnn_v_complete.add(DenseLinear(150, 1))
-    dnn_v_complete.choose_error(mse, mse_prime)
+    #dnn_v_complete = NeuralNetwork()
+    #dnn_v_complete.add(DenseLinear(150, 150))
+    #dnn_v_complete.add(NonLinearity(tanh, tanh_prime))
+    #dnn_v_complete.add(DenseLinear(150, 150))
+    #dnn_v_complete.add(NonLinearity(tanh, tanh_prime))
+    #dnn_v_complete.add(DenseLinear(150, 1))
+    #dnn_v_complete.choose_error(mse, mse_prime)
+
+    # LOAD IN MODEL FROM MEMORY TO REDUCE ERROR
+    dnn_v_complete = load_model_for_testing()
 
     # TRAIN THE MODEL WITH RESPECT TO THE DATAPOINTS
     train(dnn_v_complete, x, y, 100, 0.001)

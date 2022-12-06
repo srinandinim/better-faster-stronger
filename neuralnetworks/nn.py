@@ -44,7 +44,6 @@ class Layer():
     def __init__(self):
         self.input, self.output = None, None
 
-
 class DenseLinear(Layer):
     def __init__(self, input_size, output_size):
         self.w = np.random.rand(input_size, output_size) - 0.5
@@ -104,19 +103,18 @@ class NeuralNetwork():
             result.append(output)
         return result
 
-
 def save_model(model, error, filename=f"vcomplete_model"):
     dirname = "/trainedmodels/"
     filepath = os.path.dirname(__file__) + dirname + filename
     with open(filepath + str(error) + ".pkl", "wb") as file:
         pickle.dump(model, file)
 
-
 def train(model, x_train, y_train, epochs, learning_rate):
     leninput = len(x_train)
     for i in range(epochs):
         err = 0
         for j in range(leninput):
+            #print(j)
             output = x_train[j]
             for layer in model.layers:
                 output = layer.forward(output)
@@ -125,8 +123,8 @@ def train(model, x_train, y_train, epochs, learning_rate):
             for layer in reversed(model.layers):
                 error = layer.backward(error, learning_rate)
         err /= leninput
-        # print('epoch %d/%d   error=%f' % (i+1, epochs, err))
+        print('epoch %d/%d   error=%f' % (i+1, epochs, err))
 
         # save the model if it is a good model < 5 MSE
-        if err <= 5:
+        if err <= 0.5:
             save_model(model, err)
