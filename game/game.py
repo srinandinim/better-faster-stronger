@@ -126,44 +126,6 @@ class Game:
 
         return 0, found_prey, found_pred
 
-    def run_agent_1(self):
-        self.predator = Predator(self.predator_location)
-        self.agent = Agent1(self.agent_starting_location)
-
-        status = 0
-        step_count = 0
-
-        while status == 0 and step_count < self.timeout:
-            status, _, _ = self.step()
-            step_count = step_count + 1
-
-        # agent timed out
-        if status == 0:
-            status = -2
-
-        return status
-
-    def run_agent_1_debug(self):
-        self.predator = Predator(self.predator_location)
-        self.agent = Agent1(self.agent_starting_location)
-        self.visualize_graph()
-
-        status = 0
-        step_count = 0
-
-        while status == 0 and step_count < self.timeout:
-            self.visualize_graph()
-            status, _, _ = self.step_debug()
-            step_count = step_count + 1
-
-        self.visualize_graph_video()
-
-        # agent timed out
-        if status == 0:
-            status = -2
-
-        return status
-
     def run_agent_1_rl(self):
         self.predator = Predator(self.predator_location)
         self.agent = Agent1RL(self.graph, self.agent_starting_location)
