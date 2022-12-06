@@ -28,5 +28,5 @@ x = x.reshape(1, x.shape[0])
 print(x)
 print(x.shape)
 
-yhat = model_vcomplete.predict(x)
+yhat = np.array(model_vcomplete.predict(x)).item()
 print(yhat)
