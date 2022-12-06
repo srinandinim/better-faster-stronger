@@ -166,7 +166,7 @@ class Game:
 
     def run_agent_1_rl(self):
         self.predator = Predator(self.predator_location)
-        self.agent = Agent1RL(self.agent_starting_location)
+        self.agent = Agent1RL(self.graph, self.agent_starting_location)
 
         status = 0
         step_count = 0
@@ -183,7 +183,7 @@ class Game:
 
     def run_agent_1_rl_debug(self):
         self.predator = Predator(self.predator_location)
-        self.agent = Agent1RL(self.agent_starting_location)
+        self.agent = Agent1RL(self.graph, self.agent_starting_location)
         self.visualize_graph()
 
         status = 0
@@ -194,7 +194,7 @@ class Game:
             step_count = step_count + 1
             self.visualize_graph()
 
-        self.visualize_graph_video()
+        # self.visualize_graph_video()
 
         # agent timed out
         if status == 0:
@@ -277,7 +277,7 @@ class Game:
             status = -2
 
         return status
-    
+
     def visualize_graph_color_map(self):
         """
         grey: unoccupied node

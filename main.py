@@ -1,10 +1,8 @@
 import json
 import os
-
 import game.models.optimalvaluefunction as optimalvaluefunction
 import game.utils as utils
 import simulation_statistics as simulation_statistics
-from game.game import Game
 from game.graph import Graph
 
 
@@ -162,13 +160,12 @@ def calculate_utility_values(filename="GAME_GRAPH.json"):
 
 
 if __name__ == "__main__":
-    #calculate_utility_values()
+    # calculate_utility_values()
+    
     labreport_simulation_statistics_agent1()
     labreport_simulation_statistics_agent1_rl()
-    #labreport_simulation_statistics_agent1_rl_nn()
-    # labreport_simulation_statistics_agent3_rl()
+    # labreport_simulation_statistics_agent1_rl_nn()
 
-    # game = Game(nodes=50)
-    # game_success = game.run_agent_1_rl_debug()
+    # labreport_simulation_statistics_agent3_rl()
 
     

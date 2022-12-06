@@ -1,4 +1,3 @@
-import json
 import os
 import pickle
 from copy import deepcopy
@@ -178,20 +177,6 @@ def get_future_reward(graph, agent_loc, prey_loc, pred_loc, shortest_distances, 
     return future_reward
 
 
-def get_current_reward(graph, agent_loc, prey_loc, pred_loc, shortest_distances):
-    """
-    Function to return the current reward of ending in the given state
-    @param:graph - the graph this function operates on
-    @param:agent_loc - the location of the agent
-    @param:prey_loc - the location of the prey
-    @param:pred_loc - the location of the predator
-    @param:shortest_distances - a dictionary containing the shortest distances between every pair of nodes
-    @param:u0 - a vector containing the utilities of each state from the previous sweep
-    @return the current reward for ending in the current state
-    """
-    return -1 if shortest_distances[(agent_loc, pred_loc)] > 1 else -float("inf")
-
-
 # MAIN BELLMAN COMPUTATION
 def calculate_optimal_values(graph, shortest_distances, convergence_factor):
     '''
@@ -208,7 +193,6 @@ def calculate_optimal_values(graph, shortest_distances, convergence_factor):
 
     while converged == False:
 
-        print(f"{ksweeps}th iteration")
         converged = True
 
         for agent_loc in range(1, graph_size):
@@ -224,20 +208,25 @@ def calculate_optimal_values(graph, shortest_distances, convergence_factor):
                         continue
 
                     # compute new values for non-terminal states
-                    agent_actions = graph.nbrs[agent_loc]
+                    agent_actions = graph.nbrs[agent_loc] + [agent_loc]
 
                     # worst case is -inf
                     u1[state] = -float("inf")
 
                     # iterate through all agent actions
                     for action in agent_actions:
+
+                        # retrieve old values for terminal states
+                        if action == prey_loc or action == pred_loc:
+                            u1[state] = max(u1[state], -1 + u0[(action, prey_loc, pred_loc)])
+                            continue
+
                         # iterate through the transition
-                        u1[state] = max(u1[state], get_current_reward(graph, action, prey_loc, pred_loc, shortest_distances) +
+                        u1[state] = max(u1[state], -1 +
                                         get_future_reward(graph, action, prey_loc, pred_loc, shortest_distances, u0))
 
                     if converged and abs(u1[state] - u0[state]) > convergence_factor:
                         converged = False
-                        print(f'ERROR: {abs(u1[state] - u0[state])}')
 
         ksweeps += 1
         u0 = deepcopy(u1)
