@@ -141,10 +141,10 @@ class NeuralNetwork():
         return result
 
 # TRAIN THE NEURAL NET, DESERIALIZE IT, AND SERIALIZE IT
-
-
-def save_model(model, error, filename=f"trainedmodels/vcomplete_model"):
-    with open(filename + str(error) + ".pkl", "wb") as file:
+def save_model(model, error, filename=f"vcomplete_model"):
+    dirname = "/trainedmodels/"
+    filepath = os.path.dirname(__file__) + dirname + filename
+    with open(filepath + str(error) + ".pkl", "wb") as file:
         pickle.dump(model, file)
         print("model successfully serialized")
 
