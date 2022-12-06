@@ -152,9 +152,6 @@ def save_model(model, error, filename=f"trainedmodels/vcomplete_model"):
 def load_model(filename="OPTIMAL_VCOMPLETE_MODEL.pkl"):
     dirname = "/trainedmodels/"
     filepath = os.path.dirname(__file__) + dirname + filename
-    # parent_directory = os.path.split(os.path.dirname(__file__))[0]
-    # print(parent_directory)
-    # filepath = parent_directory + dirname + filename
     with open(filepath, "rb") as file:
         model = pickle.load(file)
         print("model successfully deserialized")
