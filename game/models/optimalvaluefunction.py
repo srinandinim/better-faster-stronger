@@ -12,8 +12,8 @@ def clean_up(u0, u1, sanity_check):
     @param u1 - a dictionary, keyed by a tuple and valued by a number
     @return void
     '''
-    pickle_vector(u0, 'u0_small.pickle')
-    pickle_vector(u1, 'u1_small.pickle')
+    pickle_vector(u0, 'u0.pickle')
+    pickle_vector(u1, 'u1.pickle')
     print(sanity_check_value_updates(sanity_check, u0.values()))
     print(sanity_check_value_updates(sanity_check, u1.values()))
 
@@ -191,13 +191,8 @@ def calculate_optimal_values(graph, shortest_distances, convergence_factor):
     graph_size, ksweeps, converged = graph.get_nodes() + 1, 0, False
     u0, u1 = init_state_values(graph), dict()
 
-    # print("INITIAL")
-    # print(u0)
-    # print("\n")
-
     while converged == False:
 
-        print(f"{ksweeps}th iteration")
         converged = True
 
         for agent_loc in range(1, graph_size):
@@ -218,9 +213,6 @@ def calculate_optimal_values(graph, shortest_distances, convergence_factor):
                     # worst case is -inf
                     u1[state] = -float("inf")
 
-                    if state == (3, 2, 1) or state == (5, 2, 1):
-                        print(u0[state])
-
                     # iterate through all agent actions
                     for action in agent_actions:
 
@@ -235,12 +227,8 @@ def calculate_optimal_values(graph, shortest_distances, convergence_factor):
 
                     if converged and abs(u1[state] - u0[state]) > convergence_factor:
                         converged = False
-                        print(f'ERROR: {abs(u1[state] - u0[state])}')
 
         ksweeps += 1
-        # print("ITERATION")
-        # print(u1)
-        # print("\n")
         u0 = deepcopy(u1)
         u1 = dict()
 

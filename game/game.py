@@ -13,7 +13,7 @@ from .prey import Prey
 class Game:
     def __init__(self, nodes=50, timeout=1000):
         # initializes the graph on which agents/prey/predator play
-        nbrs = utils.retrieve_graph(filename="SMALL_GRAPH.json")
+        nbrs = utils.retrieve_graph()
         self.graph = Graph(nbrs=nbrs)
 
         # initializes prey location to be random from nodes 1...50
@@ -165,7 +165,7 @@ class Game:
 
     def run_agent_1_rl(self):
         self.predator = Predator(self.predator_location)
-        self.agent = Agent1RL(self.agent_starting_location)
+        self.agent = Agent1RL(self.graph, self.agent_starting_location)
 
         status = 0
         step_count = 0
@@ -182,7 +182,7 @@ class Game:
 
     def run_agent_1_rl_debug(self):
         self.predator = Predator(self.predator_location)
-        self.agent = Agent1RL(self.agent_starting_location)
+        self.agent = Agent1RL(self.graph, self.agent_starting_location)
         self.visualize_graph()
 
         status = 0
@@ -238,7 +238,7 @@ class Game:
             status = -2
 
         return status
-    
+
     def visualize_graph_color_map(self):
         """
         grey: unoccupied node
