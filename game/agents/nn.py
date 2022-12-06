@@ -1,8 +1,8 @@
-import time 
 import pickle
-import numpy as np 
+import numpy as np
 
-# FUNCTIONS TO RETREIVE TRAINING AND TEST DATA 
+# FUNCTIONS TO RETREIVE TRAINING AND TEST DATA
+
 
 def vectorize_coordinate(coordinate, length=50):
     """
@@ -14,9 +14,12 @@ def vectorize_coordinate(coordinate, length=50):
 
     vector = []
     for i in range(length):
-        if i == (coordinate-1): vector.append(1)
-        else: vector.append(0)
-    return vector 
+        if i == (coordinate-1):
+            vector.append(1)
+        else:
+            vector.append(0)
+    return vector
+
 
 def vectorize_state(state):
     """
@@ -28,15 +31,16 @@ def vectorize_state(state):
            [0, 1, 0, 0, 0, 0, ..., 0, 0]
            [0, 0, 1, 0, 0, 0, ..., 0, 0]
     """
-    x,y,z = state 
+    x, y, z = state
     return vectorize_coordinate(x) + vectorize_coordinate(y) + vectorize_coordinate(z)
+
 
 def get_training_data(data=np.loadtxt("neuralnetworks/trainingdata/vcomplete_trainingdata.csv", delimiter=","), start_idx=0, end_idx=125000):
     """
     retrieves the start:end datapoints for the targets Y and input features X
     """
     # loads the CSV file from numpy into memory
-    Y, X = data[start_idx:end_idx,0], data[start_idx:end_idx,1:]
+    Y, X = data[start_idx:end_idx, 0], data[start_idx:end_idx, 1:]
     print(Y.shape, X.shape)
 
     # make all negative infinity values predict to -50
@@ -46,43 +50,54 @@ def get_training_data(data=np.loadtxt("neuralnetworks/trainingdata/vcomplete_tra
     X, Y = np.array(X, dtype=np.float32), np.array(Y, dtype=np.float32)
     X, Y = X.reshape((X.shape[0], 1, X.shape[1])), Y.reshape((Y.shape[0], 1))
 
-    # returns the 
+    # returns the
     return Y, X
 
 # FUNCTIONS AND DERIVATIVES FOR ACTIVATION/LOSS
 
+
 def tanh(x):
     return np.tanh(x)
 
+
 def tanh_prime(x):
     return 1 - np.tanh(x)**2
+
 
 def ReLU(x):
-    return max(0,x)
+    return max(0, x)
+
 
 def ReLU_prime(x):
-    return x if x >= 0 else 0 
+    return x if x >= 0 else 0
+
 
 def tanh_prime(x):
     return 1 - np.tanh(x)**2
 
+
 def identity(x):
-    return x 
+    return x
+
 
 def identity_prime(x):
     return 1
 
+
 def mse(y_true, y_pred):
     return np.mean(np.power(y_true-y_pred, 2))
+
 
 def mse_prime(y_true, y_pred):
     return 2*(y_pred-y_true)/y_true.size
 
 # NEURAL NETWORK CLASS STRUCTURE
 
+
 class Layer():
     def __init__(self):
-        self.input, self.output = None, None 
+        self.input, self.output = None, None
+
 
 class DenseLinear(Layer):
     def __init__(self, input_size, output_size):
@@ -104,6 +119,7 @@ class DenseLinear(Layer):
 
         return input_error
 
+
 class NonLinearity(Layer):
     def __init__(self, activation, activation_derivative):
         self.activation = activation
@@ -117,13 +133,14 @@ class NonLinearity(Layer):
 
     def backward(self, output_error, learning_rate):
         return self.activation_derivative(self.input) * output_error
-    
+
+
 class NeuralNetwork():
     def __init__(self):
         self.layers = []
         self.loss = None
         self.loss_derivative = None
-    
+
     def choose_error(self, loss, loss_derivative):
         self.loss = loss
         self.loss_derivative = loss_derivative
@@ -142,17 +159,20 @@ class NeuralNetwork():
         return result
 
 # TRAIN THE NEURAL NET, DESERIALIZE IT, AND SERIALIZE IT
-  
+
+
 def save_model(model, error, filename=f"neuralnetworks/trainedmodels/vcomplete_model"):
     with open(filename + str(error) + ".pkl", "wb") as file:
         pickle.dump(model, file)
         print("model successfully serialized")
 
+
 def load_model(filename="neuralnetworks/trainedmodels/vcomplete_model.pkl"):
     with open(filename, "rb") as file:
         model = pickle.load(file)
         print("model successfully deserialized")
-    return model 
+    return model
+
 
 def train(model, x_train, y_train, epochs, learning_rate):
     leninput = len(x_train)
@@ -170,6 +190,5 @@ def train(model, x_train, y_train, epochs, learning_rate):
         print('epoch %d/%d   error=%f' % (i+1, epochs, err))
 
         # save the model if it is a good model < 5 MSE
-        if err <= 5: 
+        if err <= 5:
             save_model(model, err)
-
