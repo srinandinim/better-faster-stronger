@@ -16,7 +16,7 @@ class Agent3RL(Agent):
         self.shortest_distances = agent_to_pred_distances(graph)
 
         # store the graph
-        self.graph = graph        
+        self.graph = graph
 
         # initialize agent belief prob dist
         self.beliefs = dict()
@@ -26,20 +26,14 @@ class Agent3RL(Agent):
         self.prev_prey_locations = []
 
     def partial_utility(self, agent_loc, predator):
-        partial_reward = 0
+        temp_utility = dict()
         for prey_loc in range(1, self.graph.get_nodes() + 1):
-            belief_prey_loc = self.beliefs.get(prey_loc)
-            if agent_loc == prey_loc:
-                partial_reward += belief_prey_loc * -1
-            elif agent_loc == predator.location:
-                partial_reward += belief_prey_loc * -float("inf")
-            else:
-                current_reward = -1 + get_future_reward(
-                    self.graph, agent_loc, prey_loc, predator.location, self.shortest_distances, self.utility)
-                partial_reward += belief_prey_loc * current_reward
+            u_star = get_future_reward(
+                self.graph, agent_loc, prey_loc, predator.location, self.shortest_distances, self.utility)
+            temp_utility[(agent_loc, prey_loc, predator.location)] = self.beliefs.get(prey_loc) * u_star
 
-        return partial_reward
-    
+        return sum(temp_utility.values())
+
     def move(self, graph, prey, predator):
         """
         updates location based on assignment specifications given
@@ -52,12 +46,19 @@ class Agent3RL(Agent):
         elif signal == False and len(self.prev_prey_locations) > 0:
             self.init_probs_step4(surveyed_node)
         self.normalize_beliefs()
-        
-        action_space = graph.get_node_neighbors(self.location) + [self.location]
+
+        potential_prey_location = random.choice(self.get_highest_prob_nodes())
+
+        action_space = graph.get_node_neighbors(
+            self.location) + [self.location]
+
         best_action = None
         best_reward = -float("inf")
         for action in action_space:
-            current_reward = self.partial_utility(action, predator)
+            if action == predator.location:
+                current_reward = -float("inf")
+            else:
+                current_reward = -1 + self.partial_utility(action, predator)
             if current_reward >= best_reward:
                 best_reward = current_reward
                 best_action = action
