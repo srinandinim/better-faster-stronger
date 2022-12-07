@@ -48,7 +48,7 @@ def vectorize_probability_state(z_agent, p_prey, z_pred):
     """
     takes a state for partial prey environment and converts it to a vector of size 1 x 150
     """
-    return vectorize_coordinate(z_agent) + vectorize_probability_dist(p_prey), vectorize_coordinate(z_pred)
+    return vectorize_coordinate(z_agent) + vectorize_probability_dist(p_prey) + vectorize_coordinate(z_pred)
 
 def renamed_load(file_obj):
     class RenameUnpickler(pickle.Unpickler):
@@ -67,7 +67,6 @@ def save_model(model, error, filename=f"vcomplete_model"):
         pickle.dump(model, file)
         # print("model successfully serialized")
 
-
 def load_model_for_testing(filename="OPTIMAL_VCOMPLETE_MODEL.pkl"):
     dirname = "/trainedmodels/"
     filepath = os.path.dirname(__file__) + dirname + filename
@@ -76,7 +75,6 @@ def load_model_for_testing(filename="OPTIMAL_VCOMPLETE_MODEL.pkl"):
         model = pickle.load(file)
         # print("model successfully deserialized")
     return model
-
 
 def load_model_for_agent(filename="OPTIMAL_VCOMPLETE_MODEL.pkl"):
     dirname = "/trainedmodels/"

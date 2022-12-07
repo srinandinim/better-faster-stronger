@@ -103,10 +103,10 @@ class NeuralNetwork():
             result.append(output)
         return result
 
-def save_model(model, error, filename=f"vcomplete_model"):
+def save_model(model, error, testerror = 0, filename=f"vcomplete_model"):
     dirname = "/trainedmodels/"
     filepath = os.path.dirname(__file__) + dirname + filename
-    with open(filepath + str(error) + ".pkl", "wb") as file:
+    with open(filepath + str(error) + "_" + str(testerror) + ".pkl", "wb") as file:
         pickle.dump(model, file)
 
 def train(model, x_train, y_train, epochs, learning_rate):
@@ -128,3 +128,34 @@ def train(model, x_train, y_train, epochs, learning_rate):
         # save the model if it is a good model < 5 MSE
         if err <= 0.5:
             save_model(model, err)
+        
+def train_vpartial(model, x_train, y_train, x_test, y_test, epochs, learning_rate):
+    leninput = len(x_train)
+    for i in range(epochs):
+        err = 0
+        for j in range(leninput):
+            #print(j)
+            output = x_train[j]
+            for layer in model.layers:
+                output = layer.forward(output)
+            err += model.loss(y_train[j], output)
+            error = model.loss_derivative(y_train[j], output)
+            for layer in reversed(model.layers):
+                error = layer.backward(error, learning_rate)
+        err /= leninput
+        
+        # COMPUTE VALIDATION ERROR
+        test_error = 0 
+        lentestinput = len(x_test)
+        for j in range(lentestinput):
+            output = x_test[j]
+            for layer in model.layers:
+                output = layer.forward(output)
+            test_error += model.loss(y_test[j], output)
+        mse_testerror = test_error / lentestinput    
+
+        print('epoch %d/%d   train_error=%f   test_error=%f' % (i+1, epochs, err, mse_testerror))
+    
+        # save the model if it is a good model < 5 MSE
+        if err <= 5 and mse_testerror <= 5:
+            save_model(model, err, mse_testerror)
