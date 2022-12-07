@@ -9,7 +9,7 @@ class Agent1RLNN(Agent):
     def __init__(self, graph, location):
         # initialize agent location
         super().__init__(location)
-        self.utility = pickle.load(open("game/pickles/u0.pickle", "rb"))
+        self.utility = pickle.load(open("game/pickles/OPTIMAL_U*.pickle", "rb"))
         self.vcomplete_model = load_model_for_agent(filename="OPTIMAL_VCOMPLETE_MODEL.pkl")
         self.shortest_distances = agent_to_pred_distances(graph)
 

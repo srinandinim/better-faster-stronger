@@ -5,6 +5,7 @@ import game.utils as utils
 import simulation_statistics
 import visualize_statistics
 from game.graph import Graph
+from game.game import Game
 
 
 def get_overall_simulation_statistics(wins, losses, timeouts, success_rates, found_prey=None, found_pred=None):
@@ -110,7 +111,7 @@ def labreport_simulation_statistics_agent3_rl():
 
     for _ in range(1):
         simulation_wins, simulation_losses, simulation_timeouts, simulation_success = simulation_statistics.agent3rl(
-            1, 50)
+            100, 50)
 
         wins.append(simulation_wins)
         losses.append(simulation_losses)
@@ -142,6 +143,9 @@ if __name__ == "__main__":
 
     # labreport_simulation_statistics_agent1_rl()
     # labreport_simulation_statistics_agent1_rl_nn()
-    visualize_statistics.visualize("data/", "simulation_statistics_complete.json")
+    #visualize_statistics.visualize("data/", "simulation_statistics_complete.json")
 
-    # labreport_simulation_statistics_agent3_rl()
+    labreport_simulation_statistics_agent3_rl()
+
+    # game = Game(nodes=50)
+    # game_success = game.run_agent_3_rl_debug()
