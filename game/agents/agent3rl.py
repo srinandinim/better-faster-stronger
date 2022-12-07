@@ -1,10 +1,10 @@
+import csv
 import pickle
 import random
 from copy import deepcopy
-from game.models.optimalvaluefunction import (agent_to_pred_distances,
-                                              get_future_reward)
+from game.models.optimalvaluefunction import (agent_to_pred_distances,get_future_reward)
+from neuralnetworks.utils import (vectorize_probability_dist, vectorize_probability_state)
 from .agent import Agent
-
 
 class Agent3RL(Agent):
     def __init__(self, graph, location):
@@ -56,8 +56,13 @@ class Agent3RL(Agent):
             if current_reward >= best_reward:
                 best_reward = current_reward
                 best_action = action
-        print(best_reward)
-
+    
+        # COMMENT OUT IF YOU"RE NOT GENERATING TRAINING DATA FOR V_PARTIAL
+        Y, X = best_reward, vectorize_probability_state(self.location, self.beliefs, predator.location)
+        with open('upartial_data.csv', 'a', newline='') as csvfile:
+            writer = csv.writer(csvfile)
+            writer.writerow([Y] + X)
+            
         self.location = best_action
         return len(self.prev_prey_locations), None
 
