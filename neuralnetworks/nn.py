@@ -103,7 +103,7 @@ class NeuralNetwork():
             result.append(output)
         return result
 
-def save_model(model, error, testerror = 0, filename=f"vcomplete_model"):
+def save_model(model, error, testerror = 0, filename=f"vpartial_model"):
     dirname = "/trainedmodels/"
     filepath = os.path.dirname(__file__) + dirname + filename
     with open(filepath + str(error) + "_" + str(testerror) + ".pkl", "wb") as file:
