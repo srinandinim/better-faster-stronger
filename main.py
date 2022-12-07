@@ -2,7 +2,8 @@ import json
 import os
 import game.models.optimalvaluefunction as optimalvaluefunction
 import game.utils as utils
-import simulation_statistics as simulation_statistics
+import simulation_statistics
+import visualize_statistics
 from game.graph import Graph
 
 
@@ -140,6 +141,7 @@ if __name__ == "__main__":
     # calculate_utility_values()
 
     # labreport_simulation_statistics_agent1_rl()
-    labreport_simulation_statistics_agent1_rl_nn()
+    # labreport_simulation_statistics_agent1_rl_nn()
+    visualize_statistics.visualize("data/", "simulation_statistics_complete.json")
 
     # labreport_simulation_statistics_agent3_rl()
