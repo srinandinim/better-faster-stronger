@@ -34,9 +34,9 @@ class Game:
         self.agent = None
 
         # analysis question finite possible state
-        self.agent_starting_location = 5
-        self.predator_location = 24 
-        self.prey.location = 24
+        # self.agent_starting_location = 5
+        # self.predator_location = 24
+        # self.prey.location = 24
 
         # stores the trajectories of the agent/predator/prey
         self.agent_trajectories = [self.agent_starting_location]
@@ -48,8 +48,6 @@ class Game:
 
         # initializes the number of steps the agent took
         self.steps = 0
-
-
 
     def step_return_values(self, status, found_prey, found_pred):
         """
@@ -107,7 +105,6 @@ class Game:
         * 0 if game in progress
         * -1 if agent looses 
         """
-        # print(f"THE NEIGHBORS ARE{self.graph.nbrs}")
         print("\nNEW RUN")
         print(f"prey is at {self.prey.location}")
         print(f"predator is at {self.predator.location}")
@@ -162,7 +159,7 @@ class Game:
             step_count = step_count + 1
             self.visualize_graph()
 
-        # self.visualize_graph_video()
+        self.visualize_graph_video()
 
         # agent timed out
         if status == 0:
@@ -274,8 +271,8 @@ class Game:
             self.agent.location, self.prey.location, self.predator.location)
         plt.figtext(0.5, 0.05, figure_text, ha="center", fontsize=10)
 
-        #trajectories = f"Agent: {self.agent_trajectories}\nPrey: {self.prey_trajectories}\nPredator: {self.predator_trajectories}"
-        #plt.figtext(0.1, 0.1, trajectories, ha="left", fontsize=8)
+        trajectories = f"Agent: {self.agent_trajectories}\nPrey: {self.prey_trajectories}\nPredator: {self.predator_trajectories}"
+        plt.figtext(0.1, 0.1, trajectories, ha="left", fontsize=8)
 
         plt.show()
 
@@ -312,7 +309,8 @@ class Game:
 
             nx.draw(G, pos=my_pos, node_color=color_map, with_labels=True)
 
-            figure_text = "Agent: {}, Prey: {}, Predator: {}".format(agent_location, prey_location, predator_location)
+            figure_text = "Agent: {}, Prey: {}, Predator: {}".format(
+                agent_location, prey_location, predator_location)
             plt.figtext(0.5, 0.05, figure_text, ha="center", fontsize=10)
 
             plt.savefig('figure' + str(i) + '.png')  # save this figure to disk
