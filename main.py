@@ -142,6 +142,6 @@ if __name__ == "__main__":
 
     # labreport_simulation_statistics_agent1_rl()
     # labreport_simulation_statistics_agent1_rl_nn()
-    visualize_statistics.visualize("data/", "simulation_statistics_complete.json")
+    # visualize_statistics.visualize("data/", "simulation_statistics_complete.json")
 
-    # labreport_simulation_statistics_agent3_rl()
+    labreport_simulation_statistics_agent3_rl()

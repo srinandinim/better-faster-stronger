@@ -207,7 +207,7 @@ class Game:
 
     def run_agent_3_rl(self):
         self.predator = Predator(self.predator_location)
-        self.agent = Agent3RL(self.agent_starting_location)
+        self.agent = Agent3RL(self.graph, self.agent_starting_location)
 
         status = 0
         step_count = 0
@@ -224,7 +224,7 @@ class Game:
 
     def run_agent_3_rl_debug(self):
         self.predator = Predator(self.predator_location)
-        self.agent = Agent3RL(self.agent_starting_location)
+        self.agent = Agent3RL(self.graph, self.agent_starting_location)
         self.visualize_graph()
 
         status = 0
