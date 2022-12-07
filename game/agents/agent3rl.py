@@ -68,8 +68,33 @@ class Agent3RL(Agent):
         """
         updates location based on assignment specifications given
         """
+        signal, surveyed_node = self.survey_node(prey)
+        if len(self.prev_prey_locations) == 0:
+            self.init_probs_step2(surveyed_node)
+        elif signal and len(self.prev_prey_locations) > 0:
+            self.init_probs_step3(surveyed_node)
+        elif not signal and len(self.prev_prey_locations) > 0:
+            self.init_probs_step4(surveyed_node)
+        self.normalize_beliefs()
 
-        return None, None
+        action_space = graph.get_node_neighbors(
+            self.location) + [self.location]
+
+        best_action = None
+        best_reward = -float("inf")
+        for action in action_space:
+            if action == predator.location:
+                current_reward = -float("inf")
+            else:
+                current_reward = -1 + self.partial_utility(action, predator)
+            if current_reward >= best_reward:
+                best_reward = current_reward
+                best_action = action
+
+        self.location = best_action
+        print(f"The action was to do {self.location}")
+
+        return len(self.prev_prey_locations), None
 
     def survey_node(self, prey):
         """
