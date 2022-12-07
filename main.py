@@ -109,7 +109,7 @@ def labreport_simulation_statistics_agent3_rl():
     timeouts = []
     success_rates = []
 
-    for _ in range(30):
+    for _ in range(1):
         simulation_wins, simulation_losses, simulation_timeouts, simulation_success = simulation_statistics.agent3rl(
             100, 50)
 
@@ -143,9 +143,9 @@ if __name__ == "__main__":
 
     # labreport_simulation_statistics_agent1_rl()
     # labreport_simulation_statistics_agent1_rl_nn()
-    visualize_statistics.visualize("data/", "simulation_statistics_complete.json")
+    #visualize_statistics.visualize("data/", "simulation_statistics_complete.json")
 
-    # labreport_simulation_statistics_agent3_rl()
+    labreport_simulation_statistics_agent3_rl()
 
     # game = Game(nodes=50)
     # game_success = game.run_agent_3_rl_debug()

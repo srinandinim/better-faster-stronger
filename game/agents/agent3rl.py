@@ -11,8 +11,7 @@ class Agent3RL(Agent):
         # initialize agent location
         super().__init__(location)
 
-        self.utility = pickle.load(
-            open("game/pickles/OPTIMAL_U*.pickle", "rb"))
+        self.utility = pickle.load(open("game/pickles/OPTIMAL_U*.pickle", "rb"))
         self.shortest_distances = agent_to_pred_distances(graph)
 
         # store the graph
@@ -28,8 +27,7 @@ class Agent3RL(Agent):
     def partial_utility(self, agent_loc, predator):
         temp_utility = dict()
         for prey_loc in range(1, self.graph.get_nodes() + 1):
-            u_star = get_future_reward(
-                self.graph, agent_loc, prey_loc, predator.location, self.shortest_distances, self.utility)
+            u_star = get_future_reward(self.graph, agent_loc, prey_loc, predator.location, self.shortest_distances, self.utility)
             temp_utility[(agent_loc, prey_loc, predator.location)] = self.beliefs.get(prey_loc) * u_star
 
         return sum(temp_utility.values())
@@ -47,8 +45,7 @@ class Agent3RL(Agent):
             self.init_probs_step4(surveyed_node)
         self.normalize_beliefs()
 
-        action_space = graph.get_node_neighbors(
-            self.location) + [self.location]
+        action_space = graph.get_node_neighbors(self.location) + [self.location]
 
         best_action = None
         best_reward = -float("inf")
@@ -60,6 +57,7 @@ class Agent3RL(Agent):
             if current_reward >= best_reward:
                 best_reward = current_reward
                 best_action = action
+        print(best_reward)
 
         self.location = best_action
         return len(self.prev_prey_locations), None

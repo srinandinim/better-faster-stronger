@@ -169,11 +169,8 @@ def get_future_reward(graph, agent_loc, prey_loc, pred_loc, shortest_distances, 
             next_state = (agent_loc, prey_next_state, pred_next_state)
             if u0[next_state] == -float("inf"):
                 return -float("inf")
-
-            gamma = 0.6 / \
-                len(pred_optimal_next) if pred_next_state in pred_optimal_next else 0
-            future_reward += u0[next_state] * \
-                ((1 / len(prey_next)) * (0.4 / len(pred_next) + gamma))
+            gamma = 0.6 / len(pred_optimal_next) if pred_next_state in pred_optimal_next else 0
+            future_reward += u0[next_state] * ((1 / len(prey_next)) * (0.4 / len(pred_next) + gamma))
 
     return future_reward
 
