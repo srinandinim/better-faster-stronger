@@ -1,1 +1,1 @@
-{"agent3rl": {"overall": {"avg-wins": 100.0, "avg-losses": 0.0, "avg-timeouts": 0.0, "avg-found-prey": null, "avg-found-pred": null, "avg-success-rates": 100.0}, "success-rates": [100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0]}}
+{"agent3rl": {"overall": {"avg-wins": 100.0, "avg-losses": 0.0, "avg-timeouts": 0.0, "avg-found-prey": null, "avg-found-pred": null, "avg-success-rates": 100.0}, "success-rates": [100.0]}}

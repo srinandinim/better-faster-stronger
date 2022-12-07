@@ -58,11 +58,14 @@ class Agent3RL(Agent):
                 best_action = action
     
         # COMMENT OUT IF YOU"RE NOT GENERATING TRAINING DATA FOR V_PARTIAL
+        """
         Y, X = best_reward, vectorize_probability_state(self.location, self.beliefs, predator.location)
-        with open('upartial_data.csv', 'a', newline='') as csvfile:
+        with open('neuralnetworks/trainingdata/upartial_data.csv', 'a', newline='') as csvfile:
             writer = csv.writer(csvfile)
-            writer.writerow([Y] + X)
-            
+            row = [Y] + X[0]
+            writer.writerow(row)        
+        """
+
         self.location = best_action
         return len(self.prev_prey_locations), None
 
