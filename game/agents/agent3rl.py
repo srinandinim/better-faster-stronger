@@ -29,7 +29,6 @@ class Agent3RL(Agent):
         for prey_loc in range(1, self.graph.get_nodes() + 1):
             u_star = get_future_reward(self.graph, agent_loc, prey_loc, predator.location, self.shortest_distances, self.utility)
             temp_utility[(agent_loc, prey_loc, predator.location)] = self.beliefs.get(prey_loc) * u_star
-
         return sum(temp_utility.values())
 
     def move(self, graph, prey, predator):
