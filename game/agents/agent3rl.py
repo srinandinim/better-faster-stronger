@@ -41,13 +41,11 @@ class Agent3RL(Agent):
         signal, surveyed_node = self.survey_node(prey)
         if len(self.prev_prey_locations) == 0:
             self.init_probs_step2(surveyed_node)
-        elif signal == True and len(self.prev_prey_locations) > 0:
+        elif signal and len(self.prev_prey_locations) > 0:
             self.init_probs_step3(surveyed_node)
-        elif signal == False and len(self.prev_prey_locations) > 0:
+        elif not signal and len(self.prev_prey_locations) > 0:
             self.init_probs_step4(surveyed_node)
         self.normalize_beliefs()
-
-        potential_prey_location = random.choice(self.get_highest_prob_nodes())
 
         action_space = graph.get_node_neighbors(
             self.location) + [self.location]
@@ -73,25 +71,25 @@ class Agent3RL(Agent):
 
         return None, None
 
-    def get_highest_prob_nodes(self):
-        """
-        HELPER:
-        RETURNS LIST OF ALL NODES OF EQUIVALENT HIGHEST PROBABILITY. 
-        """
-        PROB, nodes = max(self.beliefs.values()), []
-        for node, prob in self.beliefs.items():
-            if prob == PROB:
-                nodes.append(node)
-        return nodes
-
     def survey_node(self, prey):
         """
         HELPER:
         RETURNS (SIGNAL=T/F, NODE_SURVEYED=n_i)
         Indicates node surveyed and whether or not prey is there. 
         """
+
+        def get_highest_prob_nodes():
+            """
+            RETURNS LIST OF ALL NODES OF EQUIVALENT HIGHEST PROBABILITY. 
+            """
+            PROB, nodes = max(self.beliefs.values()), []
+            for node, prob in self.beliefs.items():
+                if prob == PROB:
+                    nodes.append(node)
+            return nodes
+        
         signal = False
-        node = random.choice(self.get_highest_prob_nodes())
+        node = random.choice(get_highest_prob_nodes())
         if prey.location == node:
             signal = True
             self.prev_prey_locations.append(node)
