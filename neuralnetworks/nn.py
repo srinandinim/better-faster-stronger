@@ -103,6 +103,17 @@ class NeuralNetwork():
             result.append(output)
         return result
 
+    def compute_output(input):
+        output = input
+        for layer in self.layers:
+            output = layer.forward(output)
+        return output
+
+    def back_propagate(expected, output, learning_rate):
+        error = self.loss_derivative(expected, output)
+        for layer in reversed(self.layers):
+            error = layer.backward(error, learning_rate)
+
 def save_model(model, error, testerror = 0, filename=f"vpartial_model"):
     dirname = "/trainedmodels/"
     filepath = os.path.dirname(__file__) + dirname + filename
