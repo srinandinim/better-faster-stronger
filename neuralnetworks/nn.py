@@ -6,38 +6,29 @@ import pickle
 def tanh(x):
     return np.tanh(x)
 
-
 def tanh_prime(x):
     return 1 - np.tanh(x)**2
-
 
 def ReLU(x):
     return max(0, x)
 
-
 def ReLU_prime(x):
     return x if x >= 0 else 0
-
 
 def tanh_prime(x):
     return 1 - np.tanh(x)**2
 
-
 def identity(x):
     return x
-
 
 def identity_prime(x):
     return 1
 
-
 def mse(y_true, y_pred):
     return np.mean(np.power(y_true-y_pred, 2))
 
-
 def mse_prime(y_true, y_pred):
     return 2*(y_pred-y_true)/y_true.size
-
 
 # NEURAL NETWORK CLASS STRUCTURE
 class Layer():
@@ -52,7 +43,6 @@ class DenseLinear(Layer):
     def forward(self, input):
         self.input = input
         self.output = np.dot(self.input, self.w) + self.b
-
         return self.output
 
     def backward(self, output_error, lr):
@@ -64,7 +54,6 @@ class DenseLinear(Layer):
 
         return input_error
 
-
 class NonLinearity(Layer):
     def __init__(self, activation, activation_derivative):
         self.activation = activation
@@ -73,12 +62,10 @@ class NonLinearity(Layer):
     def forward(self, input):
         self.input = input
         self.output = self.activation(self.input)
-
         return self.output
 
     def backward(self, output_error, learning_rate):
         return self.activation_derivative(self.input) * output_error
-
 
 class NeuralNetwork():
     def __init__(self):
