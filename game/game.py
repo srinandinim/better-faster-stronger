@@ -5,6 +5,7 @@ import game.utils as utils
 from .agents.agent1rl import Agent1RL
 from .agents.agent1rlnn import Agent1RLNN
 from .agents.agent3rl import Agent3RL
+from .agents.agent3rlnn import Agent3RLNN
 from .graph import Graph
 from .predator import Predator
 from .prey import Prey
@@ -225,6 +226,44 @@ class Game:
     def run_agent_3_rl_debug(self):
         self.predator = Predator(self.predator_location)
         self.agent = Agent3RL(self.graph, self.agent_starting_location)
+        self.visualize_graph()
+
+        status = 0
+        step_count = 0
+
+        while status == 0 and step_count < self.timeout:
+            status, _, _ = self.step_debug()
+            step_count = step_count + 1
+            self.visualize_graph()
+
+        self.visualize_graph_video()
+
+        # agent timed out
+        if status == 0:
+            status = -2
+
+        return status
+    
+    def run_agent_3_rlnn(self):
+        self.predator = Predator(self.predator_location)
+        self.agent = Agent3RLNN(self.graph, self.agent_starting_location)
+
+        status = 0
+        step_count = 0
+
+        while status == 0 and step_count < self.timeout:
+            status, _, _ = self.step()
+            step_count = step_count + 1
+
+        # agent timed out
+        if status == 0:
+            status = -2
+
+        return status
+
+    def run_agent_3_rl_nn_debug(self):
+        self.predator = Predator(self.predator_location)
+        self.agent = Agent3RLNN(self.graph, self.agent_starting_location)
         self.visualize_graph()
 
         status = 0

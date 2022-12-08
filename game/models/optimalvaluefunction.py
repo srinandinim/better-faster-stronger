@@ -226,7 +226,68 @@ def get_future_reward_prediction(graph, agent_loc, prey_loc, pred_loc, shortest_
 
     return future_reward
 
+def get_future_reward_prediction_partial_prey(graph, agent_loc, prey_beliefs, pred_loc, shortest_distances, model):
+    """
+    Function to return the future reward of the current state by considering all of the 'sister states',
+    or variations in the prey's and predator's location
+    @param:graph - the graph this function operates on
+    @param:agent_loc - the location of the agent
+    @param:prey_loc - the location of the prey
+    @param:pred_loc - the location of the predator
+    @param:shortest_distances - a dictionary containing the shortest distances between every pair of nodes
+    @param:model - an instance of nn that can run inference
+    @return the future reward from being in this state
+    """
 
+    def vectorize_coordinate(coordinate, length=50):
+        vector = []
+        for i in range(length):
+            if i == (coordinate-1):
+                vector.append(1)
+            else:
+                vector.append(0)
+        return vector
+
+    def vectorize_probability_dist(pdict):
+        """
+        takes a probability distribution dictionary
+        and returns a vector of size 1 x length. 
+
+        @param: pdict - {key=node, value=p(node)} 
+        """
+        p_vector = [0] * len(pdict)
+        for i in range(1, len(pdict)+1):
+            p_vector[i-1] = pdict[i] 
+        return p_vector 
+
+    def vectorize_probability_state(z_agent, p_prey, z_pred):
+        """
+        takes a state for partial prey environment and converts it to a vector of size 1 x 150
+        """
+        return vectorize_coordinate(z_agent) + vectorize_probability_dist(p_prey) + vectorize_coordinate(z_pred)
+    
+    pred_next = graph.nbrs[pred_loc]
+    pred_optimal_next = set(optimal_pred_moves(graph, agent_loc, pred_loc, shortest_distances))
+
+    future_reward = 0
+
+    for pred_next_state in pred_next:
+        # pre-process the input for prediction
+        x = vectorize_probability_state(agent_loc, prey_beliefs, pred_next_state)
+        x = np.asarray(x, dtype="float32")
+        x = x.reshape(1, x.shape[0])
+
+        # use the model to predict what the utility value should be 
+        pred_next_state_util = np.asarray(model.predict(x), dtype="float32").item()
+
+        # rewards for the model 
+        if pred_next_state_util <= -50: 
+            return -float("inf")
+
+        gamma = 0.6 / len(pred_optimal_next) if pred_next_state in pred_optimal_next else 0
+        future_reward += pred_next_state_util * (0.4 / len(pred_next) + gamma)
+
+    return future_reward
 
 # MAIN BELLMAN COMPUTATION
 def calculate_optimal_values(graph, shortest_distances, convergence_factor):

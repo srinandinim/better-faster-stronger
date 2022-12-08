@@ -57,7 +57,7 @@ def labreport_simulation_statistics_agent1_rl():
     timeouts = []
     success_rates = []
 
-    for _ in range(30):
+    for _ in range(1):
         simulation_wins, simulation_losses, simulation_timeouts, simulation_success = simulation_statistics.agent1rl(
             100, 50)
 
@@ -83,7 +83,7 @@ def labreport_simulation_statistics_agent1_rl_nn():
     timeouts = []
     success_rates = []
 
-    for _ in range(30):
+    for _ in range(1):
         simulation_wins, simulation_losses, simulation_timeouts, simulation_success = simulation_statistics.agent1rlnn(
             100, 50)
 
@@ -125,6 +125,31 @@ def labreport_simulation_statistics_agent3_rl():
     print(
         f"Agent3RL: Overall Success Rate: {round(sum(success_rates) / len(success_rates),2)}%")
 
+def labreport_simulation_statistics_agent3_rl_nn():
+    """
+    runs 100 simulations 30 times and returns the average 
+    """
+    wins = []
+    losses = []
+    timeouts = []
+    success_rates = []
+
+    for _ in range(1):
+        simulation_wins, simulation_losses, simulation_timeouts, simulation_success = simulation_statistics.agent3rlnn(
+            100, 50)
+
+        wins.append(simulation_wins)
+        losses.append(simulation_losses)
+        timeouts.append(simulation_timeouts)
+        success_rates.append(simulation_success)
+
+    agent_data = get_overall_simulation_statistics(
+        wins, losses, timeouts, success_rates)
+    save_simulation_statistics("partial-prey", "agent3rlnn", agent_data)
+
+    print(
+        f"Agent3RLNN: Overall Success Rate: {round(sum(success_rates) / len(success_rates),2)}%")
+
 
 def calculate_utility_values(filename="GAME_GRAPH.json"):
     game_graph = Graph(nbrs=utils.retrieve_graph(filename))
@@ -141,11 +166,12 @@ def calculate_utility_values(filename="GAME_GRAPH.json"):
 if __name__ == "__main__":
     # calculate_utility_values()
 
-    # labreport_simulation_statistics_agent1_rl()
-    # labreport_simulation_statistics_agent1_rl_nn()
+    labreport_simulation_statistics_agent1_rl()
+    labreport_simulation_statistics_agent1_rl_nn()
     #visualize_statistics.visualize("data/", "simulation_statistics_complete.json")
 
     labreport_simulation_statistics_agent3_rl()
+    labreport_simulation_statistics_agent3_rl_nn()
 
     # game = Game(nodes=50)
     # game_success = game.run_agent_3_rl_debug()
