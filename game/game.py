@@ -282,6 +282,10 @@ class Game:
 
         return status
 
+    def setup_q_learning(self):
+        return Agent(self.agent_starting_location), self.prey, Predator(self.predator_location), self.graph, self.timeout
+
+
     def visualize_graph_color_map(self):
         """
         grey: unoccupied node
