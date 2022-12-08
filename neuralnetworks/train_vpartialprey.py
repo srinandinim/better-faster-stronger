@@ -74,6 +74,9 @@ def sanity_check_data(filename="upartial_data_sanitycheckfinal.csv", start_idx=0
     return Y, X
 
 if __name__ == "__main__":
+
+    #### DO NOT DELETE ANY OF THIS, ALL CRUCIAL FOR TRAINING/LOADING/USING MODELS ####
+    
     # LOAD THE DATA INTO MEMORY
     # y_train, x_train = get_training_data()
     # y_test, x_test = get_testing_data()

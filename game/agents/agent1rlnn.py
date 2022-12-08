@@ -9,10 +9,8 @@ class Agent1RLNN(Agent):
     def __init__(self, graph, location):
         # initialize agent location
         super().__init__(location)
-        self.utility = pickle.load(open("game/pickles/OPTIMAL_U*.pickle", "rb"))
         self.vcomplete_model = load_model_for_agent(filename="OPTIMAL_VCOMPLETE_MODEL.pkl")
         self.shortest_distances = agent_to_pred_distances(graph)
-
 
     def move(self, graph, prey, predator):
         """
@@ -29,15 +27,6 @@ class Agent1RLNN(Agent):
                 current_reward = -float("inf")
             else:
                 current_state = (action, prey.location, predator.location)
-
-                # represent state s as input to network as x_i
-                x = np.asarray(vectorize_state(current_state), dtype="float32")
-                x = x.reshape(1, x.shape[0])
-
-                # use the model to predict what the utility value should be 
-                y_hat = np.asarray(self.vcomplete_model.predict(x), dtype="float32").item()
-                #print(y_hat)
-
                 current_reward = -1 + get_future_reward_prediction(graph, action, prey.location, predator.location, self.shortest_distances, self.vcomplete_model)
             
             if current_reward >= best_reward:
@@ -62,8 +51,7 @@ class Agent1RLNN(Agent):
             elif action == predator.location:
                 current_reward = -float("inf")
             else:
-                current_reward = -1 + get_future_reward(
-                    graph, action, prey.location, predator.location, self.shortest_distances, self.utility)
+                current_reward = -1 + get_future_reward_prediction(graph, action, prey.location, predator.location, self.shortest_distances, self.vcomplete_model)
             if current_reward >= best_reward:
                 best_reward = current_reward
                 best_action = action
