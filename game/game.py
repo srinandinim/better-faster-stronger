@@ -2,10 +2,10 @@ import random
 import matplotlib.pyplot as plt
 import networkx as nx
 import game.utils as utils
-from game.agents.agent1 import Agent1
-from game.agents.agent2 import Agent2
-from game.agents.agent3 import Agent3
-from game.agents.agent4 import Agent4
+from .agents.agent1 import Agent1
+from .agents.agent2 import Agent2
+from .agents.agent3 import Agent3
+from .agents.agent4 import Agent4
 from .agents.agent1rl import Agent1RL
 from .agents.agent1rlnn import Agent1RLNN
 from .agents.agent3rl import Agent3RL
@@ -400,7 +400,7 @@ class Game:
             status = -2
 
         return status
-    
+
     def run_agent_3_rlnn(self):
         self.predator = Predator(self.predator_location)
         self.agent = Agent3RLNN(self.graph, self.agent_starting_location)

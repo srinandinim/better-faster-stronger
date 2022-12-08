@@ -1,5 +1,6 @@
 from game.game import Game
 
+
 def agent1(num_simulations, nodes=50):
     """
     run simulation n times and get statistics on success
@@ -174,6 +175,7 @@ def agent3rl(num_simulations, nodes=50):
     print(
         f"Agent3RL: Wins: {wins}\tLosses: {losses}\tTimeouts: {timeouts}\tSuccess Rate: {round(success*100,2)}%")
     return wins, losses, timeouts, round(success*100, 2)
+
 
 def agent3rlnn(num_simulations, nodes=50):
     """

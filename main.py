@@ -5,7 +5,6 @@ import game.utils as utils
 import simulation_statistics
 import visualize_statistics
 from game.graph import Graph
-from game.game import Game
 
 
 def get_overall_simulation_statistics(wins, losses, timeouts, success_rates, found_prey=None, found_pred=None):
@@ -46,6 +45,7 @@ def save_simulation_statistics(setting, agent, agent_data):
 
     with open(filepath, "w") as fp:
         json.dump(data, fp)
+
 
 def labreport_simulation_statistics_agent1():
     """
@@ -232,6 +232,7 @@ def labreport_simulation_statistics_agent3_rl():
     print(
         f"Agent3RL: Overall Success Rate: {round(sum(success_rates) / len(success_rates),2)}%")
 
+
 def labreport_simulation_statistics_agent3_rl_nn():
     """
     runs 100 simulations 30 times and returns the average 
@@ -272,13 +273,15 @@ def calculate_utility_values(filename="GAME_GRAPH.json"):
 
 if __name__ == "__main__":
     # calculate_utility_values()
-    # visualize_statistics.visualize("data/", "simulation_statistics_complete.json")
-    labreport_simulation_statistics_agent1()
-    labreport_simulation_statistics_agent2()
-    labreport_simulation_statistics_agent3()
-    labreport_simulation_statistics_agent4()
-    labreport_simulation_statistics_agent1_rl()
-    labreport_simulation_statistics_agent1_rl_nn()
-    labreport_simulation_statistics_agent3_rl()
-    labreport_simulation_statistics_agent3_rl_nn()
 
+    # labreport_simulation_statistics_agent1()
+    # labreport_simulation_statistics_agent2()
+    # labreport_simulation_statistics_agent1_rl()
+    # labreport_simulation_statistics_agent1_rl_nn()
+    visualize_statistics.visualize("data/", "simulation_statistics_complete.json")
+
+    # labreport_simulation_statistics_agent3()
+    # labreport_simulation_statistics_agent4()
+    # labreport_simulation_statistics_agent3_rl()
+    # labreport_simulation_statistics_agent3_rl_nn()
+    visualize_statistics.visualize("data/", "simulation_statistics_partial-prey.json")
