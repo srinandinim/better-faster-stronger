@@ -3,6 +3,28 @@ from neuralnetworks.nn import *
 import random
 import numpy as np
  
+
+class Game_State:
+	def __init__(self, agent, prey, predator, beliefs, graph, game, P):
+		self.agent = agent
+		self.prey = prey
+		self.predator = predator
+		self.beliefs = beliefs
+		self.graph = graph
+		self.game = game
+		self.P = P
+
+
+	def retrieve_game():
+		return agent, prey, predator, beliefs, graph, game, P
+
+def init_new_game():
+	game = Game(nodes=nodes)
+	agent, prey, predator, graph, _ = game.setup_q_learning()
+	beliefs, P = belief_system_init()
+	return Game_State(agent, prey, predator, beliefs, graph, game, P)
+
+
 # HELPER FUNCTIONS ##############################
 
 def index_transform(action):
@@ -158,28 +180,39 @@ def process_nn_output(output, graph, agent_location, epsilon):
 
 	return best_action
 
+def compute_convergence_condition():
+	return False
+
 
 def train():
 
 	q_function = init_q_function()
 	epsilon, alpha = 0.1, 0.001
-	for i in range(0, 1000): # random number of games:
+	game_vector = []
+	number_of_games = 100
+	# gen a bunch of games
+	for _ in range(0, number_of_games):
+		game_vector.append(init_new_game())
 
-		# initialize a game
+	number_of_states_to_process = 100
 
-		game = Game(nodes=nodes)
-		agent, prey, predator, graph, timeout = game.setup_q_learning()
-		status = 0
-        step_count = 0
+	while not compute_convergence_condition():
+		loss_sum = 0
+		processed = set()
+		outputs, predicted = [], []
+		for i in range(0, number_of_states_to_process): # random number of games:
 
-        # INIT BELIEF SYSTEM
-        beliefs, P = belief_system_init()
+			# retrive a game
+			random_game_index = random.randint(0, number_of_games)
+			while random_game_index not in processed:
+				 random_game_index = random.randint(0, number_of_games)
 
-        found_prey = False
-
-        while status == 0 and step_count < timeout:
-        	
-			#survey a node
+			processed.add(random_game_index)
+			cur_game_state = game_vector[random_game_index]
+			agent, prey, predator, beliefs, graph, game, P = cur_game_state.retrieve_game()
+			game_over = False
+	        	
+			# 	#survey a node
 			beliefs, temp_found_prey = survey_function(graph, beliefs, prey)
 			found_prey = found_prey or temp_found_prey
 
@@ -190,14 +223,15 @@ def train():
 			next_move = process_nn_output(initial_evaluation, graph, agent.location, epsilon) 
 
 
-			# calculate value iteration from and loss for each action we can take from here
+				# calculate value iteration from and loss for each action we can take from here
 			action_space = graph.get_node_neighbors(agent.location) + [agent.location] # this is Q(s,a)
 			for action in action_space:
 				new_state_vector = get_state_vector(action, beliefs, predator.location) # the new vector describing s_{t + 1} from taking an action
 				future_evaluation = np.asarray(q_function.compute_output(state_vector), dtype="float32") # a set of vectors describing Q(s_{t+1}, a)
 				optimal_future_action = process_nn_output(future_evaluation, graph, action, 0) # maximum action
 				q_s_prime_a = -1 + future_evaluation[index_transform(optimal_future_action)] # maximum Q(s_{t+1}, a)
-				q_function.back_propagate(q_s_prime_a, initial_evaluation[index_transform(action)], alpha) # back propage the loss
+				outputs.append(initial_evaluation[index_transform(action)])
+				predicted.append(q_s_prime_a)
 
 
 			# move
@@ -206,25 +240,26 @@ def train():
 			beliefs = update_belief_system_after_moving(beliefs, agent, graph, found_prey)
 
 			if agent.location == prey.location:
-				status = 1
+				game_over = True
 			if agent.location == predator.location:
-				status = -1
-
+				game_over = True
 			prey.move(graph)
 			if agent.location == prey.location:
-				status = 1
+				game_over = True
 
 			predator.move(graph, agent)
 			
 			if agent.location == predator.location:
-				status = -1 
+				game_over = True
 
 			# update belief system for the prey moving
 
 			beliefs = update_belief_system_after_prey_moves(beliefs, P)
 
-            step_count = step_count + 1
-		
-		# agent timed out
-		if status == 0:
-        	status = -2
+			game_vector[random_game_index] = init_new_game() if game_over else Game_State(agent, prey, predator, beliefs, graph, game, P)
+
+            # step_count = step_count + 1
+
+		# back propagate loss
+		for i in range(len(predicted)):
+			q_function.back_propagate(predicted[i], outputs[i], alpha) # back propage the loss
