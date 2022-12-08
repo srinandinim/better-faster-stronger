@@ -180,14 +180,14 @@ def process_nn_output(output, graph, agent_location, epsilon):
 
 	return best_action
 
-def compute_convergence_condition():
-	return False
+def compute_convergence_condition(avg_loss, delta):
+	return avg_loss < delta
 
 
 def train():
 
 	q_function = init_q_function()
-	epsilon, alpha = 0.1, 0.001
+	epsilon, alpha, delta = 0.1, 0.001, 0.1
 	game_vector = []
 	number_of_games = 100
 	# gen a bunch of games
@@ -195,8 +195,9 @@ def train():
 		game_vector.append(init_new_game())
 
 	number_of_states_to_process = 100
+	avg_loss = float("inf")
 
-	while not compute_convergence_condition():
+	while not compute_convergence_condition(avg_loss, delta):
 		loss_sum = 0
 		processed = set()
 		outputs, predicted = [], []
@@ -261,5 +262,10 @@ def train():
             # step_count = step_count + 1
 
 		# back propagate loss
+		loss_sum = 0
 		for i in range(len(predicted)):
+			loss_sum = loss_sum + (predicted[i] - outputs[i])
 			q_function.back_propagate(predicted[i], outputs[i], alpha) # back propage the loss
+		avg_loss = loss_sum / len(predicted)
+
+	train()
