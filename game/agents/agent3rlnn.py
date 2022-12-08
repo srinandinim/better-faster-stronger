@@ -1,17 +1,18 @@
 import csv
 import pickle
 import random
+import numpy as np 
 from copy import deepcopy
-from game.models.optimalvaluefunction import (agent_to_pred_distances,get_future_reward)
-from neuralnetworks.utils import (vectorize_probability_dist, vectorize_probability_state)
+from game.models.optimalvaluefunction import (agent_to_pred_distances)
+from neuralnetworks.utils import (vectorize_probability_state, load_model_for_agent)
 from .agent import Agent
 
-class Agent3RL(Agent):
+class Agent3RLNN(Agent):
     def __init__(self, graph, location):
         # initialize agent location
         super().__init__(location)
 
-        self.utility = pickle.load(open("game/pickles/OPTIMAL_U*.pickle", "rb"))
+        self.vpartial_model = load_model_for_agent(filename="OPTIMAL_VPARTIAL_MODEL.pkl")
         self.shortest_distances = agent_to_pred_distances(graph)
 
         # store the graph
@@ -23,13 +24,6 @@ class Agent3RL(Agent):
 
         # list of all prey prev locations
         self.prev_prey_locations = []
-
-    def partial_utility(self, agent_loc, predator):
-        temp_utility = dict()
-        for prey_loc in range(1, self.graph.get_nodes() + 1):
-            u_star = get_future_reward(self.graph, agent_loc, prey_loc, predator.location, self.shortest_distances, self.utility)
-            temp_utility[(agent_loc, prey_loc, predator.location)] = self.beliefs.get(prey_loc) * u_star
-        return sum(temp_utility.values())
 
     def move(self, graph, prey, predator):
         """
@@ -52,19 +46,16 @@ class Agent3RL(Agent):
             if action == predator.location:
                 current_reward = -float("inf")
             else:
-                current_reward = -1 + self.partial_utility(action, predator)
+                x = vectorize_probability_state(action, self.beliefs, predator.location)
+                x = np.asarray(x, dtype="float32")
+                x = x.reshape(1, x.shape[0])
+                y_hat = np.asarray(self.vcomplete_model.predict(x), dtype="float32").item()
+                current_reward = -1 + y_hat
+
             if current_reward >= best_reward:
                 best_reward = current_reward
                 best_action = action
     
-        # COMMENT OUT IF YOU"RE NOT GENERATING TRAINING DATA FOR V_PARTIAL
-        """
-        Y, X = best_reward, vectorize_probability_state(self.location, self.beliefs, predator.location)
-        with open('neuralnetworks/trainingdata/upartial_data_sanitycheckfinal.csv', 'a', newline='') as csvfile:
-            writer = csv.writer(csvfile)
-            row = [Y] + X
-            writer.writerow(row)        
-        """
         self.location = best_action
         return len(self.prev_prey_locations), None
 

@@ -99,6 +99,7 @@ if __name__ == "__main__":
     # TRAIN THE MODEL WITH RESPECT TO THE DATAPOINTS
     # train(dnn_v_complete, x, y, 100, 0.001)
 
+    """
     # LOAD IN DATASET FOR TESTING THE MODEL
     Y_TEST, X_TEST = sanity_check_data()
 
@@ -115,3 +116,5 @@ if __name__ == "__main__":
         total_mse_error += dnn_vpartial.loss(Y_TEST[i], output)
 
     print(f"The total testing error on {len(X_TEST)} examples is {total_mse_error/len(X_TEST)}.")
+    """
+
