@@ -3,7 +3,7 @@ import pickle
 import random
 import numpy as np 
 from copy import deepcopy
-from game.models.optimalvaluefunction import (agent_to_pred_distances)
+from game.models.optimalvaluefunction import (agent_to_pred_distances, get_future_reward_prediction_partial_prey)
 from neuralnetworks.utils import (vectorize_probability_state, load_model_for_agent)
 from .agent import Agent
 
@@ -46,12 +46,7 @@ class Agent3RLNN(Agent):
             if action == predator.location:
                 current_reward = -float("inf")
             else:
-                x = vectorize_probability_state(action, self.beliefs, predator.location)
-                x = np.asarray(x, dtype="float32")
-                x = x.reshape(1, x.shape[0])
-                y_hat = np.asarray(self.vcomplete_model.predict(x), dtype="float32").item()
-                current_reward = -1 + y_hat
-
+                current_reward = -1 + get_future_reward_prediction_partial_prey(graph, action, self.beliefs, predator.location, self.shortest_distances, self.vpartial_model)
             if current_reward >= best_reward:
                 best_reward = current_reward
                 best_action = action

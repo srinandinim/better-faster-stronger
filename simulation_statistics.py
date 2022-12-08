@@ -80,7 +80,7 @@ def agent3rlnn(num_simulations, nodes=50):
     timeouts = 0
     for _ in range(num_simulations):
         game = Game(nodes=nodes)
-        game_success = game.run_agent_1_rl_nn()
+        game_success = game.run_agent_3_rlnn()
 
         # agent caught the prey = 1, predator caught the agent/timeout = 0
         agent_success.append(1 if game_success == 1 else 0)

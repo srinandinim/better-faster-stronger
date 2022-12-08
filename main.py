@@ -148,7 +148,7 @@ def labreport_simulation_statistics_agent3_rl_nn():
     save_simulation_statistics("partial-prey", "agent3rlnn", agent_data)
 
     print(
-        f"Agent3RL: Overall Success Rate: {round(sum(success_rates) / len(success_rates),2)}%")
+        f"Agent3RLNN: Overall Success Rate: {round(sum(success_rates) / len(success_rates),2)}%")
 
 
 def calculate_utility_values(filename="GAME_GRAPH.json"):
@@ -170,7 +170,7 @@ if __name__ == "__main__":
     # labreport_simulation_statistics_agent1_rl_nn()
     #visualize_statistics.visualize("data/", "simulation_statistics_complete.json")
 
-    labreport_simulation_statistics_agent3_rl()
+    # labreport_simulation_statistics_agent3_rl()
     labreport_simulation_statistics_agent3_rl_nn()
 
     # game = Game(nodes=50)
