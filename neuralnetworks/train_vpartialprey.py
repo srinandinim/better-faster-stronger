@@ -51,7 +51,7 @@ def get_testing_data(filename="upartial_data.csv", start_idx=60000, end_idx=7000
     # returns the
     return Y, X
 
-def sanity_check_data(filename="upartial_data_sanitycheckfinal.csv", start_idx=0, end_idx=1000000):
+def sanity_check_data(filename="TESTING_VPARTIAL_DATASET.csv", start_idx=0, end_idx=1000000):
     """
     retrieves the start:end datapoints for the targets Y and input features X
     """
@@ -157,7 +157,7 @@ if __name__ == "__main__":
                 for layer in dnn_vpartial.layers:
                     output = layer.forward(output)
                 prediction += p * output 
-        total_mse_error += p * dnn_vpartial.loss(Y_TEST[i], prediction)
+        total_mse_error += dnn_vpartial.loss(Y_TEST[i], prediction)
 
     print(f"The total average MSE testing error on {len(X_TEST)} examples is {total_mse_error/len(X_TEST)}.")
     
