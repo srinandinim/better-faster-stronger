@@ -23,7 +23,8 @@ def visualize(dirname, filename):
     stds = []
     for agent, value in data.items():
         agent_split = re.split(r'(\d+)', agent)
-        agents.append(f'{agent_split[0].capitalize()} {agent_split[1]} {agent_split[2].upper()}')
+        agents.append(
+            f'{agent_split[0].capitalize()} {agent_split[1]} {agent_split[2].upper()}')
 
         success_rates = value['success-rates']
         np_success_rates = np.array(success_rates)
@@ -32,7 +33,8 @@ def visualize(dirname, filename):
 
     # create the bar graph with error bars
     x_pos = np.arange(len(agents))
-    colors = ["cornflowerblue", "mediumaquamarine", "cadetblue", "lightslategrey"]
+    colors = ["cornflowerblue", "mediumaquamarine",
+              "cadetblue", "lightslategrey"]
 
     _, axes = plt.subplots()
     axes.bar(x_pos, means, color=colors, yerr=stds,
