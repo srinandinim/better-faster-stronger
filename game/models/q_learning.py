@@ -1,7 +1,8 @@
 
 from neuralnetworks.nn import *
 import random
-
+import numpy as np
+ 
 # HELPER FUNCTIONS ##############################
 
 def index_transform(action):
@@ -138,7 +139,8 @@ def get_state_vector(a_loc, beliefs, p_loc):
 	state_vector[index_transform(a_loc)] = 1
 	state_vector[50:100] = beliefs
 	state_vector[100 + index_transform(p_loc)] = 1
-	return state_vector
+	state_vector = np.asarray(state_vector, dtype="float32")
+	return state_vector.reshape(state_vector.shape[0])
 
 def process_nn_output(output, graph, agent_location, epsilon):
 	'''
@@ -184,7 +186,7 @@ def train():
 
 			# initial evaluation of the q_function on the state_vector
 			state_vector = get_state_vector(agent.location, beliefs, predator.location)
-			initial_evaluation = q_function.compute_output(state_vector)
+			initial_evaluation = np.asarray(q_function.compute_output(state_vector), dtype="float32")
 			next_move = process_nn_output(initial_evaluation, graph, agent.location, epsilon) 
 
 
@@ -192,7 +194,7 @@ def train():
 			action_space = graph.get_node_neighbors(agent.location) + [agent.location] # this is Q(s,a)
 			for action in action_space:
 				new_state_vector = get_state_vector(action, beliefs, predator.location) # the new vector describing s_{t + 1} from taking an action
-				future_evaluation = q_function.compute_output(state_vector) # a set of vectors describing Q(s_{t+1}, a)
+				future_evaluation = np.asarray(q_function.compute_output(state_vector), dtype="float32") # a set of vectors describing Q(s_{t+1}, a)
 				optimal_future_action = process_nn_output(future_evaluation, graph, action, 0) # maximum action
 				q_s_prime_a = -1 + future_evaluation[index_transform(optimal_future_action)] # maximum Q(s_{t+1}, a)
 				q_function.back_propagate(q_s_prime_a, initial_evaluation[index_transform(action)], alpha) # back propage the loss
