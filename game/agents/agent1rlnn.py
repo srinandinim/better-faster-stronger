@@ -5,18 +5,21 @@ from neuralnetworks.utils import vectorize_state, load_model_for_agent
 import numpy as np
 import pickle
 
+
 class Agent1RLNN(Agent):
     def __init__(self, graph, location):
         # initialize agent location
         super().__init__(location)
-        self.vcomplete_model = load_model_for_agent(filename="OPTIMAL_VCOMPLETE_MODEL.pkl")
+        self.vcomplete_model = load_model_for_agent(
+            filename="OPTIMAL_VCOMPLETE_MODEL.pkl")
         self.shortest_distances = agent_to_pred_distances(graph)
 
     def move(self, graph, prey, predator):
         """
         updates location based on assignment specifications given
         """
-        action_space = graph.get_node_neighbors(self.location) + [self.location]
+        action_space = graph.get_node_neighbors(
+            self.location) + [self.location]
 
         best_action = None
         best_reward = -float("inf")
@@ -27,8 +30,9 @@ class Agent1RLNN(Agent):
                 current_reward = -float("inf")
             else:
                 current_state = (action, prey.location, predator.location)
-                current_reward = -1 + get_future_reward_prediction(graph, action, prey.location, predator.location, self.shortest_distances, self.vcomplete_model)
-            
+                current_reward = -1 + get_future_reward_prediction(
+                    graph, action, prey.location, predator.location, self.shortest_distances, self.vcomplete_model)
+
             if current_reward >= best_reward:
                 best_reward = current_reward
                 best_action = action
@@ -51,7 +55,8 @@ class Agent1RLNN(Agent):
             elif action == predator.location:
                 current_reward = -float("inf")
             else:
-                current_reward = -1 + get_future_reward_prediction(graph, action, prey.location, predator.location, self.shortest_distances, self.vcomplete_model)
+                current_reward = -1 + get_future_reward_prediction(
+                    graph, action, prey.location, predator.location, self.shortest_distances, self.vcomplete_model)
             if current_reward >= best_reward:
                 best_reward = current_reward
                 best_action = action
