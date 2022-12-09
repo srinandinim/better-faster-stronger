@@ -103,13 +103,13 @@ class NeuralNetwork():
             result.append(output)
         return result
 
-    def compute_output(input):
+    def compute_output(self, input):
         output = input
         for layer in self.layers:
             output = layer.forward(output)
         return output
 
-    def back_propagate(expected, output, learning_rate):
+    def back_propagate(self, expected, output, learning_rate):
         error = self.loss_derivative(expected, output)
         for layer in reversed(self.layers):
             error = layer.backward(error, learning_rate)
