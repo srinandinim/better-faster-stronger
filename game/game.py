@@ -39,9 +39,9 @@ class Game:
         self.agent = None
 
         # analysis question finite possible state
-        # self.agent_starting_location = 5
-        # self.predator_location = 24
-        # self.prey.location = 24
+        self.agent_starting_location = 35
+        self.predator_location = 46
+        self.prey.location = 2
 
         # stores the trajectories of the agent/predator/prey
         self.agent_trajectories = [self.agent_starting_location]
@@ -133,7 +133,7 @@ class Game:
             return -1, found_prey, found_pred
 
         return 0, found_prey, found_pred
-
+    
     def run_agent_1(self):
         self.predator = Predator(self.predator_location)
         self.agent = Agent1(self.agent_starting_location)
@@ -438,6 +438,50 @@ class Game:
             status = -2
 
         return status
+
+    def run_complete_agents(self):
+        self.predator = Predator(self.predator_location)
+        agent1 = Agent1(self.agent_starting_location)
+        agent2 = Agent2(self.agent_starting_location)
+        agent1rl = Agent1RL(self.graph, self.agent_starting_location)
+
+        self.agent = agent1rl
+
+        agents = [agent1, agent2, agent1rl]
+        agent_trajectories = {0: [agent1.location], 1: [agent2.location], 2: [agent1rl.location]}
+
+        count = 0
+        while count < 2:
+            for i, agent in enumerate(agents):
+                if agent is not None:
+                    agent.move(self.graph, self.prey, self.predator)
+                    agent_trajectories[i].append(agent.location)
+                    if agent.location == self.prey.location:
+                        agent_trajectories[i].append("DIED PREY")
+                        agents[i] = None
+                        count = count + 1
+                    elif agent.location == self.predator.location:
+                        agent_trajectories[i].append("DIED PRED")
+                        agents[i] = None
+                        count = count + 1
+            
+                self.prey.move(self.graph)
+                self.prey_trajectories.append(self.prey.location)
+                for i, agent in enumerate(agents):
+                    if agent is not None and agent.location == self.prey.location:
+                        agent_trajectories[i].append("DIED PREY")
+                        agents[i] = None
+                        count = count + 1
+
+                self.predator.move(self.graph, self.agent)
+                self.predator_trajectories.append(self.predator.location)
+                for i, agent in enumerate(agents):
+                    if agent is not None and agent.location == self.predator.location:
+                        agent_trajectories[i].append("DIED PRED")
+                        agents[i] = None
+                        count = count + 1
+
+        return agent_trajectories, self.prey_trajectories, self.predator_trajectories
 
     def visualize_graph_color_map(self):
         """

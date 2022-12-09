@@ -1,5 +1,6 @@
 import json
 import os
+from game.game import Game
 import game.models.optimalvaluefunction as optimalvaluefunction
 import game.utils as utils
 import simulation_statistics
@@ -285,3 +286,12 @@ if __name__ == "__main__":
     # labreport_simulation_statistics_agent3_rl()
     # labreport_simulation_statistics_agent3_rl_nn()
     visualize_statistics.visualize("data/", "simulation_statistics_partial-prey.json")
+
+    game = Game()
+    
+    # trajectories, predator_location, prey_trajectories = game.run_complete_agents()
+    # print(trajectories)
+    # print()
+    # print(predator_location)
+    # print()
+    # print(prey_trajectories)
