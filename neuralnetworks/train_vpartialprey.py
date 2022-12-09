@@ -51,7 +51,7 @@ def get_testing_data(filename="upartial_data.csv", start_idx=60000, end_idx=7000
     # returns the
     return Y, X
 
-def sanity_check_data(filename="upartial_data_sanitycheckfinal.csv", start_idx=0, end_idx=1000000):
+def sanity_check_data(filename="TESTING_VPARTIAL_DATASET.csv", start_idx=0, end_idx=1000000):
     """
     retrieves the start:end datapoints for the targets Y and input features X
     """
@@ -72,6 +72,24 @@ def sanity_check_data(filename="upartial_data_sanitycheckfinal.csv", start_idx=0
 
     # returns the
     return Y, X
+
+def split_array(a):
+  # get the first 50 elements of the array
+  first_50 = a[:, :50]
+
+  # get the middle 50 elements of the array
+  middle_50 = a[:, 50:100]
+
+  # get the last 50 elements of the array
+  last_50 = a[:, 100:]
+
+  return first_50, middle_50, last_50
+
+def join_arrays(first_50, middle_50, last_50):
+  # stack the arrays along the second dimension (columns)
+  joined_array = np.hstack((first_50, middle_50, last_50))
+
+  return joined_array
 
 if __name__ == "__main__":
 
@@ -102,22 +120,45 @@ if __name__ == "__main__":
     # TRAIN THE MODEL WITH RESPECT TO THE DATAPOINTS
     # train(dnn_v_complete, x, y, 100, 0.001)
 
-    """
+    
     # LOAD IN DATASET FOR TESTING THE MODEL
     Y_TEST, X_TEST = sanity_check_data()
 
     # TEST THE PERFORMANCE OF THE TRAINED MODEL ON A TESTING DATASET
-    dnn_vpartial = load_model_for_testing(filename="OPTIMAL_VPARTIAL_MODEL.pkl")
+    dnn_vpartial = load_model_for_testing(filename="OPTIMAL_VCOMPLETE_MODEL.pkl")
 
+    """
     # FIND OUT THE TESTING ERROR
     total_mse_error = 0 
     for i in range(len(X_TEST)):
         # print(i)
+        print(X_TEST[i])
         output = X_TEST[i]
         for layer in dnn_vpartial.layers:
             output = layer.forward(output)
         total_mse_error += dnn_vpartial.loss(Y_TEST[i], output)
-
-    print(f"The total testing error on {len(X_TEST)} examples is {total_mse_error/len(X_TEST)}.")
+    
     """
+    
+    # ANALYSIS QUESTION -- REPLACE U WITH V IN PARTIAL
+    total_mse_error = 0 
+    for i in range(len(X_TEST)):
+        print(i)
+        agent, prey, pred = split_array(X_TEST[i])
+        prediction = 0 
+        for j in range(0, 50):
+            prey_one_hot_vector = np.zeros((1,50))
+            prey_one_hot_vector[0, j] = 1 
+            p = prey[0, j]
+
+            if p != 0: 
+                x = join_arrays(agent, prey_one_hot_vector, pred)
+                output = x 
+                for layer in dnn_vpartial.layers:
+                    output = layer.forward(output)
+                prediction += p * output 
+        total_mse_error += dnn_vpartial.loss(Y_TEST[i], prediction)
+
+    print(f"The total average MSE testing error on {len(X_TEST)} examples is {total_mse_error/len(X_TEST)}.")
+    
 
