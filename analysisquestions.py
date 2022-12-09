@@ -15,10 +15,11 @@ def visualize_graph(graph_filename="GAME_GRAPH.json"):
     nx.draw(G, pos=my_pos,
             node_color=["grey" for _ in graph.get_neighbors()], with_labels=True)
 
-    plt.show()
+    
+    figname = "graphs/" + graph_filename.split(".")[0] + ".png"
+    plt.savefig(figname)
 
-    # figname = "graphs/" + graph_filename.split(".")[0] + ".png"
-    # plt.savefig(figname)
+    plt.show()
 
 
 if __name__ == "__main__":
