@@ -27,7 +27,7 @@ def agent1(num_simulations, nodes=50):
     success = wins/(len(agent_success))
     print(
         f"Agent1: Wins: {wins}\tLosses: {losses}\tTimeouts: {timeouts}\tSuccess Rate: {round(success*100,2)}%")
-    return wins, losses, timeouts, round(success*100, 2), step_counts
+    return wins, losses, timeouts, round(success*100, 2), round(sum(step_counts)/len(step_counts), 2)
 
 
 def agent2(num_simulations, nodes=50):
@@ -56,7 +56,7 @@ def agent2(num_simulations, nodes=50):
     success = wins/(len(agent_success))
     print(
         f"Agent2: Wins: {wins}\tLosses: {losses}\tTimeouts: {timeouts}\tSuccess Rate: {round(success*100,2)}%")
-    return wins, losses, timeouts, round(success*100, 2), step_counts
+    return wins, losses, timeouts, round(success*100, 2), round(sum(step_counts)/len(step_counts), 2)
 
 
 def agent3(num_simulations, nodes=50):
@@ -89,7 +89,7 @@ def agent3(num_simulations, nodes=50):
     success = wins/(len(agent_success))
     print(
         f"Agent3: Wins: {wins}\tLosses: {losses}\tTimeouts: {timeouts}\tSuccess Rate: {round(success*100,2)}%")
-    return wins, losses, timeouts, round(success*100, 2), found_prey/num_simulations, step_counts
+    return wins, losses, timeouts, round(success*100, 2), found_prey/num_simulations, round(sum(step_counts)/len(step_counts), 2)
 
 
 def agent4(num_simulations, nodes=50):
@@ -122,7 +122,7 @@ def agent4(num_simulations, nodes=50):
     success = wins/(len(agent_success))
     print(
         f"Agent4: Wins: {wins}\tLosses: {losses}\tTimeouts: {timeouts}\tSuccess Rate: {round(success*100,2)}%")
-    return wins, losses, timeouts, round(success*100, 2), found_prey/num_simulations, step_counts
+    return wins, losses, timeouts, round(success*100, 2), found_prey/num_simulations, round(sum(step_counts)/len(step_counts), 2)
 
 
 def agent1rl(num_simulations, nodes=50):
@@ -151,7 +151,7 @@ def agent1rl(num_simulations, nodes=50):
     success = wins/(len(agent_success))
     print(
         f"Agent1RL: Wins: {wins}\tLosses: {losses}\tTimeouts: {timeouts}\tSuccess Rate: {round(success*100,2)}%")
-    return wins, losses, timeouts, round(success*100, 2), step_counts
+    return wins, losses, timeouts, round(success*100, 2), round(sum(step_counts)/len(step_counts), 2)
 
 
 def agent1rlnn(num_simulations, nodes=50):
@@ -180,7 +180,7 @@ def agent1rlnn(num_simulations, nodes=50):
     success = wins/(len(agent_success))
     print(
         f"Agent1RLNN: Wins: {wins}\tLosses: {losses}\tTimeouts: {timeouts}\tSuccess Rate: {round(success*100,2)}%")
-    return wins, losses, timeouts, round(success*100, 2), step_counts
+    return wins, losses, timeouts, round(success*100, 2), round(sum(step_counts)/len(step_counts), 2)
 
 
 def agent3rl(num_simulations, nodes=50):
@@ -209,7 +209,7 @@ def agent3rl(num_simulations, nodes=50):
     success = wins/(len(agent_success))
     print(
         f"Agent3RL: Wins: {wins}\tLosses: {losses}\tTimeouts: {timeouts}\tSuccess Rate: {round(success*100,2)}%")
-    return wins, losses, timeouts, round(success*100, 2), step_counts
+    return wins, losses, timeouts, round(success*100, 2), round(sum(step_counts)/len(step_counts), 2)
 
 
 def agent3rlnn(num_simulations, nodes=50):
@@ -238,4 +238,4 @@ def agent3rlnn(num_simulations, nodes=50):
     success = wins/(len(agent_success))
     print(
         f"Agent3RLNN: Wins: {wins}\tLosses: {losses}\tTimeouts: {timeouts}\tSuccess Rate: {round(success*100,2)}%")
-    return wins, losses, timeouts, round(success*100, 2), step_counts
+    return wins, losses, timeouts, round(success*100, 2), round(sum(step_counts)/len(step_counts), 2)
