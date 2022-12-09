@@ -100,7 +100,7 @@ def visualize_step_counts(dirname, filename):
     plt.title(f'{setting.title()} Agents\' Average Steps to Catch Prey')
     axes.set_xticks(x_pos)
     axes.set_xticklabels(agents)
-    # plt.gca().set_ylim(bottom=0, top=105)
+    plt.gca().set_ylim(bottom=0, top=80)
     plt.ylabel('Average Steps')
 
     # save the bar graph
