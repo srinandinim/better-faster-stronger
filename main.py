@@ -68,7 +68,7 @@ def labreport_simulation_statistics_agent1():
         losses.append(simulation_losses)
         timeouts.append(simulation_timeouts)
         success_rates.append(simulation_success)
-        step_counts.extend(simulation_steps)
+        step_counts.append(simulation_steps)
 
     agent_data = get_overall_simulation_statistics(
         wins, losses, timeouts, success_rates, step_counts)
@@ -96,7 +96,7 @@ def labreport_simulation_statistics_agent2():
         losses.append(simulation_losses)
         timeouts.append(simulation_timeouts)
         success_rates.append(simulation_success)
-        step_counts.extend(simulation_steps)
+        step_counts.append(simulation_steps)
 
     agent_data = get_overall_simulation_statistics(
         wins, losses, timeouts, success_rates, step_counts)
@@ -126,7 +126,7 @@ def labreport_simulation_statistics_agent3():
         timeouts.append(simulation_timeouts)
         success_rates.append(simulation_success)
         found_prey.append(simulation_found_prey)
-        step_counts.extend(simulation_steps)
+        step_counts.append(simulation_steps)
 
     agent_data = get_overall_simulation_statistics(
         wins, losses, timeouts, success_rates, step_counts, found_prey=found_prey)
@@ -156,7 +156,7 @@ def labreport_simulation_statistics_agent4():
         timeouts.append(simulation_timeouts)
         success_rates.append(simulation_success)
         found_prey.append(simulation_found_prey)
-        step_counts.extend(simulation_steps)
+        step_counts.append(simulation_steps)
 
     agent_data = get_overall_simulation_statistics(
         wins, losses, timeouts, success_rates, step_counts, found_prey=found_prey)
@@ -184,7 +184,7 @@ def labreport_simulation_statistics_agent1_rl():
         losses.append(simulation_losses)
         timeouts.append(simulation_timeouts)
         success_rates.append(simulation_success)
-        step_counts.extend(simulation_steps)
+        step_counts.append(simulation_steps)
 
     agent_data = get_overall_simulation_statistics(
         wins, losses, timeouts, success_rates, step_counts)
@@ -213,7 +213,7 @@ def labreport_simulation_statistics_agent1_rl_nn():
         losses.append(simulation_losses)
         timeouts.append(simulation_timeouts)
         success_rates.append(simulation_success)
-        step_counts.extend(simulation_steps)
+        step_counts.append(simulation_steps)
 
     agent_data = get_overall_simulation_statistics(
         wins, losses, timeouts, success_rates, step_counts)
@@ -241,7 +241,7 @@ def labreport_simulation_statistics_agent3_rl():
         losses.append(simulation_losses)
         timeouts.append(simulation_timeouts)
         success_rates.append(simulation_success)
-        step_counts.extend(simulation_steps)
+        step_counts.append(simulation_steps)
 
     agent_data = get_overall_simulation_statistics(
         wins, losses, timeouts, success_rates, step_counts)
@@ -270,10 +270,10 @@ def labreport_simulation_statistics_agent3_rl_nn():
         losses.append(simulation_losses)
         timeouts.append(simulation_timeouts)
         success_rates.append(simulation_success)
-        step_counts.extend(simulation_steps)
+        step_counts.append(simulation_steps)
 
     agent_data = get_overall_simulation_statistics(
-        wins, losses, timeouts, success_rates, simulation_steps)
+        wins, losses, timeouts, success_rates, step_counts)
     save_simulation_statistics("utility_partial", "agent3rlnn", agent_data)
 
     print(
