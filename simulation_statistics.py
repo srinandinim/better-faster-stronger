@@ -6,13 +6,18 @@ def agent1(num_simulations, nodes=50):
     run simulation n times and get statistics on success
     """
     agent_success = []
+    step_counts = []
     timeouts = 0
     for _ in range(num_simulations):
         game = Game(nodes)
-        game_success = game.run_agent_1()
+        game_success, step_count = game.run_agent_1()
 
         # agent caught the prey = 1, predator caught the agent/timeout = 0
         agent_success.append(1 if game_success == 1 else 0)
+
+        # keep track of number of steps if prey is captured
+        if game_success == 1:
+            step_counts.append(step_count)
 
         # timeout if game_success returns -2
         timeouts = timeouts + 1 if game_success == -2 else timeouts
@@ -22,7 +27,7 @@ def agent1(num_simulations, nodes=50):
     success = wins/(len(agent_success))
     print(
         f"Agent1: Wins: {wins}\tLosses: {losses}\tTimeouts: {timeouts}\tSuccess Rate: {round(success*100,2)}%")
-    return wins, losses, timeouts, round(success*100, 2)
+    return wins, losses, timeouts, round(success*100, 2), step_counts
 
 
 def agent2(num_simulations, nodes=50):
@@ -30,13 +35,18 @@ def agent2(num_simulations, nodes=50):
     run simulation n times and get statistics on success
     """
     agent_success = []
+    step_counts = []
     timeouts = 0
     for _ in range(num_simulations):
         game = Game(nodes)
-        game_success = game.run_agent_2()
+        game_success, step_count = game.run_agent_2()
 
         # agent caught the prey = 1, predator caught the agent/timeout = 0
         agent_success.append(1 if game_success == 1 else 0)
+
+        # keep track of number of steps if prey is captured
+        if game_success == 1:
+            step_counts.append(step_count)
 
         # timeout if game_success returns -2
         timeouts = timeouts + 1 if game_success == -2 else timeouts
@@ -46,7 +56,7 @@ def agent2(num_simulations, nodes=50):
     success = wins/(len(agent_success))
     print(
         f"Agent2: Wins: {wins}\tLosses: {losses}\tTimeouts: {timeouts}\tSuccess Rate: {round(success*100,2)}%")
-    return wins, losses, timeouts, round(success*100, 2)
+    return wins, losses, timeouts, round(success*100, 2), step_counts
 
 
 def agent3(num_simulations, nodes=50):
@@ -110,13 +120,18 @@ def agent1rl(num_simulations, nodes=50):
     run simulation n times and get statistics on success
     """
     agent_success = []
+    step_counts = []
     timeouts = 0
     for _ in range(num_simulations):
         game = Game(nodes=nodes)
-        game_success = game.run_agent_1_rl()
+        game_success, step_count = game.run_agent_1_rl()
 
         # agent caught the prey = 1, predator caught the agent/timeout = 0
         agent_success.append(1 if game_success == 1 else 0)
+
+        # keep track of number of steps if prey is captured
+        if game_success == 1:
+            step_counts.append(step_count)
 
         # timeout if game_success returns -2
         timeouts = timeouts + 1 if game_success == -2 else timeouts
@@ -126,7 +141,7 @@ def agent1rl(num_simulations, nodes=50):
     success = wins/(len(agent_success))
     print(
         f"Agent1RL: Wins: {wins}\tLosses: {losses}\tTimeouts: {timeouts}\tSuccess Rate: {round(success*100,2)}%")
-    return wins, losses, timeouts, round(success*100, 2)
+    return wins, losses, timeouts, round(success*100, 2), step_counts
 
 
 def agent1rlnn(num_simulations, nodes=50):
