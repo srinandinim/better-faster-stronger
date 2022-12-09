@@ -1,5 +1,5 @@
 import os
-import numpy as np 
+import numpy as np
 import pickle
 from copy import deepcopy
 from itertools import islice
@@ -169,10 +169,13 @@ def get_future_reward(graph, agent_loc, prey_loc, pred_loc, shortest_distances, 
             next_state = (agent_loc, prey_next_state, pred_next_state)
             if u0[next_state] == -float("inf"):
                 return -float("inf")
-            gamma = 0.6 / len(pred_optimal_next) if pred_next_state in pred_optimal_next else 0
-            future_reward += u0[next_state] * ((1 / len(prey_next)) * (0.4 / len(pred_next) + gamma))
+            gamma = 0.6 / \
+                len(pred_optimal_next) if pred_next_state in pred_optimal_next else 0
+            future_reward += u0[next_state] * \
+                ((1 / len(prey_next)) * (0.4 / len(pred_next) + gamma))
 
     return future_reward
+
 
 def get_future_reward_prediction(graph, agent_loc, prey_loc, pred_loc, shortest_distances, model):
     """
@@ -202,29 +205,34 @@ def get_future_reward_prediction(graph, agent_loc, prey_loc, pred_loc, shortest_
 
     prey_next = graph.nbrs[prey_loc] + [prey_loc]
     pred_next = graph.nbrs[pred_loc]
-    pred_optimal_next = set(optimal_pred_moves(graph, agent_loc, pred_loc, shortest_distances))
+    pred_optimal_next = set(optimal_pred_moves(
+        graph, agent_loc, pred_loc, shortest_distances))
 
     future_reward = 0
     for prey_next_state in prey_next:
         for pred_next_state in pred_next:
             next_state = (agent_loc, prey_next_state, pred_next_state)
-            
+
             # represent state s as input to network as x_i
             x = np.asarray(vectorize_state(next_state), dtype="float32")
             x = x.reshape(1, x.shape[0])
 
-            # use the model to predict what the utility value should be 
-            pred_next_state_util = np.asarray(model.predict(x), dtype="float32").item()
+            # use the model to predict what the utility value should be
+            pred_next_state_util = np.asarray(
+                model.predict(x), dtype="float32").item()
 
-            # rewards for the model 
-            if pred_next_state_util <= -50: 
+            # rewards for the model
+            if pred_next_state_util <= -50:
                 return -float("inf")
 
-            gamma = 0.6 / len(pred_optimal_next) if pred_next_state in pred_optimal_next else 0
+            gamma = 0.6 / \
+                len(pred_optimal_next) if pred_next_state in pred_optimal_next else 0
 
-            future_reward += pred_next_state_util * ((1 / len(prey_next)) * (0.4 / len(pred_next) + gamma))
+            future_reward += pred_next_state_util * \
+                ((1 / len(prey_next)) * (0.4 / len(pred_next) + gamma))
 
     return future_reward
+
 
 def get_future_reward_prediction_partial_prey(graph, agent_loc, prey_beliefs, pred_loc, shortest_distances, model):
     """
@@ -257,34 +265,38 @@ def get_future_reward_prediction_partial_prey(graph, agent_loc, prey_beliefs, pr
         """
         p_vector = [0] * len(pdict)
         for i in range(1, len(pdict)+1):
-            p_vector[i-1] = pdict[i] 
-        return p_vector 
+            p_vector[i-1] = pdict[i]
+        return p_vector
 
     def vectorize_probability_state(z_agent, p_prey, z_pred):
         """
         takes a state for partial prey environment and converts it to a vector of size 1 x 150
         """
         return vectorize_coordinate(z_agent) + vectorize_probability_dist(p_prey) + vectorize_coordinate(z_pred)
-    
+
     pred_next = graph.nbrs[pred_loc]
-    pred_optimal_next = set(optimal_pred_moves(graph, agent_loc, pred_loc, shortest_distances))
+    pred_optimal_next = set(optimal_pred_moves(
+        graph, agent_loc, pred_loc, shortest_distances))
 
     future_reward = 0
 
     for pred_next_state in pred_next:
         # pre-process the input for prediction
-        x = vectorize_probability_state(agent_loc, prey_beliefs, pred_next_state)
+        x = vectorize_probability_state(
+            agent_loc, prey_beliefs, pred_next_state)
         x = np.asarray(x, dtype="float32")
         x = x.reshape(1, x.shape[0])
 
-        # use the model to predict what the utility value should be 
-        pred_next_state_util = np.asarray(model.predict(x), dtype="float32").item()
+        # use the model to predict what the utility value should be
+        pred_next_state_util = np.asarray(
+            model.predict(x), dtype="float32").item()
 
-        # rewards for the model 
-        if pred_next_state_util <= -50: 
+        # rewards for the model
+        if pred_next_state_util <= -50:
             return -float("inf")
 
-        gamma = 0.6 / len(pred_optimal_next) if pred_next_state in pred_optimal_next else 0
+        gamma = 0.6 / \
+            len(pred_optimal_next) if pred_next_state in pred_optimal_next else 0
         future_reward += pred_next_state_util * (0.4 / len(pred_next) + gamma)
 
     return future_reward
@@ -330,7 +342,8 @@ def calculate_optimal_values(graph, shortest_distances, convergence_factor):
 
                         # retrieve old values for terminal states
                         if action == prey_loc or action == pred_loc:
-                            u1[state] = max(u1[state], -1 + u0[(action, prey_loc, pred_loc)])
+                            u1[state] = max(
+                                u1[state], -1 + u0[(action, prey_loc, pred_loc)])
                             continue
 
                         # iterate through the transition

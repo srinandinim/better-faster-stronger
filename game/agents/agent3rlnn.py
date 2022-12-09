@@ -1,18 +1,22 @@
 import csv
 import pickle
 import random
-import numpy as np 
+import numpy as np
 from copy import deepcopy
-from game.models.optimalvaluefunction import (agent_to_pred_distances, get_future_reward_prediction_partial_prey)
-from neuralnetworks.utils import (vectorize_probability_state, load_model_for_agent)
+from game.models.optimalvaluefunction import (
+    agent_to_pred_distances, get_future_reward_prediction_partial_prey)
+from neuralnetworks.utils import (
+    vectorize_probability_state, load_model_for_agent)
 from .agent import Agent
+
 
 class Agent3RLNN(Agent):
     def __init__(self, graph, location):
         # initialize agent location
         super().__init__(location)
 
-        self.vpartial_model = load_model_for_agent(filename="OPTIMAL_VPARTIAL_MODEL.pkl")
+        self.vpartial_model = load_model_for_agent(
+            filename="OPTIMAL_VPARTIAL_MODEL.pkl")
         self.shortest_distances = agent_to_pred_distances(graph)
 
         # store the graph
@@ -38,7 +42,8 @@ class Agent3RLNN(Agent):
             self.init_probs_step4(surveyed_node)
         self.normalize_beliefs()
 
-        action_space = graph.get_node_neighbors(self.location) + [self.location]
+        action_space = graph.get_node_neighbors(
+            self.location) + [self.location]
 
         best_action = None
         best_reward = -float("inf")
@@ -46,11 +51,12 @@ class Agent3RLNN(Agent):
             if action == predator.location:
                 current_reward = -float("inf")
             else:
-                current_reward = -1 + get_future_reward_prediction_partial_prey(graph, action, self.beliefs, predator.location, self.shortest_distances, self.vpartial_model)
+                current_reward = -1 + get_future_reward_prediction_partial_prey(
+                    graph, action, self.beliefs, predator.location, self.shortest_distances, self.vpartial_model)
             if current_reward >= best_reward:
                 best_reward = current_reward
                 best_action = action
-    
+
         self.location = best_action
         return len(self.prev_prey_locations), None
 
@@ -102,7 +108,7 @@ class Agent3RLNN(Agent):
                 if prob == PROB:
                     nodes.append(node)
             return nodes
-        
+
         signal = False
         node = random.choice(get_highest_prob_nodes())
         if prey.location == node:
