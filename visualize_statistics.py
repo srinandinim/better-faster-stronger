@@ -50,7 +50,11 @@ def visualize_success_rates(dirname, filename):
     if not os.path.exists(os.path.dirname(dirname)):
         os.makedirs(os.path.dirname(dirname))
 
-    plot_name = "{}visualize_success_statistics_{}.png".format(dirname, setting)
+    # get the filename
+    settings = filename[:-5].split("_")
+    saved_filename = '_'.join(settings[2:])
+
+    plot_name = "{}visualize_success_statistics_{}.png".format(dirname, saved_filename)
     plt.savefig(plot_name, bbox_inches='tight')
 
     # show the bar graph
@@ -103,7 +107,11 @@ def visualize_step_counts(dirname, filename):
     if not os.path.exists(os.path.dirname(dirname)):
         os.makedirs(os.path.dirname(dirname))
 
-    plot_name = "{}visualize_steps_statistics_{}.png".format(dirname, setting)
+    # get the filename
+    settings = filename[:-5].split("_")
+    saved_filename = '_'.join(settings[2:])
+
+    plot_name = "{}visualize_steps_statistics_{}.png".format(dirname, saved_filename)
     plt.savefig(plot_name, bbox_inches='tight')
 
     # show the bar graph

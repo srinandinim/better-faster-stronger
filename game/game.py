@@ -340,7 +340,7 @@ class Game:
         if status == 0:
             status = -2
 
-        return status
+        return status, step_count
 
     def run_agent_1_rl_nn_debug(self):
         self.predator = Predator(self.predator_location)

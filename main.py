@@ -185,6 +185,7 @@ def labreport_simulation_statistics_agent1_rl():
     agent_data = get_overall_simulation_statistics(
         wins, losses, timeouts, success_rates, step_counts)
     save_simulation_statistics("complete", "agent1rl", agent_data)
+    save_simulation_statistics("utility_complete", "agent1rl", agent_data)
 
     print(
         f"Agent1RL: Overall Success Rate: {round(sum(success_rates) / len(success_rates),2)}%")
@@ -198,22 +199,24 @@ def labreport_simulation_statistics_agent1_rl_nn():
     losses = []
     timeouts = []
     success_rates = []
+    step_counts = []
 
     for _ in range(30):
-        simulation_wins, simulation_losses, simulation_timeouts, simulation_success = simulation_statistics.agent1rlnn(
+        simulation_wins, simulation_losses, simulation_timeouts, simulation_success, simulation_steps = simulation_statistics.agent1rlnn(
             100, 50)
 
         wins.append(simulation_wins)
         losses.append(simulation_losses)
         timeouts.append(simulation_timeouts)
         success_rates.append(simulation_success)
+        step_counts.extend(simulation_steps)
 
     agent_data = get_overall_simulation_statistics(
-        wins, losses, timeouts, success_rates)
-    save_simulation_statistics("complete", "agent1rlnn", agent_data)
+        wins, losses, timeouts, success_rates, step_counts)
+    save_simulation_statistics("utility_complete", "agent1rlnn", agent_data)
 
     print(
-        f"Agent1RL: Overall Success Rate: {round(sum(success_rates) / len(success_rates),2)}%")
+        f"Agent1RLNN: Overall Success Rate: {round(sum(success_rates) / len(success_rates),2)}%")
 
 
 def labreport_simulation_statistics_agent3_rl():
@@ -290,6 +293,8 @@ if __name__ == "__main__":
     visualize_statistics.visualize_step_counts("data/", "simulation_statistics_complete.json")
 
     # labreport_simulation_statistics_agent1_rl_nn()
+    visualize_statistics.visualize_success_rates("data/", "simulation_statistics_utility_complete.json")
+    visualize_statistics.visualize_step_counts("data/", "simulation_statistics_utility_complete.json")
 
     # labreport_simulation_statistics_agent3()
     # labreport_simulation_statistics_agent4()
