@@ -54,13 +54,15 @@ def visualize_success_rates(dirname, filename):
     settings = filename[:-5].split("_")
     saved_filename = '_'.join(settings[2:])
 
-    plot_name = "{}visualize_success_statistics_{}.png".format(dirname, saved_filename)
+    plot_name = "{}visualize_success_statistics_{}.png".format(
+        dirname, saved_filename)
     plt.savefig(plot_name, bbox_inches='tight')
 
     # show the bar graph
     # plt.show()
 
     return 1
+
 
 def visualize_step_counts(dirname, filename):
     """
@@ -111,7 +113,8 @@ def visualize_step_counts(dirname, filename):
     settings = filename[:-5].split("_")
     saved_filename = '_'.join(settings[2:])
 
-    plot_name = "{}visualize_steps_statistics_{}.png".format(dirname, saved_filename)
+    plot_name = "{}visualize_steps_statistics_{}.png".format(
+        dirname, saved_filename)
     plt.savefig(plot_name, bbox_inches='tight')
 
     # show the bar graph

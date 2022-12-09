@@ -317,7 +317,6 @@ if __name__ == "__main__":
     visualize_statistics.visualize_step_counts(
         "data/", "simulation_statistics_partial.json")
 
-
     # labreport_simulation_statistics_agent3_rl_nn()
     visualize_statistics.visualize_success_rates(
         "data/", "simulation_statistics_utility_partial.json")
