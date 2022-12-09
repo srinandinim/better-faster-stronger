@@ -279,16 +279,16 @@ if __name__ == "__main__":
     # labreport_simulation_statistics_agent2()
     # labreport_simulation_statistics_agent1_rl()
     # labreport_simulation_statistics_agent1_rl_nn()
-    visualize_statistics.visualize("data/", "simulation_statistics_complete.json")
+    # visualize_statistics.visualize("data/", "simulation_statistics_complete.json")
 
     # labreport_simulation_statistics_agent3()
     # labreport_simulation_statistics_agent4()
     # labreport_simulation_statistics_agent3_rl()
     # labreport_simulation_statistics_agent3_rl_nn()
-    visualize_statistics.visualize("data/", "simulation_statistics_partial-prey.json")
+    # visualize_statistics.visualize("data/", "simulation_statistics_partial-prey.json")
 
     game = Game()
-    
+    game.run_agent_1_rl_debug()
     # trajectories, predator_location, prey_trajectories = game.run_complete_agents()
     # print(trajectories)
     # print()

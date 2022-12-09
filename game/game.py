@@ -40,8 +40,8 @@ class Game:
 
         # analysis question finite possible state
         self.agent_starting_location = 35
-        self.predator_location = 46
-        self.prey.location = 2
+        self.predator_location = 2
+        self.prey.location = 46
 
         # stores the trajectories of the agent/predator/prey
         self.agent_trajectories = [self.agent_starting_location]
@@ -307,7 +307,7 @@ class Game:
     def run_agent_1_rl_debug(self):
         self.predator = Predator(self.predator_location)
         self.agent = Agent1RL(self.graph, self.agent_starting_location)
-        self.visualize_graph()
+        # self.visualize_graph()
 
         status = 0
         step_count = 0
@@ -315,6 +315,7 @@ class Game:
         while status == 0 and step_count < self.timeout:
             status, _, _ = self.step_debug()
             step_count = step_count + 1
+            return
             self.visualize_graph()
 
         self.visualize_graph_video()

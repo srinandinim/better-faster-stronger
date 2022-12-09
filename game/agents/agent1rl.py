@@ -53,6 +53,9 @@ class Agent1RL(Agent):
             else:
                 current_reward = -1 + get_future_reward(
                     graph, action, prey.location, predator.location, self.shortest_distances, self.utility)
+            print(action)
+            print(current_reward)
+            print()
             if current_reward >= best_reward:
                 best_reward = current_reward
                 best_action = action
