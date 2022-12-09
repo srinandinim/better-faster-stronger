@@ -149,7 +149,7 @@ class Game:
         if status == 0:
             status = -2
 
-        return status
+        return status, step_count
 
     def run_agent_1_debug(self):
         self.predator = Predator(self.predator_location)
@@ -187,7 +187,7 @@ class Game:
         if status == 0:
             status = -2
 
-        return status
+        return status, step_count
 
     def run_agent_2_debug(self):
         self.predator = Predator(self.predator_location)
@@ -226,7 +226,7 @@ class Game:
         if status == 0:
             status = -2
 
-        return status, found_prey
+        return status, found_prey, step_count
 
     def run_agent_3_debug(self):
         self.predator = Predator(self.predator_location)
@@ -264,7 +264,7 @@ class Game:
         if status == 0:
             status = -2
 
-        return status, found_prey
+        return status, found_prey, step_count
 
     def run_agent_4_debug(self):
         self.predator = Predator(self.predator_location)
@@ -302,7 +302,7 @@ class Game:
         if status == 0:
             status = -2
 
-        return status
+        return status, step_count
 
     def run_agent_1_rl_debug(self):
         self.predator = Predator(self.predator_location)
@@ -340,7 +340,7 @@ class Game:
         if status == 0:
             status = -2
 
-        return status
+        return status, step_count
 
     def run_agent_1_rl_nn_debug(self):
         self.predator = Predator(self.predator_location)
@@ -378,7 +378,7 @@ class Game:
         if status == 0:
             status = -2
 
-        return status
+        return status, step_count
 
     def run_agent_3_rl_debug(self):
         self.predator = Predator(self.predator_location)
@@ -416,7 +416,7 @@ class Game:
         if status == 0:
             status = -2
 
-        return status
+        return status, step_count
 
     def run_agent_3_rl_nn_debug(self):
         self.predator = Predator(self.predator_location)

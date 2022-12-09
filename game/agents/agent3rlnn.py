@@ -5,8 +5,7 @@ import numpy as np
 from copy import deepcopy
 from game.models.optimalvaluefunction import (
     agent_to_pred_distances, get_future_reward_prediction_partial_prey)
-from neuralnetworks.utils import (
-    vectorize_probability_state, load_model_for_agent)
+from neuralnetworks.utils import (load_model_for_agent)
 from .agent import Agent
 
 
