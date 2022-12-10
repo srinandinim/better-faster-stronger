@@ -5,7 +5,7 @@ import numpy as np
  
 
 class Game_State:
-	def __init__(self, agent, prey, predator, beliefs, graph, game, P):
+	def __init__(self, agent, prey, predator, beliefs, graph, game, P, found_prey):
 		self.agent = agent
 		self.prey = prey
 		self.predator = predator
@@ -13,15 +13,16 @@ class Game_State:
 		self.graph = graph
 		self.game = game
 		self.P = P
+		self.found_prey = found_prey
 
 	def retrieve_game(self):
-		return self.agent, self.prey, self.predator, self.beliefs, self.graph, self.game, self.P
+		return self.agent, self.prey, self.predator, self.beliefs, self.graph, self.game, self.P, self.found_prey
 
 def init_new_game():
 	game = Game()
 	agent_location, prey, predator, graph, _ = game.setup_q_learning()
 	beliefs, P = belief_system_init(graph, agent_location)
-	return Game_State(agent_location, prey, predator, beliefs, graph, game, P)
+	return Game_State(agent_location, prey, predator, beliefs, graph, game, P, False)
 
 
 # HELPER FUNCTIONS ##############################
@@ -64,7 +65,7 @@ def pick_most_probable_spot(graph, vector):
 	of probabilities
 	'''
 	max_prob = max(vector)
-	return random.choice([i for i in graph.get_neighbors().keys() if vector[i] == max_prob])
+	return random.choice([i for i in graph.get_neighbors().keys() if vector[index_transform(i)] == max_prob])
 
 
 # BELIEF SYSTEM FUNCTIONS ##############################
@@ -93,7 +94,7 @@ def survey_function(graph, beliefs, prey):
 	A function to survey a spot on the graph based on the current belief system. 
 	'''
 
-	survey_spot = pick_most_probable_spot(graph, beliefs)
+	survey_spot = index_transform(pick_most_probable_spot(graph, beliefs))
 	found_prey = False
 	if survey_spot == prey.location:
 		beliefs = [0 for _ in range(graph.get_nodes())]
@@ -174,7 +175,7 @@ def process_nn_output(output, graph, agent_location, epsilon):
 		best_action = random.choice(action_space)
 	else:
 		
-		possible_actions = { i : output[index_transform(i)] for i in action_space }
+		possible_actions = { i : output[0][index_transform(i)] for i in action_space }
 		best_utility = max(possible_actions.values())
 		best_action = random.choice([i for i in possible_actions.keys() if possible_actions[i] == best_utility])
 
@@ -191,12 +192,14 @@ def train():
 	game_vector = []
 	number_of_games = 100
 	# gen a bunch of games
+	print("Initializing games....")
 	for _ in range(0, number_of_games):
 		game_vector.append(init_new_game())
 
 	number_of_states_to_process = 100
 	avg_loss = float("inf")
 	i = 1
+	print("Beginning training....")
 	while not compute_convergence_condition(avg_loss, delta):
 		loss_sum = 0
 		processed = set()
@@ -204,27 +207,28 @@ def train():
 		
 		print("Running... iteration " + str(i))
 		for i in range(0, number_of_states_to_process): # random number of games:
-
+			# print("Game running")
 			# retrive a game
-			random_game_index = random.randint(0, number_of_games)
-			while random_game_index not in processed:
-				random_game_index = random.randint(0, number_of_games)
-				 
+			random_game_index = random.randint(0, number_of_games - 1)
+			while random_game_index in processed:
+				random_game_index = random.randint(0, number_of_games - 1)
+			# print("Game Selected")
 			processed.add(random_game_index)
+
 			cur_game_state = game_vector[random_game_index]
-			agent_location, prey, predator, beliefs, graph, game, P = cur_game_state.retrieve_game()
+			agent_location, prey, predator, beliefs, graph, game, P, found_prey = cur_game_state.retrieve_game()
 			game_over = False
 				
 			# 	#survey a node
 			beliefs, temp_found_prey = survey_function(graph, beliefs, prey)
 			found_prey = found_prey or temp_found_prey
 
-
+			# print("Node surveyed")
 			# initial evaluation of the q_function on the state_vector
 			state_vector = get_state_vector(agent_location, beliefs, predator.location)
 			initial_evaluation = np.asarray(q_function.compute_output(state_vector), dtype="float32")
 			next_move = process_nn_output(initial_evaluation, graph, agent_location, epsilon) 
-
+			# print("NN Evaluated")
 
 				# calculate value iteration from and loss for each action we can take from here
 			action_space = graph.get_node_neighbors(agent_location) + [agent_location] # this is Q(s,a)
@@ -238,9 +242,9 @@ def train():
 					new_state_vector = get_state_vector(action, beliefs, predator.location) # the new vector describing s_{t + 1} from taking an action
 					future_evaluation = np.asarray(q_function.compute_output(state_vector), dtype="float32") # a set of vectors describing Q(s_{t+1}, a)
 					optimal_future_action = process_nn_output(future_evaluation, graph, action, 0) # maximum action
-					q_s_prime_a = -1 + future_evaluation[index_transform(optimal_future_action)] # maximum Q(s_{t+1}, a)
+					q_s_prime_a = -1 + future_evaluation[0][index_transform(optimal_future_action)] # maximum Q(s_{t+1}, a)
 				
-				outputs.append(initial_evaluation[index_transform(action)])
+				outputs.append(initial_evaluation[0][index_transform(action)])
 				predicted.append(q_s_prime_a)
 
 
@@ -257,7 +261,7 @@ def train():
 			if agent_location == prey.location:
 				game_over = True
 
-			predator.move(graph, aloc=agent_location)
+			predator.move(graph, None, aloc=agent_location)
 			
 			if agent_location == predator.location:
 				game_over = True
@@ -266,7 +270,7 @@ def train():
 
 			beliefs = update_belief_system_after_prey_moves(beliefs, P)
 
-			game_vector[random_game_index] = init_new_game() if game_over else Game_State(agent_location, prey, predator, beliefs, graph, game, P)
+			game_vector[random_game_index] = init_new_game() if game_over else Game_State(agent_location, prey, predator, beliefs, graph, game, P, found_prey)
 
 			# step_count = step_count + 1
 
@@ -278,6 +282,7 @@ def train():
 		avg_loss = loss_sum / len(predicted)
 		print("Average Loss: " , avg_loss)
 		i = i + 1
+	print("Finished training....")
 
 
 train()

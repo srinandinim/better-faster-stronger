@@ -37,7 +37,7 @@ class Predator:
         """
         moves the agent to the neighbor with minimum BFS distance to agent
         """
-        agent_location = aloc if aloc is None else agent.location
+        agent_location = aloc if aloc is not None else agent.location
 
         # get a list of the predator's neighbors
         neighbors = graph.get_node_neighbors(self.location)
