@@ -1,3 +1,4 @@
+import pickle 
 from neuralnetworks.nn import *
 from game.game import *
 import random
@@ -26,6 +27,12 @@ def init_new_game():
 
 
 # HELPER FUNCTIONS ##############################
+
+def save_model(model, error, filename=f"vpartial_dqn_"):
+    dirname = "neuralnetworks/trainedmodels/"
+    filepath = os.path.dirname(__file__) + dirname + filename
+    with open(filepath + str(error) + ".pkl", "wb") as file:
+        pickle.dump(model, file)
 
 def index_transform(action):
 	'''
@@ -209,21 +216,22 @@ def train():
 	
 	q_function = init_q_function()
 	target_network = copy_neural_network(q_function)
-	epsilon, alpha, delta = 0.1, 0.001, 0.1
+	epsilon, alpha, delta = 0.10, 0.001, 0.1
 	game_vector = []
-	number_of_games = 100
+	number_of_games = 200
 	# gen a bunch of games
 	print("Initializing games....")
 	for _ in range(0, number_of_games):
 		game_vector.append(init_new_game())
 
-	number_of_states_to_process = 100
-	batch_size = 5
+	number_of_states_to_process = 200
+	batch_size = 20
 	avg_loss = float("inf")
 	batches = 0
 	print("Beginning training....")
 	while not compute_convergence_condition(avg_loss, delta):
 		print("Batch ..." + str(batches))
+		batch_loss = 0
 		for j in range(0, batch_size):
 			processed = set()
 			outputs, correct = [], []
@@ -309,11 +317,17 @@ def train():
 				loss_sum = loss_sum + (np.sum(np.absolute(np.subtract(correct[i], outputs[i]))))
 				q_function.back_propagate(correct[i], outputs[i], alpha) # back propage the loss
 			avg_loss = loss_sum / len(correct)
+			batch_loss += avg_loss
 			print("Average Loss: " , avg_loss)
 		
 		# copy over main weights to target network
 		batches = batches + 1
 		target_network = copy_neural_network(q_function)
+
+		# checkpoint the model every 25 epochs
+		if batches % 25 == 0:
+			save_model(q_function, batch_loss/batch_size)
+
 	print("Finished training....")
 
 train()
