@@ -216,7 +216,7 @@ def train():
 	
 	q_function = init_q_function()
 	target_network = copy_neural_network(q_function)
-	epsilon, alpha, delta = 0.075, 0.0001, 0.1
+	epsilon, alpha, delta = 0.075, 0.001, 0.1
 	game_vector = []
 	number_of_games = 1000
 	# gen a bunch of games
@@ -327,7 +327,13 @@ def train():
 		# checkpoint the model every 25 epochs
 		if batches % 5 == 0:
 			save_model(q_function, batch_loss/batch_size)
-
+		
+		if batches % 100 == 0: 
+			epsilon = epsilon / 2
+		
+		if batch_loss / batch_size < 7.5:
+			alpha = 0.0005
+		
 	print("Finished training....")
 
 train()
