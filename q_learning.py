@@ -1,4 +1,4 @@
-from neuralnetworks.nnql import *
+from neuralnetworks.nn import *
 from game.game import *
 import random
 import numpy as np
@@ -162,7 +162,7 @@ def get_state_vector(a_loc, beliefs, p_loc):
 	state_vector[50:100] = beliefs
 	state_vector[100 + index_transform(p_loc)] = 1
 	state_vector = np.asarray(state_vector, dtype="float32")
-	return state_vector.reshape(state_vector.shape[0])
+	return state_vector.reshape( (1, state_vector.shape[0]) )
 
 def process_nn_output(output, graph, agent_location, epsilon):
 	'''
@@ -177,6 +177,11 @@ def process_nn_output(output, graph, agent_location, epsilon):
 		
 		possible_actions = { i : output[0][index_transform(i)] for i in action_space }
 		best_utility = max(possible_actions.values())
+		lst = [i for i in possible_actions.keys() if possible_actions[i] == best_utility]
+		if len(lst) == 0:
+			print(output)
+			print(possible_actions)
+			print(best_utility)
 		best_action = random.choice([i for i in possible_actions.keys() if possible_actions[i] == best_utility])
 
 	return best_action
@@ -198,14 +203,14 @@ def train():
 
 	number_of_states_to_process = 100
 	avg_loss = float("inf")
-	i = 1
+	itrs = 1
 	print("Beginning training....")
 	while not compute_convergence_condition(avg_loss, delta):
 		loss_sum = 0
 		processed = set()
 		outputs, correct = [], []
 		
-		print("Running... iteration " + str(i))
+		print("Running... iteration " + str(itrs))
 		for i in range(0, number_of_states_to_process): # random number of games:
 			# print("Game running")
 			# retrive a game
@@ -238,7 +243,7 @@ def train():
 				if action == prey.location:
 					q_s_prime_a = 0
 				elif action == predator.location:
-					q_s_prime_a = -float("inf")
+					q_s_prime_a = -50
 				else:
 					new_state_vector = get_state_vector(action, beliefs, predator.location) # the new vector describing s_{t + 1} from taking an action
 					future_evaluation = np.asarray(q_function.compute_output(state_vector), dtype="float32") # a set of vectors describing Q(s_{t+1}, a)
@@ -276,6 +281,7 @@ def train():
 
 			# step_count = step_count + 1
 
+		itrs = itrs + 1
 		# back propagate loss
 		loss_sum = 0
 		for i in range(len(correct)):
@@ -283,7 +289,7 @@ def train():
 			q_function.back_propagate(correct[i], outputs[i], alpha) # back propage the loss
 		avg_loss = loss_sum / len(correct)
 		print("Average Loss: " , avg_loss)
-		i = i + 1
+		
 	print("Finished training....")
 
 
