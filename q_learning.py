@@ -205,9 +205,8 @@ def copy_neural_network(original):
 
 	return copy
 
-
 def train():
-
+	
 	q_function = init_q_function()
 	target_network = copy_neural_network(q_function)
 	epsilon, alpha, delta = 0.1, 0.001, 0.1
