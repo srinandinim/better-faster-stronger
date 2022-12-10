@@ -1,4 +1,4 @@
-from neuralnetworks.nn import *
+from neuralnetworks.nnql import *
 from game.game import *
 import random
 import numpy as np
