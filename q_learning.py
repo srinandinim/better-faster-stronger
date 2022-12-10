@@ -216,7 +216,7 @@ def train():
 	
 	q_function = init_q_function()
 	target_network = copy_neural_network(q_function)
-	epsilon, alpha, delta = 0.075, 0.001, 0.1
+	epsilon, alpha, delta = 0.10, 0.001, 0.1
 	game_vector = []
 	number_of_games = 1000
 	# gen a bunch of games
@@ -224,8 +224,8 @@ def train():
 	for _ in range(0, number_of_games):
 		game_vector.append(init_new_game())
 
-	number_of_states_to_process = 32
-	batch_size = 256
+	number_of_states_to_process = 128
+	batch_size = 128
 	avg_loss = float("inf")
 	batches = 0
 	print("Beginning training....")
