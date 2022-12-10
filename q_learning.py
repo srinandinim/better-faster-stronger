@@ -203,7 +203,7 @@ def train():
 	while not compute_convergence_condition(avg_loss, delta):
 		loss_sum = 0
 		processed = set()
-		outputs, predicted = [], []
+		outputs, correct = [], []
 		
 		print("Running... iteration " + str(i))
 		for i in range(0, number_of_states_to_process): # random number of games:
@@ -232,6 +232,7 @@ def train():
 
 				# calculate value iteration from and loss for each action we can take from here
 			action_space = graph.get_node_neighbors(agent_location) + [agent_location] # this is Q(s,a)
+			answers = np.copy(initial_evaluation)
 			for action in action_space:
 				q_s_prime_a = 0
 				if action == prey.location:
@@ -243,9 +244,10 @@ def train():
 					future_evaluation = np.asarray(q_function.compute_output(state_vector), dtype="float32") # a set of vectors describing Q(s_{t+1}, a)
 					optimal_future_action = process_nn_output(future_evaluation, graph, action, 0) # maximum action
 					q_s_prime_a = -1 + future_evaluation[0][index_transform(optimal_future_action)] # maximum Q(s_{t+1}, a)
-				
-				outputs.append(initial_evaluation[0][index_transform(action)])
-				predicted.append(q_s_prime_a)
+				answers[0][index_transform(action)] = q_s_prime_a
+			
+			outputs.append(initial_evaluation)
+			correct.append(answers)
 
 
 			# move
@@ -276,10 +278,10 @@ def train():
 
 		# back propagate loss
 		loss_sum = 0
-		for i in range(len(predicted)):
-			loss_sum = loss_sum + (predicted[i] - outputs[i])
-			q_function.back_propagate(predicted[i], outputs[i], alpha) # back propage the loss
-		avg_loss = loss_sum / len(predicted)
+		for i in range(len(correct)):
+			loss_sum = loss_sum + (np.sum(np.absolute(np.subtract(correct[i], outputs[i]))))
+			q_function.back_propagate(correct[i], outputs[i], alpha) # back propage the loss
+		avg_loss = loss_sum / len(correct)
 		print("Average Loss: " , avg_loss)
 		i = i + 1
 	print("Finished training....")

@@ -97,8 +97,10 @@ class NeuralNetwork():
         return output
 
     def back_propagate(self, expected, output, learning_rate):
+        print(output.shape)
         error = self.loss_derivative(expected, output)
         for layer in reversed(self.layers):
+            print(error.shape)
             error = layer.backward(error, learning_rate)
 
 def save_model(model, error, testerror = 0, filename=f"vpartial_model"):
