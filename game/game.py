@@ -440,7 +440,7 @@ class Game:
         return status
 
     def setup_q_learning(self):
-        return self.agent_starting_location, self.prey, Predator(self.predator_location), self.graph, self.timeout
+        return self.agent_starting_location, self.prey, Predator(self.predator_location)
 
 
     def visualize_graph_color_map(self):
