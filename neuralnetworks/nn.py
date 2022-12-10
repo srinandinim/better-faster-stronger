@@ -39,6 +39,8 @@ class DenseLinear(Layer):
     def __init__(self, input_size, output_size):
         self.w = np.random.rand(input_size, output_size) - 0.5
         self.b = np.random.rand(1, output_size) - 0.5
+        self.output_size = output_size
+        self.input_size = input_size
 
     def forward(self, input):
         self.input = input

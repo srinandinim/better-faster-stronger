@@ -96,7 +96,7 @@ def survey_function(graph, beliefs, prey):
 
 	survey_spot = index_transform(pick_most_probable_spot(graph, beliefs))
 	found_prey = False
-	if survey_spot == prey.location:
+	if survey_spot == index_transform(prey.location):
 		beliefs = [0 for _ in range(graph.get_nodes())]
 		beliefs[survey_spot] = 1
 		found_prey = True
@@ -150,6 +150,7 @@ def init_q_function():
 	q_function.add(NonLinearity(tanh, tanh_prime))
 	q_function.add(DenseLinear(256, 50))
 	q_function.choose_error(mse, mse_prime)
+
 	return q_function
 
 def get_state_vector(a_loc, beliefs, p_loc):
@@ -189,10 +190,26 @@ def process_nn_output(output, graph, agent_location, epsilon):
 def compute_convergence_condition(avg_loss, delta):
 	return avg_loss < delta
 
+def copy_neural_network(original):
+	copy = NeuralNetwork()
+	for layer in original.layers:
+		if isinstance(layer, (DenseLinear)):
+			temp = DenseLinear(layer.input_size, layer.output_size)
+			temp.w = np.copy(layer.w)
+			temp.b = np.copy(layer.b)
+			copy.add(temp)
+		else:
+			copy.add(NonLinearity(layer.activation, layer.activation_derivative))
+
+	copy.choose_error(mse, mse_prime)
+
+	return copy
+
 
 def train():
 
 	q_function = init_q_function()
+	target_network = copy_neural_network(q_function)
 	epsilon, alpha, delta = 0.1, 0.001, 0.1
 	game_vector = []
 	number_of_games = 100
@@ -202,95 +219,102 @@ def train():
 		game_vector.append(init_new_game())
 
 	number_of_states_to_process = 100
+	batch_size = 5
 	avg_loss = float("inf")
-	itrs = 1
+	batches = 0
 	print("Beginning training....")
 	while not compute_convergence_condition(avg_loss, delta):
-		loss_sum = 0
-		processed = set()
-		outputs, correct = [], []
-		
-		print("Running... iteration " + str(itrs))
-		for i in range(0, number_of_states_to_process): # random number of games:
-			# print("Game running")
-			# retrive a game
-			random_game_index = random.randint(0, number_of_games - 1)
-			while random_game_index in processed:
+		print("Batch ..." + str(batches))
+		for j in range(0, batch_size):
+			processed = set()
+			outputs, correct = [], []
+			print("Running... iteration " + str(batches*5 + j))
+			for i in range(0, number_of_states_to_process): # random number of games:
+				# print("Game running")
+				# retrive a game
 				random_game_index = random.randint(0, number_of_games - 1)
-			# print("Game Selected")
-			processed.add(random_game_index)
+				while random_game_index in processed:
+					random_game_index = random.randint(0, number_of_games - 1)
+				# print("Game Selected")
+				processed.add(random_game_index)
 
-			cur_game_state = game_vector[random_game_index]
-			agent_location, prey, predator, beliefs, graph, game, P, found_prey = cur_game_state.retrieve_game()
-			game_over = False
-				
-			# 	#survey a node
-			beliefs, temp_found_prey = survey_function(graph, beliefs, prey)
-			found_prey = found_prey or temp_found_prey
+				cur_game_state = game_vector[random_game_index]
+				agent_location, prey, predator, beliefs, graph, game, P, found_prey = cur_game_state.retrieve_game()
+				game_over = False
+					
+				# 	#survey a node
+				beliefs, temp_found_prey = survey_function(graph, beliefs, prey)
+				found_prey = found_prey or temp_found_prey
 
-			# print("Node surveyed")
-			# initial evaluation of the q_function on the state_vector
-			state_vector = get_state_vector(agent_location, beliefs, predator.location)
-			initial_evaluation = np.asarray(q_function.compute_output(state_vector), dtype="float32")
-			next_move = process_nn_output(initial_evaluation, graph, agent_location, epsilon) 
-			# print("NN Evaluated")
+				# print("Node surveyed")
+				# initial evaluation of the q_function on the state_vector
+				state_vector = get_state_vector(agent_location, beliefs, predator.location)
+				initial_evaluation = np.asarray(q_function.compute_output(state_vector), dtype="float32")
+				next_move = process_nn_output(initial_evaluation, graph, agent_location, epsilon) 
+				# print("NN Evaluated")
 
-				# calculate value iteration from and loss for each action we can take from here
-			action_space = graph.get_node_neighbors(agent_location) + [agent_location] # this is Q(s,a)
-			answers = np.copy(initial_evaluation)
-			for action in action_space:
-				q_s_prime_a = 0
-				if action == prey.location:
+					# calculate value iteration from and loss for each action we can take from here
+				action_space = graph.get_node_neighbors(agent_location) + [agent_location] # this is Q(s,a)
+				answers = np.copy(initial_evaluation)
+				for action in action_space:
 					q_s_prime_a = 0
-				elif action == predator.location:
-					q_s_prime_a = -50
-				else:
-					new_state_vector = get_state_vector(action, beliefs, predator.location) # the new vector describing s_{t + 1} from taking an action
-					future_evaluation = np.asarray(q_function.compute_output(state_vector), dtype="float32") # a set of vectors describing Q(s_{t+1}, a)
-					optimal_future_action = process_nn_output(future_evaluation, graph, action, 0) # maximum action
-					q_s_prime_a = -1 + future_evaluation[0][index_transform(optimal_future_action)] # maximum Q(s_{t+1}, a)
-				answers[0][index_transform(action)] = q_s_prime_a
-			
-			outputs.append(initial_evaluation)
-			correct.append(answers)
+					if action == prey.location:
+						q_s_prime_a = 0
+					elif action == predator.location:
+						q_s_prime_a = -50
+					else:
+						new_state_vector = get_state_vector(action, beliefs, predator.location) # the new vector describing s_{t + 1} from taking an action
+						future_evaluation = np.asarray(target_network.compute_output(state_vector), dtype="float32") # a set of vectors describing Q(s_{t+1}, a)
+						optimal_future_action = process_nn_output(future_evaluation, graph, action, 0) # maximum action
+						q_s_prime_a = -1 + future_evaluation[0][index_transform(optimal_future_action)] # maximum Q(s_{t+1}, a)
+					answers[0][index_transform(action)] = q_s_prime_a
+				
+				outputs.append(initial_evaluation)
+				correct.append(answers)
 
 
-			# move
-			agent_location = next_move
-			# update belief system for agent moving
-			beliefs = update_belief_system_after_agent_moves(beliefs, agent_location, graph, found_prey)
+				# move
+				agent_location = next_move
+				if agent_location == prey.location:
+					game_over = True
+				if agent_location == predator.location:
+					game_over = True
+				
+				# update belief system for agent moving
+				if not game_over:
+					if beliefs[index_transform(agent_location)] == 1:
+						print(agent_location)
+						print(prey.location)
+					beliefs = update_belief_system_after_agent_moves(beliefs, agent_location, graph, found_prey)
 
-			if agent_location == prey.location:
-				game_over = True
-			if agent_location == predator.location:
-				game_over = True
-			prey.move(graph)
-			if agent_location == prey.location:
-				game_over = True
+				prey.move(graph)
+				if agent_location == prey.location:
+					game_over = True
 
-			predator.move(graph, None, aloc=agent_location)
-			
-			if agent_location == predator.location:
-				game_over = True
+				predator.move(graph, None, aloc=agent_location)
+				
+				if agent_location == predator.location:
+					game_over = True
 
-			# update belief system for the prey moving
+				# update belief system for the prey moving
+				if not game_over:
+					beliefs = update_belief_system_after_prey_moves(beliefs, P)
 
-			beliefs = update_belief_system_after_prey_moves(beliefs, P)
+				game_vector[random_game_index] = init_new_game() if game_over else Game_State(agent_location, prey, predator, beliefs, graph, game, P, found_prey)
 
-			game_vector[random_game_index] = init_new_game() if game_over else Game_State(agent_location, prey, predator, beliefs, graph, game, P, found_prey)
+				# step_count = step_count + 1
 
-			# step_count = step_count + 1
-
-		itrs = itrs + 1
-		# back propagate loss
-		loss_sum = 0
-		for i in range(len(correct)):
-			loss_sum = loss_sum + (np.sum(np.absolute(np.subtract(correct[i], outputs[i]))))
-			q_function.back_propagate(correct[i], outputs[i], alpha) # back propage the loss
-		avg_loss = loss_sum / len(correct)
-		print("Average Loss: " , avg_loss)
+			# back propagate loss
+			loss_sum = 0
+			for i in range(len(correct)):
+				loss_sum = loss_sum + (np.sum(np.absolute(np.subtract(correct[i], outputs[i]))))
+				q_function.back_propagate(correct[i], outputs[i], alpha) # back propage the loss
+			avg_loss = loss_sum / len(correct)
+			print("Average Loss: " , avg_loss)
 		
+		# copy over main weights to target network
+		batches = batches + 1
+		target_network = copy_neural_network(q_function)
 	print("Finished training....")
-
 
 train()
