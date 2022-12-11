@@ -1,11 +1,12 @@
+"""THIS FILE JUST SANITY CHECKS THE NN AND VARIOUS SERIALIZATION SCHEMES."""
+
 import numpy as np
 import utils
 from train_vcomplete import get_training_data
 
 # LOAD THE MODEL INTO MEMORY
 print("loading")
-model_vcomplete = utils.load_model_for_testing(
-    filename="OPTIMAL_VCOMPLETE_MODEL.pkl")
+model_vcomplete = utils.load_model_for_testing(filename="OPTIMAL_VCOMPLETE_MODEL.pkl")
 
 # LOAD DATA INTO MEMORY
 print("get training data!")
