@@ -63,6 +63,7 @@ def visualize_success_rates(dirname, filename):
 
     return 1
 
+
 def visualize_step_counts(dirname, filename):
     """
     plot the simulation success rates and error bars
