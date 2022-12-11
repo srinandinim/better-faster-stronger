@@ -1,9 +1,7 @@
 from game.models.optimalvaluefunction import (agent_to_pred_distances,
                                               get_future_reward_prediction)
+from neuralnetworks.utils import load_model_for_agent
 from .agent import Agent
-from neuralnetworks.utils import vectorize_state, load_model_for_agent
-import numpy as np
-import pickle
 
 
 class Agent1RLNN(Agent):
@@ -16,7 +14,7 @@ class Agent1RLNN(Agent):
 
     def move(self, graph, prey, predator):
         """
-        updates location based on assignment specifications given
+        moves based on the action in the agent's action space that is predicted to have the greatest utility
         """
         action_space = graph.get_node_neighbors(
             self.location) + [self.location]
@@ -29,7 +27,6 @@ class Agent1RLNN(Agent):
             elif action == predator.location:
                 current_reward = -float("inf")
             else:
-                current_state = (action, prey.location, predator.location)
                 current_reward = -1 + get_future_reward_prediction(
                     graph, action, prey.location, predator.location, self.shortest_distances, self.vcomplete_model)
 
@@ -42,7 +39,7 @@ class Agent1RLNN(Agent):
 
     def move_debug(self, graph, prey, predator):
         """
-        updates location based on assignment specifications given
+        debug version of move
         """
         action_space = graph.get_node_neighbors(
             self.location) + [self.location]
