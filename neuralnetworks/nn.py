@@ -18,25 +18,31 @@ def tanh(x):
     '''@param x: input value to be passed to tanh function'''
     return np.tanh(x)
 
+
 def tanh_prime(x):
     '''@param x: input value to be passed to tanh_prime function'''
     return 1 - np.tanh(x)**2
+
 
 def ReLU(x):
     '''@param x: input value to be passed to ReLU function'''
     return max(0, x)
 
+
 def ReLU_prime(x):
     '''@param x : input value to be passed to ReLU Prime function'''
     return x if x >= 0 else 0
+
 
 def identity(x):
     '''@param x: input to be passed to identity function'''
     return x
 
+
 def identity_prime(x):
     '''@param x : input to be passed to identity prime function'''
     return 1
+
 
 def mse(y_true, y_pred):
     '''
@@ -44,6 +50,7 @@ def mse(y_true, y_pred):
        @param y_pred : predicted outputs
     '''
     return np.mean(np.power(y_true-y_pred, 2))
+
 
 def mse_prime(y_true, y_pred):
     '''
@@ -57,6 +64,7 @@ class Layer():
     def __init__(self):
         """every layer has an input and an output which can have derivatives"""
         self.input, self.output = None, None
+
 
 class DenseLinear(Layer):
     def __init__(self, input_size, output_size):
@@ -78,6 +86,7 @@ class DenseLinear(Layer):
         self.b -= lr * output_error
         return input_error
 
+
 class NonLinearity(Layer):
     def __init__(self, activation, activation_derivative):
         """add non-linearties to the network"""
@@ -93,6 +102,7 @@ class NonLinearity(Layer):
     def backward(self, output_error, learning_rate):
         """run backward propogation on non-linearties"""
         return self.activation_derivative(self.input) * output_error
+
 
 class NeuralNetwork():
     def __init__(self):
@@ -121,12 +131,14 @@ class NeuralNetwork():
             result.append(output)
         return result
 
-def save_model(model, error, testerror = 0, filename=f"vpartial_model"):
+
+def save_model(model, error, testerror=0, filename=f"vpartial_model"):
     """checkpoints the model so that we can reuse it again"""
     dirname = "/trainedmodels/"
     filepath = os.path.dirname(__file__) + dirname + filename
     with open(filepath + str(error) + "_" + str(testerror) + ".pkl", "wb") as file:
         pickle.dump(model, file)
+
 
 def train(model, x_train, y_train, epochs, learning_rate):
     """trains the model and saves the model once the model is low enough"""
@@ -134,7 +146,7 @@ def train(model, x_train, y_train, epochs, learning_rate):
     for i in range(epochs):
         err = 0
         for j in range(leninput):
-            #print(j)
+            # print(j)
             output = x_train[j]
             for layer in model.layers:
                 output = layer.forward(output)
@@ -148,14 +160,15 @@ def train(model, x_train, y_train, epochs, learning_rate):
         # save the model if it is a good model < 5 MSE
         if err <= 0.5:
             save_model(model, err)
-        
+
+
 def train_vpartial(model, x_train, y_train, x_test, y_test, epochs, learning_rate):
     """trains the model but also computes a validation error, saves if error is low"""
     leninput = len(x_train)
     for i in range(epochs):
         err = 0
         for j in range(leninput):
-            #print(j)
+            # print(j)
             output = x_train[j]
             for layer in model.layers:
                 output = layer.forward(output)
@@ -164,19 +177,20 @@ def train_vpartial(model, x_train, y_train, x_test, y_test, epochs, learning_rat
             for layer in reversed(model.layers):
                 error = layer.backward(error, learning_rate)
         err /= leninput
-        
+
         # COMPUTE VALIDATION ERROR
-        test_error = 0 
+        test_error = 0
         lentestinput = len(x_test)
         for j in range(lentestinput):
             output = x_test[j]
             for layer in model.layers:
                 output = layer.forward(output)
             test_error += model.loss(y_test[j], output)
-        mse_testerror = test_error / lentestinput    
+        mse_testerror = test_error / lentestinput
 
-        print('epoch %d/%d   train_error=%f   test_error=%f' % (i+1, epochs, err, mse_testerror))
-    
+        print('epoch %d/%d   train_error=%f   test_error=%f' %
+              (i+1, epochs, err, mse_testerror))
+
         # save the model if it is a good model < 5 MSE
         if err <= 5 and mse_testerror <= 5:
             save_model(model, err, mse_testerror)

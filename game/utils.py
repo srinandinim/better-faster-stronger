@@ -2,6 +2,7 @@ import json
 import os
 from .graph import Graph
 
+
 def save_graph(graph=Graph(nodes=50), filename="GAME_GRAPH.json"):
     ''' 
     Function to store a json from a given graph
@@ -15,6 +16,7 @@ def save_graph(graph=Graph(nodes=50), filename="GAME_GRAPH.json"):
     filepath = dirname + filename
     with open(filepath, "w") as fp:
         json.dump(graph.nbrs, fp)
+
 
 def retrieve_graph(filename="GAME_GRAPH.json"):
     ''' 

@@ -29,7 +29,8 @@ def get_training_data(filename="OPTIMAL_U*_DATASET.csv", start_idx=0, end_idx=12
 
 if __name__ == "__main__":
     # LOAD THE DATA INTO MEMORY
-    y, x = get_training_data(filename="OPTIMAL_DATASET.csv", start_idx=0, end_idx=125000)
+    y, x = get_training_data(
+        filename="OPTIMAL_DATASET.csv", start_idx=0, end_idx=125000)
 
     # BUILD OUT THE NEURAL NETWORK & LOSS FUNCTION
     #dnn_v_complete = NeuralNetwork()

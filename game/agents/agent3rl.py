@@ -1,11 +1,8 @@
-import csv
 import pickle
 import random
 from copy import deepcopy
-from game.models.optimalvaluefunction import (
-    agent_to_pred_distances, get_future_reward)
-from neuralnetworks.utils import (
-    vectorize_probability_dist, vectorize_probability_state)
+from game.models.optimalvaluefunction import (agent_to_pred_distances,
+                                              get_future_reward)
 from .agent import Agent
 
 
@@ -29,6 +26,9 @@ class Agent3RL(Agent):
         self.prev_prey_locations = []
 
     def partial_utility(self, agent_loc, predator):
+        """
+        calculates the u_partial based on the agent location, predator location, and vector of prey probabilities
+        """
         temp_utility = dict()
         for prey_loc in range(1, self.graph.get_nodes() + 1):
             u_star = get_future_reward(
@@ -39,7 +39,14 @@ class Agent3RL(Agent):
 
     def move(self, graph, prey, predator):
         """
-        updates location based on assignment specifications given
+        surveys the node with the highest probability of containing the prey
+        updates the beliefs
+        * if signal is false and we have previously not found prey, reinitialize beliefs to 1/(n - 2) for all nodes other than surveyed and agent current location
+        * if signal is false and we have previously found prey, update beliefs based on probability that the prey could be in each position
+        * if signal is true, beliefs is a one-hot vector
+
+        calculates the utility of each action in the agent's action space
+        moves to the action with the greatest utility
         """
         signal, surveyed_node = self.survey_node(prey)
         if len(self.prev_prey_locations) == 0:
@@ -77,7 +84,7 @@ class Agent3RL(Agent):
 
     def move_debug(self, graph, prey, predator):
         """
-        updates location based on assignment specifications given
+        debug version of move
         """
         signal, surveyed_node = self.survey_node(prey)
         if len(self.prev_prey_locations) == 0:

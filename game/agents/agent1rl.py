@@ -14,7 +14,7 @@ class Agent1RL(Agent):
 
     def move(self, graph, prey, predator):
         """
-        updates location based on assignment specifications given
+        moves based on the action in the agent's action space that has the greatest utility
         """
         action_space = graph.get_node_neighbors(
             self.location) + [self.location]
@@ -38,7 +38,7 @@ class Agent1RL(Agent):
 
     def move_debug(self, graph, prey, predator):
         """
-        updates location based on assignment specifications given
+        debug version of move
         """
         action_space = graph.get_node_neighbors(
             self.location) + [self.location]
