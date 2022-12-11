@@ -287,17 +287,17 @@ if __name__ == "__main__":
 
     # labreport_simulation_statistics_agent1()
     # labreport_simulation_statistics_agent2()
-    labreport_simulation_statistics_agent1_rl()
+    # labreport_simulation_statistics_agent1_rl()
     # visualize_statistics.visualize_success_rates("data/", "simulation_statistics_complete.json")
     # visualize_statistics.visualize_step_counts("data/", "simulation_statistics_complete.json")
 
-    labreport_simulation_statistics_agent1_rl_nn()
+    # labreport_simulation_statistics_agent1_rl_nn()
     # visualize_statistics.visualize_success_rates("data/", "simulation_statistics_utility_complete.json")
     # visualize_statistics.visualize_step_counts("data/", "simulation_statistics_utility_complete.json")
 
     # labreport_simulation_statistics_agent3()
     # labreport_simulation_statistics_agent4()
-    labreport_simulation_statistics_agent3_rl()
+    # labreport_simulation_statistics_agent3_rl()
     # visualize_statistics.visualize_success_rates("data/", "simulation_statistics_partial.json")
     # visualize_statistics.visualize_step_counts("data/", "simulation_statistics_partial.json")
 

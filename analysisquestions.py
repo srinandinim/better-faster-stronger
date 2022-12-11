@@ -5,7 +5,6 @@ from game.utils import retrieve_graph
 import matplotlib.pyplot as plt
 import networkx as nx
 
-
 def visualize_graph(graph_filename="GAME_GRAPH.json"):
     """visualizes nodes and their edges with labels in non-circular layout"""
     graph = Graph(nbrs=retrieve_graph(filename=graph_filename))
@@ -21,12 +20,10 @@ def visualize_graph(graph_filename="GAME_GRAPH.json"):
 
     plt.show()
 
-
 if __name__ == "__main__":
     # find the state with the largest possible finite value of u*
     # load the pickle file with the optimal utilities
-    OPTIMAL_UTILITIES_USTAR = pickle.load(
-        open("game/pickles/OPTIMAL_U*.pickle", "rb"))
+    OPTIMAL_UTILITIES_USTAR = pickle.load(open("game/pickles/OPTIMAL_U*.pickle", "rb"))
 
     min_ustar_value = 0
     for utility in OPTIMAL_UTILITIES_USTAR.values():
