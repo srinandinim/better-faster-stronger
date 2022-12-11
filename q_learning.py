@@ -241,8 +241,6 @@ def init_q_function():
 	q_function.add(NonLinearity(tanh, tanh_prime))
 	q_function.add(DenseLinear(150, 150))
 	q_function.add(NonLinearity(tanh, tanh_prime))
-	q_function.add(DenseLinear(150, 150))
-	q_function.add(NonLinearity(tanh, tanh_prime))
 	q_function.add(DenseLinear(150, 1))
 	q_function.choose_error(mse, mse_prime)
 
@@ -290,7 +288,7 @@ def get_future_reward(graph, agent_loc, beliefs, pred_loc, shortest_distances, q
 	@param:u0 - a vector containing the utilities of each state from the previous sweep
 	@return the future reward from being in this state
 	"""
-
+	# print("running")
 	pred_next = graph.nbrs[pred_loc]
 	pred_optimal_next = set(optimal_pred_moves(graph, agent_loc, pred_loc, shortest_distances))
 
@@ -311,7 +309,7 @@ def train():
 	P = get_transition_matrix(graph)
 	shortest_distances = agent_to_pred_distances(graph)
 	
-	epsilon, alpha, delta = 0.10, 0.001, 0.1
+	epsilon, alpha, delta, beta = 0.10, 0.001, 0.1, 0.99
 	
 	game_vector = []
 	
@@ -322,7 +320,7 @@ def train():
 	for _ in range(0, number_of_games):
 		game_vector.append(init_new_game(graph))
 
-	number_of_states_to_process = 128
+	number_of_states_to_process = 20
 	batch_size = 128
 	avg_loss = float("inf")
 	batches = 0
@@ -366,11 +364,25 @@ def train():
 
 				# calculate value iteration from and loss for each action we can take from here
 				action_space = graph.get_node_neighbors(agent_location) + [agent_location] # this is Q(s,a)
-				next_move = random.choice(action_space) 
+				next_move = random.choice(action_space) # put in e - greedy
 
 				# need to calculate the maximum future reward
-				answer = 0 if agent_location == prey.location else -50 if agent_location == predator.location \
-					else -1 + max([ get_future_reward(graph, action, beliefs, predator.location, shortest_distances, target_network) for action in graph.get_node_neighbors(agent_location)])
+				answer = 0 
+				if agent_location == prey.location: 
+					answer =0
+				elif agent_location == predator.location:
+					answer = -50
+				else:
+					actions_and_utilities = dict()
+					# print(action_space)
+					for action in action_space:
+						actions_and_utilities[action] = get_future_reward(graph, action, beliefs, predator.location, shortest_distances, target_network)
+						# print(actions_and_utilities[action])
+					best = max(actions_and_utilities.values())
+					answer = -1 + beta*best
+					if random.random() >= epsilon:
+						next_move = random.choice([action for action in actions_and_utilities.keys() if actions_and_utilities[action] == best])
+				
 				correct.append(np.asarray(answer, dtype="float32"))
 
 				# move
