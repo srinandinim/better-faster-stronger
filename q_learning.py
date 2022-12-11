@@ -36,8 +36,18 @@ def init_new_game(graph):
 	return Game_State(agent_location, prey, predator, beliefs, False)
 
 
+
+
 # HELPER FUNCTIONS ##############################
 
+def load_model(filename="OPTIMAL_VPARTIAL_MODEL.pkl"):
+    dirname = "neuralnetworks/trainedmodels/"
+    filepath = os.path.dirname(__file__) + dirname + filename
+    with open(filepath, "rb") as file:
+        # print("opening the file")
+        model = pickle.load(file)
+        # print("model successfully deserialized")
+    return model
 
 def calculate_shortest_distances(graph, source, goals):
 	'''
@@ -302,7 +312,9 @@ def get_future_reward(graph, agent_loc, beliefs, pred_loc, shortest_distances, q
 
 def train():
 	
-	q_function = init_q_function()
+
+	# q_function = init_q_function()
+	q_function = load_model()
 	target_network = copy_neural_network(q_function)
 	
 	graph = Graph(nbrs=utils.retrieve_graph())
