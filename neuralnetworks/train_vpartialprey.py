@@ -74,16 +74,17 @@ def sanity_check_data(filename="TESTING_VPARTIAL_DATASET.csv", start_idx=0, end_
     return Y, X
 
 def split_array(a):
-  # get the first 50 elements of the array
-  first_50 = a[:, :50]
+    """allows us to find the vectors"""
+    # get the first 50 elements of the array
+    first_50 = a[:, :50]
 
-  # get the middle 50 elements of the array
-  middle_50 = a[:, 50:100]
+    # get the middle 50 elements of the array
+    middle_50 = a[:, 50:100]
 
-  # get the last 50 elements of the array
-  last_50 = a[:, 100:]
+    # get the last 50 elements of the array
+    last_50 = a[:, 100:]
 
-  return first_50, middle_50, last_50
+    return first_50, middle_50, last_50
 
 def join_arrays(first_50, middle_50, last_50):
   # stack the arrays along the second dimension (columns)
