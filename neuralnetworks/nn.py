@@ -50,7 +50,7 @@ class DenseLinear(Layer):
     def backward(self, output_error, lr):
         input_error = np.dot(output_error, self.w.T)
         weights_error = np.dot(self.input.T, output_error)
-
+        print("Gradient: ", weights_error)
         self.w -= lr * weights_error
         self.b -= lr * output_error
 

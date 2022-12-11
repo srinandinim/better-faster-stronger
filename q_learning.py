@@ -1,5 +1,5 @@
 import pickle 
-from neuralnetworks.nn import *
+from neuralnetworks.nnql import *
 from game.game import *
 from game.predator import *
 from game.prey import *
@@ -313,8 +313,11 @@ def get_future_reward(graph, agent_loc, beliefs, pred_loc, shortest_distances, q
 def train():
 	
 
-	# q_function = init_q_function()
-	q_function = load_model()
+	q_function = init_q_function()
+	# q_function = None
+	# with open("OPTIMAL_VPARTIAL_MODEL.pkl", "rb") as f:
+	# 	q_function = pickle.load(f)
+	
 	target_network = copy_neural_network(q_function)
 	
 	graph = Graph(nbrs=utils.retrieve_graph())
@@ -332,7 +335,7 @@ def train():
 	for _ in range(0, number_of_games):
 		game_vector.append(init_new_game(graph))
 
-	number_of_states_to_process = 20
+	number_of_states_to_process = 150
 	batch_size = 128
 	avg_loss = float("inf")
 	batches = 0
@@ -370,7 +373,7 @@ def train():
 
 				# print("Node surveyed")
 				# initial evaluation of the q_function on the state_vector
-				outputs.append(nn_compute_wrapper(q_function, agent_location, beliefs, predator.location))
+				outputs.append(nn_compute_wrapper(q_function, agent_location, beliefs, predator.location)[0])
 				# process_nn_output(initial_evaluation, graph, agent_location, epsilon) 
 				# print("NN Evaluated")
 
@@ -426,16 +429,23 @@ def train():
 
 			# back propagate loss
 			loss_sum = 0
-			for i in range(len(correct)):
-				loss_sum = loss_sum + np.absolute(correct[i] - outputs[i])
-				q_function.back_propagate(correct[i], outputs[i], alpha) # back propage the loss
+			outputs = np.asarray(outputs, dtype="float32")
+			# outputs = np.reshape(outputs, (1, outputs.shape[0]))
+			correct = np.asarray(correct, dtype="float32")
+			# correct = np.reshape(correct, (1, correct.shape[0]))
+			loss_sum = loss_sum + np.sum(np.absolute(np.subtract(outputs, correct)))
+			q_function.back_propagate(outputs, correct, alpha)
+			# for i in range(len(correct)):
+			# 	loss_sum = loss_sum + np.absolute(correct[i] - outputs[i])
+			# 	q_function.back_propagate(outputs[i], correct[i], alpha) # back propage the loss
 			avg_loss = loss_sum / len(correct)
 			batch_loss += avg_loss
 			print("Average Loss: " , avg_loss)
+			# print(q_function.layers[-1].w)
 		
 		# copy over main weights to target network
 		batches = batches + 1
-		target_network = copy_neural_network(q_function)
+		# target_network = copy_neural_network(q_function)
 
 		# checkpoint the model every 25 epochs
 		if batches % 5 == 0:

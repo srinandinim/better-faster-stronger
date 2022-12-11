@@ -39,18 +39,28 @@ class DenseLinear(Layer):
     def __init__(self, input_size, output_size):
         self.w = np.random.rand(input_size, output_size) - 0.5
         self.b = np.random.rand(1, output_size) - 0.5
-
+        self.output_size = output_size
+        self.input_size = input_size
+        self.inputs = []
+    
     def forward(self, input):
+        self.inputs.append(input)
         self.input = input
         self.output = np.dot(self.input, self.w) + self.b
         return self.output
 
     def backward(self, output_error, lr):
+        # output_error is a vector of errors
+        # input_error is a pass back vector of errors to give to the previous layer
         input_error = np.dot(output_error, self.w.T)
-        weights_error = np.dot(self.input.T, output_error)
-
-        self.w -= lr * weights_error
-        self.b -= lr * output_error
+        weights_error = np.asarray([], dtype="float32")
+        for i in range(0, len(output_error)):
+            weights_error = np.append(weights_error, np.dot(self.inputs[i].T, output_error[i]))
+        # weights_error = np.dot(self.input.T, output_error.T)
+        # print("Gradient: ", weights_error)
+        for i in range(0, len(output_error)):
+            self.w -= lr * weights_error[i]
+            self.b -= lr * output_error[i]
 
         return input_error
 
@@ -58,14 +68,16 @@ class NonLinearity(Layer):
     def __init__(self, activation, activation_derivative):
         self.activation = activation
         self.activation_derivative = activation_derivative
+        self.inputs = []
 
     def forward(self, input):
+        self.inputs.append(input)
         self.input = input
         self.output = self.activation(self.input)
         return self.output
 
     def backward(self, output_error, learning_rate):
-        return self.activation_derivative(self.input) * output_error
+        return np.asarray([self.activation_derivative(self.inputs[i]) * output_error[i] for i in range(0, len(self.inputs))], dtype="float32")
 
 class NeuralNetwork():
     def __init__(self):
@@ -97,12 +109,14 @@ class NeuralNetwork():
         return output
 
     def back_propagate(self, expected, output, learning_rate):
-        # print("Function start")
-        # print(output.shape)
         error = self.loss_derivative(expected, output)
         for layer in reversed(self.layers):
-            # print(error.shape)
             error = layer.backward(error, learning_rate)
+        self.clear_layer_caches()
+
+    def clear_layer_caches(self):
+        for layer in self.layers:
+            layer.inputs = []
 
 def save_model(model, error, testerror = 0, filename=f"vpartial_model"):
     dirname = "/trainedmodels/"
