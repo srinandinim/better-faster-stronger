@@ -371,7 +371,7 @@ def train():
 	
 	target_network = copy_neural_network(q_function)
 	
-	graph = Graph(nbrs=utils.retrieve_graph())
+	graph = Graph(nbrs=retrieve_graph())
 	P = get_transition_matrix(graph)
 	shortest_distances = agent_to_pred_distances(graph)
 	
