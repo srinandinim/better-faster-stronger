@@ -1,6 +1,5 @@
 import pickle 
-from neuralnetworks.nnql import *
-from game.game import *
+from neuralnetworks.nn import *
 from game.predator import *
 from game.prey import *
 import random
@@ -8,6 +7,11 @@ import numpy as np
 from game.utils import *
 
 class Game_State:
+
+	'''
+	Class that simply store the state of a game, without the added overhead of using the game class. 
+	'''
+
 	def __init__(self, agent, prey, predator, beliefs, found_prey):
 		self.agent = agent
 		self.prey = prey
@@ -16,16 +20,20 @@ class Game_State:
 		self.found_prey = found_prey
 
 	def retrieve_game(self):
+		'''
+		Function that returns the game state stored
+		'''
 		return self.agent, self.prey, self.predator, self.beliefs, self.found_prey
 
 def init_new_game(graph):
-	# initializes prey location to be random from nodes 1...50
+	'''
+	Function that initializes a new game, by creating a Game State object
+	'''
+
 	prey = Prey(random.randint(1, graph.get_nodes()))
 
-	# determines the predator location which will be used to create the specific predator
 	predator = Predator(random.randint(1, graph.get_nodes()))
 
-	# agent initializes randomly to any spot that is not occupied by predator/prey
 	occupied_s = min(prey.location, predator.location)
 	occupied_l = max(prey.location, predator.location)
 	agent_location_options = list(range(1, occupied_s)) + list(range(
@@ -41,13 +49,18 @@ def init_new_game(graph):
 # HELPER FUNCTIONS ##############################
 
 def load_model(filename="OPTIMAL_VPARTIAL_MODEL.pkl"):
-    dirname = "neuralnetworks/trainedmodels/"
-    filepath = os.path.dirname(__file__) + dirname + filename
-    with open(filepath, "rb") as file:
+	'''
+	Function to load the V_partial model into the weights of the
+	neural network, giving the training a head start. 
+	'''
+	dirname = "neuralnetworks/trainedmodels/"
+	filepath = os.path.dirname(__file__) + dirname + filename
+	with open(filepath, "rb") as file:
         # print("opening the file")
-        model = pickle.load(file)
+		model = pickle.load(file)
         # print("model successfully deserialized")
-    return model
+	return model
+
 
 def calculate_shortest_distances(graph, source, goals):
 	'''
@@ -121,11 +134,17 @@ def optimal_pred_moves(graph, agent_loc, pred_loc, shortest_distances):
 	smallest = min(pred_nbrs_to_agent.values())
 	return [nbr for nbr in pred_nbrs_to_agent.keys() if pred_nbrs_to_agent[nbr] == smallest]
 
+
 def save_model(model, error, filename=f"vpartial_dqn_"):
+	'''
+	Function to save the model that's been trained so far, used for checkpointing the model
+	during training. 
+	'''
 	dirname = "neuralnetworks/trainedmodels/"
 	filepath = os.path.dirname(__file__) + dirname + filename
 	with open(filepath + str(error) + ".pkl", "wb") as file:
 		pickle.dump(model, file)
+
 
 def index_transform(action):
 	'''
@@ -134,6 +153,7 @@ def index_transform(action):
 
 	return action - 1
 
+
 def normalize_probs(vector):
 	'''
 	Function to normalize a vector of probabilities
@@ -141,6 +161,7 @@ def normalize_probs(vector):
 	s = sum(vector)
 	vector = list(map(lambda x: x / s, vector))
 	return vector
+
 
 def check_prob_sum(su):
 	'''
@@ -151,6 +172,7 @@ def check_prob_sum(su):
 	print("BELIEF SYSTEM FAULTY: " + str(su))
 	exit()
 
+
 def normalize_and_check(vector):
 	'''
 	Routine function to normalize a vector of probabilites and check if sums to 1
@@ -158,6 +180,7 @@ def normalize_and_check(vector):
 	vector = normalize_probs(vector)
 	check_prob_sum(sum(vector))
 	return vector
+
 
 def pick_most_probable_spot(graph, vector):
 	'''
@@ -171,7 +194,10 @@ def pick_most_probable_spot(graph, vector):
 # BELIEF SYSTEM FUNCTIONS ##############################
 
 def get_transition_matrix(graph):
-	# set up transition matrix
+	'''
+	Function to generate a transition matrix, describing the probabilities with which the prey moves.
+	'''
+
 	P = [[0 for _ in range(graph.get_nodes())] for _ in range(graph.get_nodes())]
 	nbrs = graph.get_neighbors()
 	for i in nbrs.keys():
@@ -180,8 +206,14 @@ def get_transition_matrix(graph):
 			P[index_transform(i)][index_transform(j)] = 1 / (len(nbrs[j]) + 1)
 	return P
 
+
 def nn_compute_wrapper(nn, agent_loc, beliefs, p_loc):
+	'''
+	Function to process the output of the neural network, and return a single numpy array containing a single value
+	'''
+	
 	return np.asarray(nn.compute_output(get_state_vector(agent_loc, beliefs, p_loc)), dtype="float32")
+
 
 def belief_system_init(graph, agent_location):
 	'''
@@ -193,6 +225,7 @@ def belief_system_init(graph, agent_location):
 	beliefs[index_transform(agent_location)] = 0 
 	
 	return beliefs
+
 
 def survey_function(graph, beliefs, prey):
 	'''
@@ -212,6 +245,7 @@ def survey_function(graph, beliefs, prey):
 
 	return normalize_and_check(beliefs), found_prey
 
+
 def update_belief_system_after_agent_moves(beliefs, agent_location, graph, found_prey):
 	'''
 	Function to update the belief system after the agent moves. If the prey is not found,
@@ -227,6 +261,7 @@ def update_belief_system_after_agent_moves(beliefs, agent_location, graph, found
 	beliefs[index_transform(agent_location)] = 0
 	
 	return normalize_and_check(beliefs)
+
 
 def update_belief_system_after_prey_moves(beliefs, P):
 	'''
@@ -256,6 +291,7 @@ def init_q_function():
 
 	return q_function
 
+
 def get_state_vector(a_loc, beliefs, p_loc):
 	'''
 	Function to develop a vector describing the state space
@@ -268,10 +304,20 @@ def get_state_vector(a_loc, beliefs, p_loc):
 	state_vector = np.asarray(state_vector, dtype="float32")
 	return state_vector.reshape( (1, state_vector.shape[0]) )
 
+
 def compute_convergence_condition(avg_loss, delta):
+	'''
+	Function that checks if the average loss meets the requirement for convergence. 
+	'''
+
 	return avg_loss < delta
 
+
 def copy_neural_network(original):
+	'''
+	Function to copy the weights of one neural network into another one
+	'''
+
 	copy = NeuralNetwork()
 	for layer in original.layers:
 		if isinstance(layer, (DenseLinear)):
@@ -285,6 +331,7 @@ def copy_neural_network(original):
 	copy.choose_error(mse, mse_prime)
 
 	return copy
+
 
 def get_future_reward(graph, agent_loc, beliefs, pred_loc, shortest_distances, q_function):
 	"""
@@ -310,8 +357,12 @@ def get_future_reward(graph, agent_loc, beliefs, pred_loc, shortest_distances, q
 		future_reward += nn_compute_wrapper(q_function, agent_loc, beliefs, pred_next_state)[0] * (0.4 / len(pred_next) + gamma)
 	return future_reward
 
+
 def train():
-	
+	'''
+	Function to train a neural network that approximates utility values in a partial setting
+	using experience replay and mini-batch gradient descent.  
+	'''
 
 	q_function = init_q_function()
 	# q_function = None
@@ -428,24 +479,17 @@ def train():
 				# step_count = step_count + 1
 
 			# back propagate loss
-			loss_sum = 0
 			outputs = np.asarray(outputs, dtype="float32")
-			# outputs = np.reshape(outputs, (1, outputs.shape[0]))
 			correct = np.asarray(correct, dtype="float32")
-			# correct = np.reshape(correct, (1, correct.shape[0]))
-			loss_sum = loss_sum + np.sum(np.absolute(np.subtract(outputs, correct)))
-			q_function.back_propagate(outputs, correct, alpha)
-			# for i in range(len(correct)):
-			# 	loss_sum = loss_sum + np.absolute(correct[i] - outputs[i])
-			# 	q_function.back_propagate(outputs[i], correct[i], alpha) # back propage the loss
+			loss_sum = np.sum(np.absolute(np.subtract(outputs, correct)))
 			avg_loss = loss_sum / len(correct)
+			q_function.back_propagate(np.asarray([avg_loss], dtype="float32"), 0, alpha)
 			batch_loss += avg_loss
 			print("Average Loss: " , avg_loss)
-			# print(q_function.layers[-1].w)
 		
 		# copy over main weights to target network
 		batches = batches + 1
-		# target_network = copy_neural_network(q_function)
+		target_network = copy_neural_network(q_function)
 
 		# checkpoint the model every 25 epochs
 		if batches % 5 == 0:
@@ -460,46 +504,3 @@ def train():
 	print("Finished training....")
 
 train()
-
-
-
-
-# def process_nn_output(output, graph, agent_location, epsilon):
-# 	'''
-# 	Function that takes the output of the neural network and chooses a random action
-# 	with a chance of epsilon and chooses the best action otherwise
-# 	'''
-
-# 	action_space = graph.get_node_neighbors(agent_location) + [agent_location]
-# 	return random.choice(action_space)
-# 	# if random.random() < epsilon:
-# 	# 	best_action = random.choice(action_space)
-# 	# else:
-		
-# 	# 	possible_actions = { i : output[0][index_transform(i)] for i in action_space }
-# 	# 	best_utility = max(possible_actions.values())
-# 	# 	lst = [i for i in possible_actions.keys() if possible_actions[i] == best_utility]
-# 	# 	if len(lst) == 0:
-# 	# 		print(output)
-# 	# 		print(possible_actions)
-# 	# 		print(best_utility)
-# 	# 	best_action = random.choice([i for i in possible_actions.keys() if possible_actions[i] == best_utility])
-
-# 	# return best_action
-
-
-# for action in action_space:
-				# 	q_s_prime_a = 0
-				# 	if action == prey.location:
-				# 		q_s_prime_a = 0
-				# 	elif action == predator.location:
-				# 		q_s_prime_a = -50
-				# 	else:
-				# 		new_state_vector = get_state_vector(action, beliefs, predator.location) # the new vector describing s_{t + 1} from taking an action
-				# 		future_evaluation = np.asarray(target_network.compute_output(state_vector), dtype="float32") # a set of vectors describing Q(s_{t+1}, a)
-				# 		optimal_future_action = process_nn_output(future_evaluation, graph, action, 0) # maximum action
-				# 		q_s_prime_a = -1 + future_evaluation[0][index_transform(optimal_future_action)] # maximum Q(s_{t+1}, a)
-				# 	answers[0][index_transform(action)] = q_s_prime_a
-				
-				# outputs.append(initial_evaluation)
-				# correct.append(answers)
