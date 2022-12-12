@@ -35,8 +35,6 @@ def vectorize_state(state):
     x, y, z = state
     return vectorize_coordinate(x) + vectorize_coordinate(y) + vectorize_coordinate(z)
 
-# takes pickled binary and generates training data CSV
-
 
 def create_supervised_training_data(utilities, graph_size=50):
     """
@@ -63,8 +61,6 @@ def create_training_dataset_csv(utilities):
     dataset = create_supervised_training_data(utilities=utilities)
     csv = np.asarray(dataset)
     np.savetxt("OPTIMAL_DATASET.csv", csv, delimiter=",", fmt='%.6f')
-
-# takes pickled binary and generates training data CSV
 
 
 def create_supervised_training_data_normalstates(utilities, graph_size=50):

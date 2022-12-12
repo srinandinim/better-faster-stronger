@@ -1,3 +1,5 @@
+"""THIS FILE JUST SANITY CHECKS THE NN AND VARIOUS SERIALIZATION SCHEMES."""
+
 import numpy as np
 import utils
 from train_vcomplete import get_training_data

@@ -66,7 +66,7 @@ def visualize_success_rates(dirname, filename):
 
 def visualize_step_counts(dirname, filename):
     """
-    plot the simulation success rates and error bars
+    plot the simulation step counts and error bars
     """
     # get the agent setting
     setting = filename[:-5].split("_")[-1]

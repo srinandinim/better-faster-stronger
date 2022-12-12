@@ -3,13 +3,13 @@ import matplotlib.pyplot as plt
 import networkx as nx
 import game.utils as utils
 from .agents.agent1 import Agent1
-from .agents.agent2 import Agent2
-from .agents.agent3 import Agent3
-from .agents.agent4 import Agent4
 from .agents.agent1rl import Agent1RL
 from .agents.agent1rlnn import Agent1RLNN
+from .agents.agent2 import Agent2
+from .agents.agent3 import Agent3
 from .agents.agent3rl import Agent3RL
 from .agents.agent3rlnn import Agent3RLNN
+from .agents.agent4 import Agent4
 from .graph import Graph
 from .predator import Predator
 from .prey import Prey
@@ -135,6 +135,7 @@ class Game:
         return 0, found_prey, found_pred
 
     def run_agent_1(self):
+        """runs agent 1"""
         self.predator = Predator(self.predator_location)
         self.agent = Agent1(self.agent_starting_location)
 
@@ -152,6 +153,7 @@ class Game:
         return status, step_count
 
     def run_agent_1_debug(self):
+        """runs debug agent 1"""
         self.predator = Predator(self.predator_location)
         self.agent = Agent1(self.agent_starting_location)
         self.visualize_graph()
@@ -173,6 +175,7 @@ class Game:
         return status
 
     def run_agent_2(self):
+        """runs agent 2"""
         self.predator = Predator(self.predator_location)
         self.agent = Agent2(self.agent_starting_location)
 
@@ -190,6 +193,7 @@ class Game:
         return status, step_count
 
     def run_agent_2_debug(self):
+        """runs debug agent 2"""
         self.predator = Predator(self.predator_location)
         self.agent = Agent2(self.agent_starting_location)
         self.visualize_graph()
@@ -211,6 +215,7 @@ class Game:
         return status
 
     def run_agent_3(self):
+        """runs agent 3"""
         self.predator = Predator(self.predator_location)
         self.agent = Agent3(self.agent_starting_location, self.graph)
 
@@ -229,6 +234,7 @@ class Game:
         return status, found_prey, step_count
 
     def run_agent_3_debug(self):
+        """runs debug agent 3"""
         self.predator = Predator(self.predator_location)
         self.agent = Agent3(self.agent_starting_location, self.graph)
         status = 0
@@ -249,6 +255,7 @@ class Game:
         return status, found_prey
 
     def run_agent_4(self):
+        """runs agent 4"""
         self.predator = Predator(self.predator_location)
         self.agent = Agent4(self.agent_starting_location, self.graph)
 
@@ -267,6 +274,7 @@ class Game:
         return status, found_prey, step_count
 
     def run_agent_4_debug(self):
+        """runs debug agent 4"""
         self.predator = Predator(self.predator_location)
         self.agent = Agent4(self.agent_starting_location, self.graph)
 
@@ -288,6 +296,7 @@ class Game:
         return status, found_prey
 
     def run_agent_1_rl(self):
+        """runs agent1rl"""
         self.predator = Predator(self.predator_location)
         self.agent = Agent1RL(self.graph, self.agent_starting_location)
 
@@ -305,6 +314,7 @@ class Game:
         return status, step_count
 
     def run_agent_1_rl_debug(self):
+        """runs debug agent1rl"""
         self.predator = Predator(self.predator_location)
         self.agent = Agent1RL(self.graph, self.agent_starting_location)
         self.visualize_graph()
@@ -326,6 +336,7 @@ class Game:
         return status
 
     def run_agent_1_rl_nn(self):
+        """runs agent1rlnn"""
         self.predator = Predator(self.predator_location)
         self.agent = Agent1RLNN(self.graph, self.agent_starting_location)
 
@@ -343,6 +354,7 @@ class Game:
         return status, step_count
 
     def run_agent_1_rl_nn_debug(self):
+        """runs debug agent1rlnn"""
         self.predator = Predator(self.predator_location)
         self.agent = Agent1RLNN(self.graph, self.agent_starting_location)
         self.visualize_graph()
@@ -364,6 +376,7 @@ class Game:
         return status
 
     def run_agent_3_rl(self):
+        """runs agent3rl"""
         self.predator = Predator(self.predator_location)
         self.agent = Agent3RL(self.graph, self.agent_starting_location)
 
@@ -381,6 +394,7 @@ class Game:
         return status, step_count
 
     def run_agent_3_rl_debug(self):
+        """runs debug agent3rl"""
         self.predator = Predator(self.predator_location)
         self.agent = Agent3RL(self.graph, self.agent_starting_location)
         self.visualize_graph()
@@ -402,6 +416,7 @@ class Game:
         return status
 
     def run_agent_3_rlnn(self):
+        """runs agent3rlnn"""
         self.predator = Predator(self.predator_location)
         self.agent = Agent3RLNN(self.graph, self.agent_starting_location)
 
@@ -419,6 +434,7 @@ class Game:
         return status, step_count
 
     def run_agent_3_rl_nn_debug(self):
+        """runs debug agent3rlnn"""
         self.predator = Predator(self.predator_location)
         self.agent = Agent3RLNN(self.graph, self.agent_starting_location)
         self.visualize_graph()

@@ -8,6 +8,8 @@ from game.graph import Graph
 
 
 def get_overall_simulation_statistics(wins, losses, timeouts, success_rates, step_counts, found_prey=None, found_pred=None):
+    """saves everything to json the relevant information"""
+
     average_wins = round(sum(wins) / len(wins), 2)
     average_losses = round(sum(losses) / len(losses), 2)
     average_timeouts = round(sum(timeouts) / len(timeouts), 2)
